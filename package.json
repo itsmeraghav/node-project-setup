@@ -1,26 +1,32 @@
 {
-  "name": "backend-api",
+  "name": "pmtc",
   "version": "1.0.0",
-  "description": "foodie backend api",
-  "main": "index.js",
+  "description": "pmtc api ",
+  "main": "app.js",
   "scripts": {
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/pramod-knight/pmtc-node-api.git"
-  },
-  "author": "electroitsolutions1@gmail.com",
+  "author": "Electro It solutions",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/pramod-knight/pmtc-node-api/issues"
-  },
-  "homepage": "https://github.com/pramod-knight/pmtc-node-api#readme",
   "dependencies": {
+    "async": "^3.2.4",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.0.2",
+    "errorhandler": "^1.5.1",
     "express": "^4.18.1",
-    "mongoose": "^6.4.4"
+    "express-jwt": "^7.7.5",
+    "express-session": "^1.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^6.6.1",
+    "mongoose-unique-validator": "^3.1.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^2.0.19",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "slug": "^8.0.0"
   }
 }

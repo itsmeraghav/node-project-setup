@@ -8,10 +8,11 @@ var async = require('async');
 var auth = require('../../config/auth');
 var crypto = require('crypto');
 
+const UPLOAD_PATH = process.cwd() + "/public/serverimage";
 // Store File at local folder  ******start*********
 var storagess = multer.diskStorage({
 	destination: function (req, file, cb) { 
-		cb(null, process.env.UPLOAD_PATH + '/users/')
+		cb(null, UPLOAD_PATH + '/users/')
 	},
 	filename: function (req, file, cb) {
 		var datetimestamp = Date.now();

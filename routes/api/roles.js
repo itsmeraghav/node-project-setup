@@ -95,11 +95,11 @@ router.post('/list',   upload.array(), function (req, res, next) {
 
 router.post('/delete',   upload.array(), function (req, res, next) {
 
-	Role.findByIdAndRemove(req.body.redors_id, (err, faq) => {
+	Role.findByIdAndRemove(req.body._id, (err, faq) => {
 		if (err) {
 			return res.json({ errors: { message: " Record not Found!" } });
 		} else {
-			return res.json({ data: true });
+			return res.json({ data: req.body._id });
 
 
 		}

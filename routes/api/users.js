@@ -50,12 +50,14 @@ router.post('/create',auth.required, uploadLocal.single('profile_pic'), function
 	if (req.body.reference) {
 		user.reference = req.body.reference;
 	}
+	// return res.json({ errors: { msg: req.file } });
+	if (req.file.filename) {
 
-	if (req.file.profile_pic) {
-		if (req.file.profile_pic[0]) {
-			user.profile_pic = req.file.profile_pic[0].location;
+		if (req.file.filename) {
+			user.profile_pic = req.file.filename;
 		}
 	}
+	// return res.json({ errors: { msg: user } });
 
 	if (req.body.state) {
 		user.state = req.body.state;

@@ -14,15 +14,14 @@ passport.use(new LocalStrategy({
   .findOne({
     $or: [
       { 'contact_number': email },
+      { 'username': email.toLowerCase() },
       { 'email': email.toLowerCase() } 
     ] })
   // .findOne({contact_number: email.toLowerCase()})
-  .then(function(user){
-   
+  .then(function(user){   
     if(!user || !user.validPassword(password)){
       return done(null, false, {errors: {'email or password': 'is invalid'}});
     }
-
     return done(null, user);
   }).catch(done);
 }));

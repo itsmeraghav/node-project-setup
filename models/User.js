@@ -11,9 +11,14 @@ var secret = require('../config').secret;
 // `in_is_deleted` tinyint(4) NOT NULL,
 // `dt_created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 // `is_profile_completed` tinyint(1) NOT NULL DEFAULT '0'
-
+ 
+ 
+ 
+ 
 var UserSchema = new mongoose.Schema({
-  full_name: String,
+  full_name:  {
+    type: String
+  },
   email: {
     type: String,
     required: true,
@@ -39,16 +44,23 @@ var UserSchema = new mongoose.Schema({
     default: 0
     //0 => no ,1 =yes, 
   },
-  owner_name: String,
+  // owner_name: String,
   // membership_id
 
   contact_number: String,
   alternate_contact_number: String,
   // id_proof_number: String,
   // scanned_id: String,
-  // qualification: String,
+  qualification: String,
   reference: String,
   profile_pic: String,
+  country: String,
+  state: String,
+  city: String,
+  zipcode: String,
+  zipcodes: String,
+  address: String,
+  company: String,
   // state: { type: mongoose.Schema.Types.ObjectId, ref: 'State', default: null },
   // city: { type: mongoose.Schema.Types.ObjectId, ref: 'City', default: null },
   // client_code: String,
@@ -60,7 +72,8 @@ var UserSchema = new mongoose.Schema({
   // status: Number,//0 => inactive ,1 =active, 2 =deleted
   dob: Date,
   gender: String,
-
+  fare_amount:Number,
+  owner_name: String,
   createdAt: { type: Date, required: true, default: Date.now },
   updatedAt: { type: Date, required: true, default: Date.now },
   last_seen: { type: Date, required: true, default: Date.now },

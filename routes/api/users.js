@@ -8,11 +8,12 @@ var async = require('async');
 var auth = require('../../config/auth');
 var crypto = require('crypto');
 
-const UPLOAD_PATH = process.cwd() + "/public/serverimage";
+
 // Store File at local folder  ******start*********
 var storagess = multer.diskStorage({
-	destination: function (req, file, cb) { 
-		cb(null, UPLOAD_PATH + '/users/')
+	destination: function (req, file, cb) {
+		// cb(null, process.env.UPLOAD_PATH + '/users/')
+		cb(null, './public/serverimage/users/')
 	},
 	filename: function (req, file, cb) {
 		var datetimestamp = Date.now();
@@ -22,18 +23,105 @@ var storagess = multer.diskStorage({
 var uploadLocal = multer({ storage: storagess });
 // Store File at local folder  ******close*********
 
-router.post('/create',auth.required, uploadLocal.single('profile_pic'), function (req, res, next) {
+// front
+router.post('/signup', uploadLocal.array(), function (req, res, next) {
 
- 
-	if (!req.body.email) {
-		return res.json({ errors: { msg: "Email is required" } });
-	} 
+
+	if (!req.body.email || !req.body.username) {
+		return res.json({ errors: { msg: "Email and Username is required" } });
+	}
 
 	var user = new User();
 	const uniqueCode = randomString(50);
 	user.email = req.body.email.toLowerCase();
 	user.username = req.body.username.toLowerCase();
+
+	if (req.body.full_name) {
+		user.full_name = req.body.full_name;
+	}
+
+	if (req.body.contact_number) {
+		user.contact_number = req.body.contact_number;
+	}  
+
+	if (req.body.role) {
+		user.role = req.body.role;
+	}
+	console.log(new Date(req.body.dob));
+	if (req.body.dob) {
+		user.dob = Date.parse(req.body.dob);
+	}
+	if (req.body.gender) {
+		user.gender = req.body.gender;
+	}
+	if (req.body.country) {
+		user.country = req.body.country;
+	} 
+
+	if (req.body.state) {
+		user.state = req.body.state;
+	}
+
+	if (req.body.city) {
+		user.city = req.body.city;
+	}
+
+	if (req.body.zipcode) {
+		user.zipcode = req.body.zipcode;
+	}
+
+	if (req.body.zipcodes) {
+		user.zipcodes = req.body.zipcodes;
+	}
+	if (req.body.fare_amount) {
+		user.fare_amount = req.body.fare_amount;
+	}
+
+	if (req.body.address) {
+		user.address = req.body.address;
+	}
+
+	if (req.body.qualification) {
+		user.qualification = req.body.qualification;
+	}
+	if (req.body.owner_name) {
+		user.owner_name = req.body.owner_name;
+	}
+
+
 	
+	if (req.body.password) {
+		user.setPassword(req.body.password);
+	}
+	user.status = 0;
+	user.unique_code = uniqueCode;
+	user.active_code = randomString(50);
+
+	return user.save().then(results => {
+		return res.json({ data: results });
+	})
+		.catch(err => {
+			return res.json({ data: err });
+		})
+
+
+
+});
+
+
+//admin
+router.post('/create', auth.required, uploadLocal.single('profile_pic'), function (req, res, next) {
+
+
+	if (!req.body.email) {
+		return res.json({ errors: { msg: "Email is required" } });
+	}
+
+	var user = new User();
+	const uniqueCode = randomString(50);
+	user.email = req.body.email.toLowerCase();
+	user.username = req.body.username.toLowerCase();
+
 	if (req.body.full_name) {
 		user.full_name = req.body.full_name;
 	}
@@ -50,14 +138,12 @@ router.post('/create',auth.required, uploadLocal.single('profile_pic'), function
 	if (req.body.reference) {
 		user.reference = req.body.reference;
 	}
-	// return res.json({ errors: { msg: req.file } });
-	if (req.file.filename) {
 
+	if (req.file.filename) {
 		if (req.file.filename) {
 			user.profile_pic = req.file.filename;
 		}
 	}
-	// return res.json({ errors: { msg: user } });
 
 	if (req.body.state) {
 		user.state = req.body.state;
@@ -70,15 +156,40 @@ router.post('/create',auth.required, uploadLocal.single('profile_pic'), function
 	if (req.body.role) {
 		user.role = req.body.role;
 	}
+	if (req.body.dob) {
+		user.dob = req.body.dob;
+	}
+	if (req.body.gender) {
+		user.gender = req.body.gender;
+	}
+	if (req.body.country) {
+		user.country = req.body.country;
+	}
 
-	
-	if (req.body.password) { 
+
+	if (req.body.state) {
+		user.state = req.body.state;
+	}
+
+	if (req.body.city) {
+		user.city = req.body.city;
+	}
+
+	if (req.body.zipcode) {
+		user.zipcode = req.body.zipcode;
+	}
+
+	if (req.body.address) {
+		user.address = req.body.address;
+	}
+
+	if (req.body.password) {
 		user.setPassword(req.body.password);
 	}
 	user.status = 0;
 	user.unique_code = uniqueCode;
 	user.active_code = randomString(50);
-	 
+
 	return user.save().then(results => {
 		return res.json({ data: results });
 	})
@@ -90,9 +201,9 @@ router.post('/create',auth.required, uploadLocal.single('profile_pic'), function
 
 });
 
-
+// front
 router.post('/login', function (req, res, next) {
-	 
+
 	if (!req.body.email) {
 		return res.json({ errors: { msg: "can't be blank" } });
 	}
@@ -106,6 +217,49 @@ router.post('/login', function (req, res, next) {
 
 		if (user) {
 
+			if (user.status == 1) {
+
+				// if (user.lock_status == 1) {
+				// 	return res.json({ errors: { msg: "User has been locked by Administrator" } });
+				// }
+				user.token = user.generateJWT();
+				async.waterfall([
+					function (callback) {
+						var results = new Array();
+						User.findOne({ _id: user._id })
+							.populate({ path: 'role' })
+							.then(function (users) {
+								results['users'] = users;
+								callback(null, results);
+							});
+					}
+				], function (err, result) {
+					return res.json({ user: result['users'].toAuthJSON() });
+				});
+
+			} else {
+				return res.json({ errors: { msg: "Account has been deactived." } });
+			}
+
+		} else {
+			return res.json({ errors: { msg: "Email or password is incorrect" } });
+		}
+	})(req, res, next);
+});
+
+// admin
+router.post('/admin-login', function (req, res, next) {
+
+	if (!req.body.email) {
+		return res.json({ errors: { msg: "can't be blank" } });
+	}
+
+	if (!req.body.password) {
+		return res.json({ errors: { msg: "can't be blank" } });
+	} 
+	passport.authenticate('local', { session: false }, function (err, user, info) {
+		if (err) { return next(err); } 
+		if (user) { 
 			if (user.status == 1 || user.role.slug == 'admin') {
 
 				// if (user.lock_status == 1) {
@@ -136,7 +290,7 @@ router.post('/login', function (req, res, next) {
 	})(req, res, next);
 });
 
-router.post('/list',auth.required,   uploadLocal.array(), function (req, res, next) {
+router.post('/list', auth.required, uploadLocal.array(), function (req, res, next) {
 	var query = {};
 	var limit = 10;
 	var offset = 0;
@@ -194,7 +348,7 @@ router.post('/list',auth.required,   uploadLocal.array(), function (req, res, ne
 });
 
 router.get('/detail/:id', auth.required, uploadLocal.array(), function (req, res, next) {
- 
+
 	User.findOne({ _id: req.params.id })
 		.populate({ path: 'role' })
 		// .populate({ path: 'state' })
@@ -222,7 +376,7 @@ router.post('/update', auth.required, uploadLocal.single('profile_pic'), functio
 
 	User.findOne({ _id: req.body.id })
 		.then(function (user) {
-			if (user) { 
+			if (user) {
 
 				if (req.body.full_name) {
 					user.full_name = req.body.full_name;
@@ -236,7 +390,7 @@ router.post('/update', auth.required, uploadLocal.single('profile_pic'), functio
 					user.alternate_contact_number = req.body.alternate_contact_number;
 				}
 
-			
+
 				if (req.body.reference) {
 					user.reference = req.body.reference;
 				}
@@ -258,8 +412,8 @@ router.post('/update', auth.required, uploadLocal.single('profile_pic'), functio
 				if (req.body.role) {
 					user.role = req.body.role;
 				}
- 
-			 	user.save().then(results => {
+
+				user.save().then(results => {
 					return res.json({ data: results });
 				})
 					.catch(err => {
@@ -274,17 +428,17 @@ router.post('/update', auth.required, uploadLocal.single('profile_pic'), functio
 
 });
 
-router.delete('/delete/:id', auth.required, function (req, res, next) { 
+router.delete('/delete/:id', auth.required, function (req, res, next) {
 	User.findOne({ _id: req.params.id }).then(function (result) {
 		if (result) {
-			result.status = 2; 
+			result.status = 2;
 			return result.save().then(function () {
 				return res.json({ data: true });
 			});
 
 		} else {
 			return res.json({ errors: { message: " Record not Found!" } });
-		} 
+		}
 
 	});
 
@@ -293,7 +447,7 @@ router.delete('/delete/:id', auth.required, function (req, res, next) {
 // Change password of login user
 router.post('/auth-reset-password', auth.required, function (req, res, next) {
 
-	 
+
 	if (!req.body.password) {
 		return res.json({ errors: { msg: "Password is required" } });
 	}

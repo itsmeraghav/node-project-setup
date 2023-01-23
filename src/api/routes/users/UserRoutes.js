@@ -12,6 +12,12 @@ router.post(
   UserController.updatePassword
 );
 
+router.post(
+  "/create",
+  // verifyToken,
+  UserController.create
+);
+
 router.get("/profile", verifyToken, UserController.profileAccountInfo);
 
 router.post(

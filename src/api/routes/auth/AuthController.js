@@ -35,7 +35,7 @@ class AuthController {
             email: email,
           },
           {
-            mobile_number: email,
+            contact_number: email,
           },
           {
             unique_user_id: email,
@@ -56,6 +56,12 @@ class AuthController {
           {},
           req.__("USER_LOGIN_ERROR"),
           req.__("INCORRECT_EMAIL_PASSWORD")
+
+
+
+
+
+          
         );
       }
 
@@ -119,47 +125,33 @@ class AuthController {
       const token = signToken(user, platform);
       const userJson = user.toJSON();
       [
-        "password",
-        "authTokenIssuedAt",
-        "otp",
-        "emailToken",
-        "__v",
-        "education_qualification",
-        "experience",
-        "documents",
-        "permanent_address",
-        "corresponding_address",
-        "religion",
-        "minority",
-        "body_mark",
-        "disability_status",
-        "OTPVerification",
-        "OTPExpires",
-        "isSuspended",
-        "isDeleted",
-        "signUpType",
-        "isFreezed",
-        "resident_of_rajasthan",
-        "ex_service_man",
-        "in_govt_service",
-        "termsAndConditions",
-        "deviceType",
-        "isNotification",
-        "father_Name",
-        "mother_Name",
-        "marital_status",
-        "pan_Number",
-        "dob",
-        "jan_aadhar",
-        "gender",
-        "aadhar_number",
-        "deviceType",
-        "home_district",
-        "home_state",
-        "nationality",
-        "category",
-        "created",
-        "updated",
+        "full_name",
+      "email",
+      "username",
+      "status",
+      "is_profile_completed",
+      "contact_number",
+      "alternate_contact_number",
+      "qualification",
+      "reference",
+      "profile_pic",
+      "country",
+      "state",
+      "city",
+      "zipcode",
+      "zipcodes",
+      "address",
+      "company",
+      "password",
+      "unique_code",
+      "hash",
+      "salt",
+      "role",
+      "dob",
+      "gender",
+      "fare_amount",
+      "owner_name",
+      "last_seen",
       ].forEach((key) => delete userJson[key]);
       return res.success(
         {
@@ -196,11 +188,11 @@ class AuthController {
   }
 
   async verifyOtp(req, res) {
-    let { otp, otpType, mobile_number, deviceToken } = req.body;
+    let { otp, otpType, contact_number, deviceToken } = req.body;
     const time = utcDateTime().valueOf() - 900000;
 
     const otpObj = await Otp.findOne({
-      mobile_number,
+      contact_number,
       otp,
       otpType,
       otpTokenIssuedAt: { $gt: time },
@@ -210,7 +202,7 @@ class AuthController {
       return res.warn({}, req.__("INVALID_OTP"), req.__("INCORRECT_PASSCODE"));
     //
     await Otp.findOneAndUpdate(
-      { mobile_number, otp },
+      { contact_number, otp },
       { $set: { isVerified: true } }
     );
     if (otpType == "FORGOT") {
@@ -246,14 +238,14 @@ class AuthController {
       }
     } else if (otpType == "SIGNUP") {
       await User.findOneAndUpdate(
-        { mobile_number, isDeleted: false },
+        { contact_number, isDeleted: false },
         { $set: { isVerified: true } }
       );
 
       return res.success({}, "", req.__("OTP_VERIFIED"));
     } else if (otpType == "LOGIN") {
       await User.findOneAndUpdate(
-        { mobile_number, isDeleted: false },
+        { contact_number, isDeleted: false },
         { $set: { isVerified: true } }
       );
     }
@@ -291,8 +283,8 @@ class AuthController {
           user.email,
           {
             name:
-              user.first_Name.charAt(0).toUpperCase() +
-              user.first_Name.slice(1),
+              user.full_Name.charAt(0).toUpperCase() +
+              user.full_Name.slice(1),
             verification_code: otpCode,
           }
         )
@@ -311,10 +303,10 @@ class AuthController {
   }
 
   async SendOtp(req, res, next) {
-    let { mobile_number, otpType } = req.body;
+    let { contact_number, otpType } = req.body;
 
     let user = await User.findOne({
-      mobile_number: mobile_number,
+      contact_number: contact_number,
       isDeleted: false,
     });
     if (!user) {
@@ -333,26 +325,26 @@ class AuthController {
       let otpCode = 1234;
       let otpData = new Otp();
       otpData.otp = otpCode;
-      otpData.mobile_number = mobile_number;
+      otpData.contact_number = contact_number;
       otpData.otpType = otpType;
       otpData.isVerified = false;
       otpData.otpTokenIssuedAt = utcDateTime().valueOf();
       await otpData.save();
-      //send otp to mobile number
+      //send otp to contact number
 
-      let name = user?.first_Name;
+      let name = user?.full_Name;
       let otp = otpCode;
       return res.success({}, req.__("OTP_SEND"), req.__("OTP_SEND"));
       // axios
       //   .get(
-      //     `http://india.jaipurbulksms.com/api/mt/SendSMS?user=quicksilver&password=zapak123&senderid=RJSEEL&channel=Trans&DCS=0&flashsms=0&number=${mobile_number}&text=Dear ${name}, OTP to complete your RAJSEEL Registration is ${otp}. RAJSEEL&route=3&dlttemplateid=1707167084320201171&telemarketerid=1702157752508090199##&peid=1701161484178058400`
+      //     `http://india.jaipurbulksms.com/api/mt/SendSMS?user=quicksilver&password=zapak123&senderid=RJSEEL&channel=Trans&DCS=0&flashsms=0&number=${contact_number}&text=Dear ${name}, OTP to complete your RAJSEEL Registration is ${otp}. RAJSEEL&route=3&dlttemplateid=1707167084320201171&telemarketerid=1702157752508090199##&peid=1701161484178058400`
       //   )
       //   .then((response) => {
       //     //
       //     return res.success(
       //       {},
       //       req.__("OTP_SEND"),
-      //       req.__("VERIFICATION_MOBILE_NUMBER_DONE")
+      //       req.__("VERIFICATION_contact_NUMBER_DONE")
       //     );
       //   });
     } catch (err) {
@@ -507,6 +499,7 @@ class AuthController {
 
   async forgotPassword(req, res, next) {
     let { email } = req.body;
+    
     try {
       let user = await User.findOne({
         email,
@@ -544,8 +537,8 @@ class AuthController {
           email,
           {
             name:
-              user.first_Name.charAt(0).toUpperCase() +
-              user.first_Name.slice(1),
+              user.full_Name.charAt(0).toUpperCase() +
+              user.full_Name.slice(1),
             verification_code: otpCode,
           }
         )
@@ -623,7 +616,7 @@ class AuthController {
     const userSave = await user.save();
     mailer
       .sendMail("password-update", req.__("PASSWORD_UPDATED"), user.email, {
-        name: user.first_Name,
+        name: user.full_Name,
       })
       .catch((error) => {
         logError(`Failed to send password password email to ${user.email}`);
@@ -655,7 +648,7 @@ class AuthController {
     const userSave = await user.save();
     mailer
       .sendMail("password-update", req.__("PASSWORD_UPDATED"), user.email, {
-        name: user.first_Name,
+        name: user.full_Name,
       })
       .catch((error) => {
         logError(`Failed to send password password email to ${user.email}`);
@@ -759,7 +752,7 @@ class AuthController {
       socialType,
       socailId,
       email,
-      first_Name,
+      full_Name,
       deviceToken,
       deviceType,
     } = req.body;
@@ -806,7 +799,7 @@ class AuthController {
       }
       console.log("============------->");
       let user = new User();
-      user.name = first_Name;
+      user.name = full_Name;
       user.email = email || "";
       user.deviceType = deviceType || "ios";
       user.isVerified = true;
@@ -827,7 +820,7 @@ class AuthController {
       if (email) {
         mailer
           .sendMail("welcome-email", req.__("WELCOME_EMAIL"), email, {
-            name: first_Name,
+            name: full_Name,
           })
           .catch((error) => {
             logError(`Failed to send welcome email to ${email}`);

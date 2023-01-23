@@ -1,6 +1,7 @@
 const {
   models: { User, Page, AdminSettings },
 } = require("../../../../lib/models");
+var slug = require('slug')
 const moment = require("moment");
 const mongoose = require("mongoose");
 const mailer = require("../../../../lib/mailer");
@@ -43,6 +44,29 @@ class UserController {
       });
 
     return res.success({}, "", req.__("PASSWORD_UPDATED"));
+  }
+
+
+  async create(req, res, next) {
+    let {
+      full_name
+    } = req.body;
+    try {
+      var newRecord = new User(req.body);
+      return newRecord.save().then(results => {
+        return res.success(
+          results,
+          req.__(" USER_CREATE_SUCCESSFULLY")
+        );
+      })
+        .catch(err => {
+          return res.json({ data: err });
+        })
+    } catch (err) {
+
+      return next(err);
+    }
+
   }
 
   async profileAccountInfo(req, res) {
@@ -93,7 +117,7 @@ class UserController {
   }
 
 
-  
+
   async list(req, res, next) {
     /** Filteration value */
     let limit = req.body.length
@@ -131,7 +155,7 @@ class UserController {
     }
     asyncParallel(
       {
-        data: function(callback) {
+        data: function (callback) {
           User.find(
             conditions,
             {
@@ -164,20 +188,20 @@ class UserController {
               callback(err, result);
             });
         },
-        records_filtered: function(callback) {
+        records_filtered: function (callback) {
           User.countDocuments(conditions, (err, result) => {
             /* send success response */
             callback(err, result);
           });
         },
-        records_total: function(callback) {
+        records_total: function (callback) {
           User.countDocuments({ isDeleted: false }, (err, result) => {
             /* send success response */
             callback(err, result);
           });
         },
       },
-      function(err, results) {
+      function (err, results) {
         if (err) return res.json({ data: err });
 
         let data = {
@@ -259,39 +283,33 @@ class UserController {
         },
         {
           _id: 1,
-          first_Name: 1,
-          middle_Name: 1,
-          last_Name: 1,
-          father_Name: 1,
-          mother_Name: 1,
-          marital_status: 1,
-          category: 1,
-          resident_of_rajasthan: 1,
-          religion: 1,
-          body_mark: 1,
-          minority: 1,
-          dob: 1,
+          full_name: 1,
           email: 1,
+          username: 1,
+          status: 1,
+          is_profile_completed: 1,
+          contact_number: 1,
+          alternate_contact_number: 1,
+          qualification: 1,
+          reference: 1,
+          profile_pic: 1,
+          country: 1,
+          state: 1,
+          city: 1,
+          zipcode: 1,
+          zipcodes: 1,
+          address: 1,
+          company: 1,
+          password: 1,
+          unique_code: 1,
+          hash: 1,
+          salt: 1,
           role: 1,
-          gender: 1,
-          isActive: 1,
-          mobile_number: 1,
-          step_completed: 1,
-          isVerified: 1,
-          permanent_address: 1,
-          corresponding_address: 1,
-          documents: 1,
-          experience: 1,
-          education_qualification: 1,
-          resident_of_rajasthan: 1,
-          home_district: 1,
-          home_state: 1,
-          nationality: 1,
-          photo: 1,
-          unique_user_id: 1,
           dob: 1,
-          hard_skills: 1,
-          soft_skills: 1,
+          gender: 1,
+          fare_amount: 1,
+          owner_name: 1,
+          last_seen: 1,
         }
       );
       if (data == null) return res.notFound({}, req.__("USER_NOT_EXIST"));
@@ -318,15 +336,11 @@ class UserController {
         },
         {
           _id: 1,
-          first_Name: 1,
-          last_Name: 1,
-          father_Name: 1,
-          mother_Name: 1,
+          full_name: 1,
           email: 1,
-          mobile_number: 1,
-          permanent_address: 1,
-          photo: 1,
-          unique_user_id: 1,
+          contact_numbe: 1,
+          address: 1,
+          username: 1,
           dob: 1,
         }
       );
@@ -405,7 +419,7 @@ class UserController {
     var conditions = { isDeleted: false, isActive: 0 };
     asyncParallel(
       {
-        data: function(callback) {
+        data: function (callback) {
           User.find(
             conditions,
             {
@@ -422,7 +436,7 @@ class UserController {
           );
         },
       },
-      function(err, results) {
+      function (err, results) {
         if (err) return res.json({ data: err });
 
         let data = {
@@ -939,7 +953,7 @@ class UserController {
     console.log("conditions", conditions);
     asyncParallel(
       {
-        data: function(callback) {
+        data: function (callback) {
           User.find(
             conditions,
             {
@@ -958,7 +972,7 @@ class UserController {
           );
         },
       },
-      function(err, results) {
+      function (err, results) {
         if (err) return res.json({ data: err });
 
         let data = {

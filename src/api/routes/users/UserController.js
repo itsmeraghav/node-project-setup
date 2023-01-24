@@ -116,8 +116,6 @@ class UserController {
     }
   }
 
-
-
   async list(req, res, next) {
     /** Filteration value */
     let limit = req.body.length

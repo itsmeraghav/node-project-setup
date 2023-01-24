@@ -16,7 +16,8 @@ router.post(
   AuthController.logIn
 );
 
-router.post("/signup", validate(validations.signup), AuthController.signup);
+router.post("/signup", 
+validate(validations.signup), AuthController.signup);
 
 router.get("/logout", verifyToken, AuthController.logOut);
 

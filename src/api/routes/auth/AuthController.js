@@ -141,7 +141,7 @@ class AuthController {
       "zipcode",
       "zipcodes",
       "address",
-      "company",
+      "company-name",
       "password",
       "unique_code",
       "hash",
@@ -376,7 +376,7 @@ class AuthController {
       zipcode,
       zipcodes,
       address,
-      company,
+      company_name,
       password,
       unique_code,
       hash,
@@ -386,7 +386,8 @@ class AuthController {
       gender,
       fare_amount,
       owner_name,
-      last_seen
+      last_seen,
+      confirm_password
     } = req.body;
     try {
       let x = await User.findOne({ email, isDeleted: false });
@@ -419,7 +420,7 @@ class AuthController {
         );
       }
 
-      if (password !== confirmPassword) {
+      if (password !== confirm_password) {
         return res.warn(
           {},
           req.__("CONFIRM_PASSWORD_IS_NOT_SAME"),
@@ -445,7 +446,7 @@ class AuthController {
       user.zipcode= zipcode;
       user.zipcodes = zipcodes;
       user. address = address;
-      user. company = company;
+      user. company_name = company_name;
       user.password = password;
       user.unique_code = unique_code;
       user.hash = hash;
@@ -456,6 +457,7 @@ class AuthController {
       user.fare_amount = fare_amount;
       user.owner_name = owner_name;
       user.last_seen = last_seen;
+      user.confirm_password=confirm_password;
       
       user.isVerified = false;
       user.unique_user_id = randomuniqe(10);

@@ -422,8 +422,7 @@ class UserController {
             conditions,
             {
               _id: 1,
-              first_Name: 1,
-              last_Name: 1,
+              full_name: 1,
               email: 1,
               slug: 1,
             },

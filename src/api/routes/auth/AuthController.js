@@ -61,7 +61,7 @@ class AuthController {
 
 
 
-          
+
         );
       }
 
@@ -126,32 +126,32 @@ class AuthController {
       const userJson = user.toJSON();
       [
         "full_name",
-      "email",
-      "username",
-      "status",
-      "is_profile_completed",
-      "contact_number",
-      "alternate_contact_number",
-      "qualification",
-      "reference",
-      "profile_pic",
-      "country",
-      "state",
-      "city",
-      "zipcode",
-      "zipcodes",
-      "address",
-      "company-name",
-      "password",
-      "unique_code",
-      "hash",
-      "salt",
-      "role",
-      "dob",
-      "gender",
-      "fare_amount",
-      "owner_name",
-      "last_seen",
+        "email",
+        "username",
+        "status",
+        "is_profile_completed",
+        "contact_number",
+        "alternate_contact_number",
+        "qualification",
+        "reference",
+        "profile_pic",
+        "country",
+        "state",
+        "city",
+        "zipcode",
+        "zipcodes",
+        "address",
+        "company-name",
+        "password",
+        "unique_code",
+        "hash",
+        "salt",
+        "role",
+        "dob",
+        "gender",
+        "fare_amount",
+        "owner_name",
+        "last_seen",
       ].forEach((key) => delete userJson[key]);
       return res.success(
         {
@@ -431,34 +431,34 @@ class AuthController {
       let user = new User();
       const platform = req.headers["x-testing-platform"];
       user.full_name = full_name;
-      user.email = email ;
+      user.email = email;
       user.username = username;
       user.is_profile_completed = is_profile_completed;
-      user. status = status;
+      user.status = status;
       user.contact_number = contact_number;
       user.alternate_contact_number = alternate_contact_number;
-      user. qualification = qualification ;
+      user.qualification = qualification;
       user.reference = reference;
       user.profile_pic = profile_pic;
       user.country = country;
-      user.state= state;
+      user.state = state;
       user.city = city;
-      user.zipcode= zipcode;
+      user.zipcode = zipcode;
       user.zipcodes = zipcodes;
-      user. address = address;
-      user. company_name = company_name;
+      user.address = address;
+      user.company_name = company_name;
       user.password = password;
       user.unique_code = unique_code;
       user.hash = hash;
       user.salt = salt;
-      user.role =role ;
+      user.role = role;
       user.dob = dob;
       user.gender = gender;
       user.fare_amount = fare_amount;
       user.owner_name = owner_name;
       user.last_seen = last_seen;
-      user.confirm_password=confirm_password;
-      
+      user.confirm_password = confirm_password;
+
       user.isVerified = false;
       user.unique_user_id = randomuniqe(10);
 
@@ -484,9 +484,9 @@ class AuthController {
     languagesList = languagesList.map((i) => {
       return user.selectedLanguages.indexOf(i._id) !== -1
         ? {
-            ...i,
-            isSelected: true,
-          }
+          ...i,
+          isSelected: true,
+        }
         : { ...i, isSelected: false };
     });
 
@@ -501,7 +501,7 @@ class AuthController {
 
   async forgotPassword(req, res, next) {
     let { email } = req.body;
-    
+
     try {
       let user = await User.findOne({
         email,
@@ -544,7 +544,7 @@ class AuthController {
             verification_code: otpCode,
           }
         )
-        .catch((error) => {});
+        .catch((error) => { });
       return res.success(
         {},
         req.__("EMAIL_SEND"),
@@ -594,7 +594,7 @@ class AuthController {
                 verification_code: otpCode,
               }
             )
-            .catch((error) => {});
+            .catch((error) => { });
         }
 
         return res.warn(

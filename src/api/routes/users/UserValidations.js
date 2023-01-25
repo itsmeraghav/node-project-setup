@@ -45,17 +45,17 @@ const addTopic = Joi.object().keys({
 });
 
 // const updateProfile = Joi.object().keys({
-//   photo: Joi.string().required(),
-//   first_Name: Joi.string().required(),
-//   middle_Name: Joi.optional(),
-//   last_Name: Joi.string().required(),
-//   father_Name: Joi.string().required(),
-//   mother_Name: Joi.string().required(),
-//   minority: Joi.boolean().required(),
-//   religion: Joi.string().required(),
-//   disability_status: Joi.string().required(),
-//   body_mark: Joi.string().required(),
-//   marital_status: Joi.string().required(),
+//   username: Joi.string().optional(),
+//   email: Joi.string().optional(),
+//   dob: Joi.optional(),
+//   gender: Joi.string().optional(),
+//   contact_number: Joi.string().optional(),
+//   address: Joi.string().optional),
+//   country: Joi.boolean().optional(),
+//   state: Joi.string().optional(),
+//   zipcode: Joi.string().optional(),
+//   city: Joi.string().optional(),
+//   marital_status: Joi.string().optional(),
 // });
 
 const updateaddress = Joi.object().keys({

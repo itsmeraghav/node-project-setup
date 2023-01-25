@@ -510,47 +510,49 @@ class UserController {
         );
       }
       let updateData = {};
-      updateData.first_Name = req.body.first_Name
-        ? req.body.first_Name
-        : user.first_Name;
+      updateData.username = req.body.username
+        ? req.body.username
+        : user.username
 
-      updateData.middle_Name = req.body.middle_Name
-        ? req.body.middle_Name
-        : user.middle_Name;
+      updateData.email = req.body.email
+        ? req.body.email
+        : user.email;
 
-      updateData.last_Name = req.body.last_Name
-        ? req.body.last_Name
-        : user.last_Name;
+      updateData.dob = req.body.dob
+        ? req.body.dob
+        : user.dob;
 
-      updateData.photo = req.body.photo ? req.body.photo : user.photo;
+      updateData.gender = req.body.gender
+      ? req.body.gender 
+      : user.gender;
 
-      updateData.father_Name = req.body.father_Name
-        ? req.body.father_Name
-        : user.father_Name;
+      updateData.contact_number = req.body.contact_number
+        ? req.body.contact_number
+        : user.contact_number;
 
-      updateData.mother_Name = req.body.mother_Name
-        ? req.body.mother_Name
-        : user.mother_Name;
+      updateData.address = req.body.address
+        ? req.body.address
+        : user.address;
 
-      updateData.marital_status = req.body.marital_status
-        ? req.body.marital_status
-        : user.marital_status;
+      updateData.country = req.body.country
+        ? req.body.country
+        : user.country;
 
-      updateData.religion = req.body.religion
-        ? req.body.religion
-        : user.religion;
+      updateData.state = req.body.state
+        ? req.body.state
+        : user.state;
 
-      updateData.minority = req.body.minority
-        ? req.body.minority
-        : user.minority;
+      updateData.city = req.body.city
+        ? req.body.city
+        : user.city;
 
-      updateData.disability_status = req.body.disability_status
-        ? req.body.disability_status
-        : user.disability_status;
+      updateData.zipcode = req.body.zipcode
+        ? req.body.zipcode
+        : user.zipcode;
 
-      updateData.body_mark = req.body.body_mark
-        ? req.body.body_mark
-        : user.body_mark;
+      // updateData.body_mark = req.body.body_mark
+      //   ? req.body.body_mark
+      //   : user.body_mark;
 
       await User.findOneAndUpdate({ _id: id, isDeleted: false }, updateData);
 

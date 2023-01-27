@@ -1,52 +1,51 @@
 const express = require("express");
 const router = express.Router();
-const MasterTableController = require("./MasterTableController");
+const AddDishController = require("./AddDishController");
 const { validate } = require("../../util/validations");
-const validations = require("./MasterTableValidations");
+const validations = require("./AddDishValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
-  validate(validations.createtype),
-  MasterTableController.create
+  //validate(validations.createdish),
+  AddDishController.create
 );
 
 router.post(
   "/list",
   // verifyToken,
-  MasterTableController.list
+  AddDishController.list
 );
 
 router.get(
   "/dropdown",
   // verifyToken,
-  MasterTableController.dropdown
+  AddDishController.dropdown
 );
 
 router.get(
-  "/:_id",  
+  "/detail/:_id",
   // verifyToken,
-  MasterTableController.detail
+  AddDishController.detail
 );
 
 router.delete(
-  "/:_id",
+  "/delete/:_id",
   // verifyToken,
-  MasterTableController.delete
+  AddDishController.delete
 );
 
 router.post(
   "/update-status/:_id",
   // verifyToken,
-  MasterTableController.UpdateStatus
+  AddDishController.UpdateStatus
 );
 
 router.put(
   "/update/:_id",
-  validate(validations.updateProfile),
   // verifyToken,
-  MasterTableController.update
+  AddDishController.update
 );
 
 module.exports = router;

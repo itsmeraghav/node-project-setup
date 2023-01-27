@@ -1,5 +1,5 @@
 const {
-    models: { User, MasterTable },
+    models: { User, MyStore },
   } = require("../../../../lib/models");
   var slug = require("slug");
   const asyncParallel = require("async/parallel");
@@ -9,10 +9,10 @@ const {
   
   class UserController {
     async create(req, res, next) {
-      let { title} = req.body;
+      let { search_product } = req.body;
       try {
-        var newRecord = new MasterTable(req.body);
-        newRecord.slug = slug(title, {
+        var newRecord = new MyStore(req.body);
+        newRecord.slug = slug(search_product, {
           replacement: "-",
           lower: true,
           charmap: slug.charmap,
@@ -20,7 +20,7 @@ const {
         return newRecord
           .save()
           .then((results) => {
-            return res.success(results, req.__("MasterTable_CREATE_SUCCESSFULLY"));
+            return res.success(results, req.__("MyStore_CREATE_SUCCESSFULLY"));
           })
           .catch((err) => {
             return res.json({ data: err });
@@ -39,17 +39,23 @@ const {
         ? parseInt(req.body.start)
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
-      var conditions = { is_deleted: 0 };
+      var conditions = { is_deleted: false };
       asyncParallel(
         {
           data: function(callback) {
-            MasterTable.find(
+            MyStore.find(
               conditions,
               {
                 _id: 1,
-                title: 1,
-                status: 1,
+                search_product: 1,
+                // description: 1,
+                // ingredients: 1,
+                // tags: 1,
+                // preparation_time: 1,
+                // cost: 1,
+                // dish_photo: 1,
                 is_edit: 1,
+                status: 1,
                 slug: 1,
                 createdAt: 1,
                 updatedAt: 1,
@@ -61,13 +67,13 @@ const {
             );
           },
           records_filtered: function(callback) {
-            MasterTable.countDocuments(conditions, (err, result) => {
+            MyStore.countDocuments(conditions, (err, result) => {
               /* send success response */
               callback(err, result);
             });
           },
           records_total: function(callback) {
-            MasterTable.countDocuments({ is_deleted: 0 }, (err, result) => {
+            MyStore.countDocuments({ is_deleted: 0 }, (err, result) => {
               /* send success response */
               callback(err, result);
             });
@@ -83,85 +89,92 @@ const {
             recordsTotal:
               results && results.records_total ? results.records_total : 0,
           };
-          return res.success(data, req.__("MasterTable_LIST_GENREATED"));
+          return res.success(data, req.__("MyStore_LIST_GENREATED"));
         }
       );
     }
   
+
+
     async detail(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MasterTable_NOT_EXIST")
+          req.__("MyStore_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MasterTable.findOne(
+        let data = await MyStore.findOne(
           {
             _id: req.params._id,
           },
           {
-            _id: 0,
-            title: 1,
-            status: 1,
-            type:1,
-            is_edit: 1,
-            updatedAt: 1,
-            createdAt:1,
-            // modified_at: 1,
+            // _id: 0,
+            // dish_title:1,
+            // description: 1,
+            // ingredients:1,
+            // tags:1,
+            // preparation_time:1,
+            // dish_photo:1,
+            // cost:1,
+            // status: 1,
+            // is_edit: 1,
+            // slug: 1,
+            // createdAt: 1,
+            
           }
         );
-        if (data == null) return res.notFound({}, req.__("MasterTable_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
   
-        return res.success(data, req.__("MasterTable_DETAIL_SUCCESSFULLY"));
+        return res.success(data, req.__("MyStore_DETAIL_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
     }
   
-    async delete(req, res, next) {
-      if (!req.params._id) {
-        return res.notFound(
-          {},
-          req.__("INVALID_REQUEST"),
-          req.__("MasterTable_NOT_EXIST")
-        );
-      }
+    // async delete(req, res, next) {
+    //   if (!req.params._id) {
+    //     return res.notFound(
+    //       {},
+    //       req.__("INVALID_REQUEST"),
+    //       req.__("MyStore_NOT_EXIST")
+    //     );
+    //   }
   
-      try {
-        let data = await MasterTable.updateOne(
-          {
-            _id: req.params._id,
-          },
-          { is_deleted: 1 }
-        );
+    //   try {
+    //     let data = await MyStore.updateOne(
+    //       {
+    //         _id: req.params._id,
+    //       },
+    //       {is_deleted: true }
+    //     );
   
-        if (data == null) return res.notFound({}, req.__("MasterTable_NOT_EXIST"));
+    //     if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
   
-        return res.success(data, req.__("MasterTable_DELETE_SUCCESSFULLY"));
-      } catch (err) {
-        return res.json({ data: err });
-      }
-    }
+    //     return res.success(data, req.__("MyStore_DELETE_SUCCESSFULLY"));
+    //   } catch (err) {
+    //     return res.json({ data: err });
+    //   }
+    // }
   
     async UpdateStatus(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MasterTable_NOT_EXIST")
+          req.__("MyStore_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MasterTable.findOne({
+        let data = await MyStore.findOne({
           _id: req.params._id,
         });
-        if (data == null) return res.notFound({}, req.__("MasterTable_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
   
-        let updatedData = await MasterTable.updateOne(
+        let updatedData = await MyStore.updateOne(
           {
             _id: req.params._id,
           },
@@ -172,7 +185,7 @@ const {
           }
         );
   
-        return res.success(data, req.__("MasterTable_STATUS_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("MyStore_STATUS_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         console.log("asdas", err);
         return res.json({ data: err });
@@ -184,15 +197,15 @@ const {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MasterTable_NOT_EXIST")
+          req.__("MyStore_NOT_EXIST")
         );
       }
       let data = req.body;
       let { user } = req;
       try {
-        user = await MasterTable.findOne({
+        user = await MyStore.findOne({
           _id: req.params._id,
-          is_deleted: 0,
+          // is_deleted: 0,
         });
   
         if (!user) {
@@ -211,11 +224,11 @@ const {
           );
         }
   
-        if (data == null) return res.notFound({}, req.__("MasterTable_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
   
-        await MasterTable.findOneAndUpdate({ _id: req.params._id }, { ...data });
+        await MyStore.findOneAndUpdate({ _id: req.params._id }, { ...data });
   
-        return res.success(data, req.__("MasterTable_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("MyStore_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -228,17 +241,21 @@ const {
       asyncParallel(
         {
           data: function(callback) {
-            MasterTable.find(
+            MyStore.find(
               conditions,
-              {
-                _id: 1,
-                title: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
+               {
+            //     _id: 0,
+            // dish_title:1,
+            // description: 1,
+            // ingredients:1,
+            // tags:1,
+            // preparation_time:1,
+            // dish_photo:1,
+            // cost:1,
+            // status: 1,
+            // is_edit: 1,
+            // slug: 1,
+            // createdAt: 1,
               },
               { sort: { created_at: "desc" } },
               (err, result) => {
@@ -249,26 +266,26 @@ const {
         },
         function(err, results) {
           if (err) return res.json({ data: err });
-  
+    
           let data = {
             records: results && results.data ? results.data : [],
           };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
+          return res.success(data, req.__("MyStore_LIST_DONE"));
         }
       );
     }
   
-  //   async getAdminSetting(req, res) {
-  //     let adminSetting = await MasterTable.findOne();
-  //     const userJson = {};
-  //     if (adminSetting) {
-  //       userJson.distanceRadius = adminSetting.distanceRadius;
-  //       userJson.maximum = adminSetting.maximum;
-  //       userJson.minimum = adminSetting.minimum;
-  //     }
-  //     return res.success(userJson, req.__("SETTING_INFORMATION"));
-  //   }
-   }
+    // async getAdminSetting(req, res) {
+    //   let adminSetting = await MyStore.findOne();
+    //   const userJson = {};
+    //   if (adminSetting) {
+    //     userJson.distanceRadius = adminSetting.distanceRadius;
+    //     userJson.maximum = adminSetting.maximum;
+    //     userJson.minimum = adminSetting.minimum;
+    //   }
+    //   return res.success(userJson, req.__("SETTING_INFORMATION"));
+    // }
+ }
   
   module.exports = new UserController();
   

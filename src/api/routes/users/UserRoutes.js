@@ -109,7 +109,7 @@ router.post(
 
 router.post(
   "/update-destination",
-  verifyToken,
+  //verifyToken,
   validate(validations.updateDestination),
   UserController.updateDestination
 );

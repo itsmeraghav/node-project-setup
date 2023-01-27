@@ -1,52 +1,51 @@
 const express = require("express");
 const router = express.Router();
-const MasterTableController = require("./MasterTableController");
+const MyStoreController = require("./MyStoreController");
 const { validate } = require("../../util/validations");
-const validations = require("./MasterTableValidations");
+const validations = require("./MyStoreValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
-  validate(validations.createtype),
-  MasterTableController.create
+  validate(validations.createdish),
+  MyStoreController.create
 );
 
 router.post(
   "/list",
   // verifyToken,
-  MasterTableController.list
+  MyStoreController.list
 );
 
 router.get(
   "/dropdown",
   // verifyToken,
-  MasterTableController.dropdown
+  MyStoreController.dropdown
 );
 
 router.get(
-  "/:_id",  
+  "/detail/:_id",
   // verifyToken,
-  MasterTableController.detail
+  MyStoreController.detail
 );
 
-router.delete(
-  "/:_id",
-  // verifyToken,
-  MasterTableController.delete
-);
+// router.delete(
+//   "/delete/:_id",
+//   // verifyToken,
+//   MyStoreController.delete
+// );
 
 router.post(
   "/update-status/:_id",
   // verifyToken,
-  MasterTableController.UpdateStatus
+  MyStoreController.UpdateStatus
 );
 
 router.put(
   "/update/:_id",
-  validate(validations.updateProfile),
   // verifyToken,
-  MasterTableController.update
+  MyStoreController.update
 );
 
 module.exports = router;

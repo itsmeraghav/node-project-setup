@@ -10,7 +10,7 @@ const requireId = Joi.object().keys({
 const createtype = Joi.object().keys({
     //newPassword: common.password,
     search_product: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-           .required(),
+    .required(),
         description: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
         // .alphanum()
         .required()

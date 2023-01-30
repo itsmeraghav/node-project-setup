@@ -1,5 +1,5 @@
 const {
-    models: { User, MyStore },
+    models: { User, OtherServices },
   } = require("../../../../lib/models");
   var slug = require("slug");
   const asyncParallel = require("async/parallel");
@@ -9,10 +9,10 @@ const {
   
   class UserController {
     async create(req, res, next) {
-      let { search_product } = req.body;
+      let { service_name } = req.body;
       try {
-        var newRecord = new MyStore(req.body);
-        newRecord.slug = slug(search_product, {
+        var newRecord = new OtherServices(req.body);
+        newRecord.slug = slug(service_name, {
           replacement: "-",
           lower: true,
           charmap: slug.charmap,
@@ -20,7 +20,7 @@ const {
         return newRecord
           .save()
           .then((results) => {
-            return res.success(results, req.__("MyStore_CREATE_SUCCESSFULLY"));
+            return res.success(results, req.__("OtherServices_CREATE_SUCCESSFULLY"));
           })
           .catch((err) => {
             return res.json({ data: err });
@@ -39,15 +39,15 @@ const {
         ? parseInt(req.body.start)
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
-      var conditions = { is_deleted: false };
+      var conditions = { is_deleted: 0 };
       asyncParallel(
         {
           data: function(callback) {
-            MyStore.find(
+            OtherServices.find(
               conditions,
               {
                 _id: 1,
-                search_product: 1,
+                service_name: 1,
                 // description: 1,
                 // ingredients: 1,
                 // tags: 1,
@@ -67,13 +67,13 @@ const {
             );
           },
           records_filtered: function(callback) {
-            MyStore.countDocuments(conditions, (err, result) => {
+            OtherServices.countDocuments(conditions, (err, result) => {
               /* send success response */
               callback(err, result);
             });
           },
           records_total: function(callback) {
-            MyStore.countDocuments({ is_deleted: 0 }, (err, result) => {
+            OtherServices.countDocuments({ is_deleted: 0 }, (err, result) => {
               /* send success response */
               callback(err, result);
             });
@@ -89,7 +89,7 @@ const {
             recordsTotal:
               results && results.records_total ? results.records_total : 0,
           };
-          return res.success(data, req.__("MyStore_LIST_GENREATED"));
+          return res.success(data, req.__("OtherServices_LIST_GENREATED"));
         }
       );
     }
@@ -101,12 +101,12 @@ const {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MyStore_NOT_EXIST")
+          req.__("OtherServices_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MyStore.findOne(
+        let data = await OtherServices.findOne(
           {
             _id: req.params._id,
           },
@@ -126,84 +126,84 @@ const {
             
           }
         );
-        if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("OtherServices_NOT_EXIST"));
   
-        return res.success(data, req.__("MyStore_DETAIL_SUCCESSFULLY"));
+        return res.success(data, req.__("OtherServices_DETAIL_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
     }
   
-    // async delete(req, res, next) {
-    //   if (!req.params._id) {
-    //     return res.notFound(
-    //       {},
-    //       req.__("INVALID_REQUEST"),
-    //       req.__("MyStore_NOT_EXIST")
-    //     );
-    //   }
-  
-    //   try {
-    //     let data = await MyStore.updateOne(
-    //       {
-    //         _id: req.params._id,
-    //       },
-    //       {is_deleted: true }
-    //     );
-  
-    //     if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
-  
-    //     return res.success(data, req.__("MyStore_DELETE_SUCCESSFULLY"));
-    //   } catch (err) {
-    //     return res.json({ data: err });
-    //   }
-    // }
-  
-    async UpdateStatus(req, res, next) {
+    async delete(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MyStore_NOT_EXIST")
+          req.__("OtherServices_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MyStore.findOne({
-          _id: req.params._id,
-        });
-        if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
-  
-        let updatedData = await MyStore.updateOne(
+        let data = await OtherServices.updateOne(
           {
             _id: req.params._id,
           },
-          {
-            $set: {
-              status: data.status == 1 ? 0 : 1,
-            },
-          }
+          {is_deleted: true }
         );
   
-        return res.success(data, req.__("MyStore_STATUS_UPDATE_SUCCESSFULLY"));
+        if (data == null) return res.notFound({}, req.__("OtherServices_NOT_EXIST"));
+  
+        return res.success(data, req.__("OtherServices_DELETE_SUCCESSFULLY"));
       } catch (err) {
-        console.log("asdas", err);
         return res.json({ data: err });
       }
     }
+  
+    // async UpdateStatus(req, res, next) {
+    //   if (!req.params._id) {
+    //     return res.notFound(
+    //       {},
+    //       req.__("INVALID_REQUEST"),
+    //       req.__("OtherServices_NOT_EXIST")
+    //     );
+    //   }
+  
+    //   try {
+    //     let data = await OtherServices.findOne({
+    //       _id: req.params._id,
+    //     });
+    //     if (data == null) return res.notFound({}, req.__("OtherServices_NOT_EXIST"));
+  
+    //     let updatedData = await OtherServices.updateOne(
+    //       {
+    //         _id: req.params._id,
+    //       },
+    //       {
+    //         $set: {
+    //           status: data.status == 1 ? 0 : 1,
+    //         },
+    //       }
+    //     );
+  
+    //     return res.success(data, req.__("OtherServices_STATUS_UPDATE_SUCCESSFULLY"));
+    //   } catch (err) {
+    //     console.log("asdas", err);
+    //     return res.json({ data: err });
+    //   }
+    // }
   
     async update(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MyStore_NOT_EXIST")
+          req.__("OtherServices_NOT_EXIST")
         );
       }
       let data = req.body;
       let { user } = req;
       try {
-        user = await MyStore.findOne({
+        user = await OtherServices.findOne({
           _id: req.params._id,
           // is_deleted: 0,
         });
@@ -224,67 +224,67 @@ const {
           );
         }
   
-        if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("OtherServices_NOT_EXIST"));
   
-        await MyStore.findOneAndUpdate({ _id: req.params._id }, { ...data });
+        await OtherServices.findOneAndUpdate({ _id: req.params._id }, { ...data });
   
-        return res.success(data, req.__("MyStore_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("OtherServices_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
     }
   
-    async dropdown(req, res, next) {
-      /** Filteration value */
+    // async dropdown(req, res, next) {
+    //   /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1 };
-      asyncParallel(
-        {
-          data: function(callback) {
-            MyStore.find(
-              conditions,
-               {
-            //     _id: 0,
-            // dish_title:1,
-            // description: 1,
-            // ingredients:1,
-            // tags:1,
-            // preparation_time:1,
-            // dish_photo:1,
-            // cost:1,
-            // status: 1,
-            // is_edit: 1,
-            // slug: 1,
-            // createdAt: 1,
-              },
-              { sort: { created_at: "desc" } },
-              (err, result) => {
-                callback(err, result);
-              }
-            );
-          },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
+    //   var conditions = { is_deleted: 0, status: 1 };
+    //   asyncParallel(
+    //     {
+    //       data: function(callback) {
+    //         OtherServices.find(
+    //           conditions,
+    //            {
+    //         //     _id: 0,
+    //         // dish_title:1,
+    //         // description: 1,
+    //         // ingredients:1,
+    //         // tags:1,
+    //         // preparation_time:1,
+    //         // dish_photo:1,
+    //         // cost:1,
+    //         // status: 1,
+    //         // is_edit: 1,
+    //         // slug: 1,
+    //         // createdAt: 1,
+    //           },
+    //           { sort: { created_at: "desc" } },
+    //           (err, result) => {
+    //             callback(err, result);
+    //           }
+    //         );
+    //       },
+    //     },
+    //     function(err, results) {
+    //       if (err) return res.json({ data: err });
     
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MyStore_LIST_DONE"));
-        }
-      );
-    }
-  
-    // async getAdminSetting(req, res) {
-    //   let adminSetting = await MyStore.findOne();
-    //   const userJson = {};
-    //   if (adminSetting) {
-    //     userJson.distanceRadius = adminSetting.distanceRadius;
-    //     userJson.maximum = adminSetting.maximum;
-    //     userJson.minimum = adminSetting.minimum;
-    //   }
-    //   return res.success(userJson, req.__("SETTING_INFORMATION"));
+    //       let data = {
+    //         records: results && results.data ? results.data : [],
+    //       };
+    //       return res.success(data, req.__("OtherServices_LIST_DONE"));
+    //     }
+    //   );
     // }
+  
+    // // async getAdminSetting(req, res) {
+    // //   let adminSetting = await OtherServices.findOne();
+    // //   const userJson = {};
+    // //   if (adminSetting) {
+    // //     userJson.distanceRadius = adminSetting.distanceRadius;
+    // //     userJson.maximum = adminSetting.maximum;
+    // //     userJson.minimum = adminSetting.minimum;
+    // //   }
+    // //   return res.success(userJson, req.__("SETTING_INFORMATION"));
+    // // }
  }
   
   module.exports = new UserController();

@@ -45,6 +45,7 @@ router.post(
 router.put(
   "/update/:_id",
   // verifyToken,
+  validate(validations.updateProfile),
   MyStoreController.update
 );
 

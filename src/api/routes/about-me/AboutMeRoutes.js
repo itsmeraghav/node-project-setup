@@ -1,52 +1,52 @@
 const express = require("express");
 const router = express.Router();
-const AddDishController = require("./AddDishController");
+const AboutMeController = require("./AboutMeController");
 const { validate } = require("../../util/validations");
-const validations = require("./AddDishValidations");
+const validations = require("./AboutMeValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
-  validate(validations.createdish),
-  AddDishController.create
+  validate(validations.createAboutMe),
+  AboutMeController.create
 );
 
 router.post(
   "/list",
   // verifyToken,
-  AddDishController.list
+  AboutMeController.list
 );
 
 router.get(
   "/dropdown",
   // verifyToken,
-  AddDishController.dropdown
+  AboutMeController.dropdown
 );
 
 router.get(
-  "/detail/:_id",
+  "/detail/:_id",  
   // verifyToken,
-  AddDishController.detail
+  AboutMeController.detail
 );
 
 router.delete(
   "/delete/:_id",
   // verifyToken,
-  AddDishController.delete
+  AboutMeController.delete
 );
 
 router.post(
   "/update-status/:_id",
   // verifyToken,
-  AddDishController.UpdateStatus
+  AboutMeController.UpdateStatus
 );
 
 router.put(
   "/update/:_id",
+  validate(validations.updateAboutMe),
   // verifyToken,
-  validate(validations.updateProfile),
-  AddDishController.update
+  AboutMeController.update
 );
 
 module.exports = router;

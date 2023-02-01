@@ -14,33 +14,16 @@ const create = Joi.object().keys({
 //         .optional().allow('')
 // });
 
-// const updatePassword = Joi.object().keys({
-//     currentPassword: Joi.string().required(),
-//     //newPassword: common.password,
-//     newPassword: Joi.string()
-//         .min(8)
-//         .max(20)
-//         .required(),
-//     confirmPassword: Joi.string()
-//         .required()
-//         .valid(Joi.ref('newPassword'))
-//         .error(([error]) => {
-//             const { locale } = error.options;
-//             const language = languages[locale];
-//             return {
-//                 message: language.validation.custom.sameAs(error.context.key, 'newPassword'),
-//             };
-//         }),
-// });
 
 
 
-    //  const updateMyPhotos = Joi.object().keys({
-    //    name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    // .required(),
+
+     const updateCountry = Joi.object().keys({
+       name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+    .required(),
 
 
-    //  });
+     });
 
 
 // con
@@ -76,7 +59,7 @@ const create = Joi.object().keys({
 module.exports = {
     // requireId,
        create,
-    // updateMyPhotos,
+     updateCountry,
     // updateDestination,
     // getNearByList,
     // profileComplete

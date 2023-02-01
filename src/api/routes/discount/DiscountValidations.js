@@ -2,9 +2,8 @@ const { Joi, common } = require('../../util/validations');
 const { languages } = require('../../../../lib/i18n');
 
 const create = Joi.object().keys({
-    name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+    search_dish: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
     .required(),
-    country: Joi.string().required(),
     });
 
 
@@ -18,8 +17,8 @@ const create = Joi.object().keys({
 
 
 
-     const updateState = Joi.object().keys({
-       name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+     const updateDiscount = Joi.object().keys({
+       search_dish: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
     .required(),
 
 
@@ -59,7 +58,7 @@ const create = Joi.object().keys({
 module.exports = {
     // requireId,
        create,
-     updateState,
+     updateDiscount,
     // updateDestination,
     // getNearByList,
     // profileComplete

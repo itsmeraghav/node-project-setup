@@ -1,6 +1,6 @@
 
   const {
-    models: { User, State },
+    models: { User, Discount },
   } = require("../../../../lib/models");
   var slug = require("slug");
   const multer = require("multer");
@@ -12,10 +12,10 @@
   
   class UserController {
     async create(req, res, next) {
-      let { name} = req.body;
+      let {search_dish } = req.body;
       try {
-        var newRecord = new State(req.body);
-        newRecord.slug = slug(name, {
+        var newRecord = new Discount(req.body);
+        newRecord.slug = slug(search_dish, {
           replacement: "-",
           lower: true,
           charmap: slug.charmap,
@@ -23,7 +23,7 @@
         return newRecord
           .save()
           .then((results) => {
-            return res.success(results, req.__("State_CREATE_SUCCESSFULLY"));
+            return res.success(results, req.__("Discount_CREATE_SUCCESSFULLY"));
           })
           .catch((err) => {
             return res.json({ data: err });
@@ -43,43 +43,33 @@
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
       var conditions = { is_deleted: 0 };
-      let filterObj = req.body.filter ? req.body.filter : null;
-    if (filterObj) {
-      //apply filter
-      if (filterObj?.country) {
-        conditions["country"] = filterObj?.country;
-      }
-    }
       asyncParallel(
         {
           data: function(callback) {
-            State.find(
+            Discount.find(
               conditions,
               {
                 _id: 1,
-                name: 1,
-                country:1,
+                search_dish: 1,
                 status: 1,
                 // is_edit: 1,
                 // createdAt: 1,
                 // updatedAt: 1,
               },
-              { sort: { created_at: "desc" }, skip: skip, limit: limit }
-            ).populate("country","_id name")
-            .exec(
+              { sort: { created_at: "desc" }, skip: skip, limit: limit },
               (err, result) => {
                 callback(err, result);
               }
             );
           },
           records_filtered: function(callback) {
-            State.countDocuments(conditions, (err, result) => {
+            Discount.countDocuments(conditions, (err, result) => {
               /* send success response */
               callback(err, result);
             });
           },
           records_total: function(callback) {
-            State.countDocuments({ is_deleted: 0 }, (err, result) => {
+            Discount.countDocuments({ is_deleted: 0 }, (err, result) => {
               /* send success response */
               callback(err, result);
             });
@@ -95,7 +85,7 @@
             recordsTotal:
               results && results.records_total ? results.records_total : 0,
           };
-          return res.success(data, req.__("State_LIST_GENREATED"));
+          return res.success(data, req.__("Discount_LIST_GENREATED"));
         }
       );
     }
@@ -105,19 +95,18 @@
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("State_NOT_EXIST")
+          req.__("Discount_NOT_EXIST")
         );
       }
   
       try {
-        let data = await State.findOne(
+        let data = await Discount.findOne(
           {
             _id: req.params._id,
           },
           {
             _id: 1,
-            name:1,
-            slug:1,
+            search_dish:1,
             status: 1,
             is_edit: 1,
             updatedAt: 1,
@@ -125,9 +114,9 @@
             // modified_at: 1,
           }
         );
-        if (data == null) return res.notFound({}, req.__("State_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Discount_NOT_EXIST"));
   
-        return res.success(data, req.__("State_DETAIL_SUCCESSFULLY"));
+        return res.success(data, req.__("Discount_DETAIL_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -138,21 +127,21 @@
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("State_NOT_EXIST")
+          req.__("Discount_NOT_EXIST")
         );
       }
   
       try {
-        let data = await State.updateOne(
+        let data = await Discount.updateOne(
           {
             _id: req.params._id,
           },
           { is_deleted: 1 }
         );
   
-        if (data == null) return res.notFound({}, req.__("State_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Discount_NOT_EXIST"));
   
-        return res.success(data, req.__("State_DELETE_SUCCESSFULLY"));
+        return res.success(data, req.__("Discount_DELETE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -163,17 +152,17 @@
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("State_NOT_EXIST")
+          req.__("Discount_NOT_EXIST")
         );
       }
   
       try {
-        let data = await State.findOne({
+        let data = await Discount.findOne({
           _id: req.params._id,
         });
-        if (data == null) return res.notFound({}, req.__("State_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Discount_NOT_EXIST"));
   
-        let updatedData = await State.updateOne(
+        let updatedData = await Discount.updateOne(
           {
             _id: req.params._id,
           },
@@ -184,7 +173,7 @@
           }
         );
   
-        return res.success(data, req.__("State_STATUS_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("Discount_STATUS_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         console.log("asdas", err);
         return res.json({ data: err });
@@ -196,13 +185,13 @@
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("State_NOT_EXIST")
+          req.__("Discount_NOT_EXIST")
         );
       }
       let data = req.body;
       let { user } = req;
       try {
-        user = await State.findOne({
+        user = await Discount.findOne({
           _id: req.params._id,
           is_deleted: 0,
         });
@@ -223,11 +212,11 @@
           );
         }
   
-        if (data == null) return res.notFound({}, req.__("State_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Discount_NOT_EXIST"));
   
-        await State.findOneAndUpdate({ _id: req.params._id }, { ...data });
+        await Discount.findOneAndUpdate({ _id: req.params._id }, { ...data });
   
-        return res.success(data, req.__("State_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("Discount_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -240,7 +229,7 @@
       asyncParallel(
         {
           data: function(callback) {
-            State.find(
+            Discount.find(
               conditions,
               {
                 // _id: 1,
@@ -250,9 +239,7 @@
                 //  created_at: 1,
                 //  modified_at: 1,
               },
-              { sort: { created_at: "desc" } }
-              ).populate("country","_id name")
-              .exec(
+              { sort: { created_at: "desc" } },
               (err, result) => {
                 callback(err, result);
               }
@@ -265,13 +252,13 @@
           let data = {
             records: results && results.data ? results.data : [],
           };
-          return res.success(data, req.__("State_LIST_DONE"));
+          return res.success(data, req.__("Discount_LIST_DONE"));
         }
       );
     }
   
 //   async getAdminSetting(req, res) {
-//     let adminSetting = await State.findOne();
+//     let adminSetting = await Discount.findOne();
 //     const userJson = {};
 //     if (adminSetting) {
 //       userJson.distanceRadius = adminSetting.distanceRadius;

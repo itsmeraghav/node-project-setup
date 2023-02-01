@@ -111,18 +111,9 @@ const {
             _id: req.params._id,
           },
           {
-            // _id: 0,
-            // dish_title:1,
-            // description: 1,
-            // ingredients:1,
-            // tags:1,
-            // preparation_time:1,
-            // dish_photo:1,
-            // cost:1,
-            // status: 1,
-            // is_edit: 1,
-            // slug: 1,
-            // createdAt: 1,
+            //  _id: 1,
+            //  question:1,
+            //  answer:1,
             
           }
         );
@@ -148,7 +139,7 @@ const {
           {
             _id: req.params._id,
           },
-          {is_deleted: 0 }
+          {is_deleted: 1 }
         );
   
         if (data == null) return res.notFound({}, req.__("FAQ_NOT_EXIST"));

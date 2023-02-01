@@ -1,52 +1,52 @@
 const express = require("express");
 const router = express.Router();
-const CountryController = require("./CountryController");
+const DiscountController = require("./DiscountController");
  const { validate } = require("../../util/validations");
-const validations = require("./CountryValidations");
+const validations = require("./DiscountValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
  validate(validations.create),
-  CountryController.create
+  DiscountController.create
 );
 
 router.post(
   "/list",
   // verifyToken,
-  CountryController.list
+  DiscountController.list
 );
 
 router.get(
   "/dropdown",
   // verifyToken,
-  CountryController.dropdown
+  DiscountController.dropdown
 );
 
 router.get(
   "/detail/:_id",  
   // verifyToken,
-  CountryController.detail
+  DiscountController.detail
 );
 
 router.delete(
   "/delete/:_id",
   // verifyToken,
-  CountryController.delete
+  DiscountController.delete
 );
 
 router.post(
   "/update-status/:_id",
   // verifyToken,
-  CountryController.UpdateStatus
+  DiscountController.UpdateStatus
 );
 
 router.put(
   "/update/:_id",
- validate(validations.updateCountry),
+ validate(validations.updateDiscount),
   // verifyToken,
-  CountryController.update
+  DiscountController.update
 );
 
 module.exports = router;

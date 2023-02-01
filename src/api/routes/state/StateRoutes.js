@@ -44,7 +44,7 @@ router.post(
 
 router.put(
   "/update/:_id",
- // validate(validations.updateState),
+ validate(validations.updateState),
   // verifyToken,
   StateController.update
 );

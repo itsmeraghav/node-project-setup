@@ -13,7 +13,20 @@ const createdish = Joi.object().keys({
            .required(),
         description: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
         // .alphanum()
-        .required()
+        .required(),
+        ingredients: Joi.string()
+        .required(),
+        tags: Joi.string()
+        .optional(),
+        preparation_time: Joi.string()
+        .required(),
+        dish_photo: Joi.string()
+        .optional(),
+        cost: Joi.number()
+        .required(),
+        user_id: Joi.string()
+        .required(),
+        
        
 });
 
@@ -36,19 +49,19 @@ const createdish = Joi.object().keys({
 
 const updateProfile = Joi.object().keys({
     dish_title: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .required(),
+    .optional(),
     description: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .required(),
+    .optional(),
     ingredients: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .required(),
+    .optional(),
     tags: Joi.string()
-    .required(),
-    preparation_time: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .required(),
+    .optional(),
+    preparation_time: Joi.string()
+    .optional(),
     dish_photo: Joi.string()
-    .required(),
+    .optional(),
     cost: Joi.number()
-    .required(),
+    .optional(),
     
     
 

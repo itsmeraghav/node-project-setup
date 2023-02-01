@@ -4,6 +4,7 @@ const { languages } = require("../../../../lib/i18n");
 const logIn = Joi.object().keys({
   email: Joi.string().required(),
   password: Joi.string().required(),
+  contact_number: Joi.string().optional(),
   deviceToken: Joi.string()
     .trim()
     .optional()
@@ -86,104 +87,48 @@ const resetOtp = Joi.object().keys({
 
 const signup = Joi.object().keys({
   email: common.email,
-  username:Joi.string().optional(),
-  full_name: Joi.string()
-    // .required()
-    // .error(([error]) => {
-    //   return {
-    //     message: "Please enter your full Name",
-    //   };
-    // })
+  username:Joi.string().required(),
+  full_name: Joi.string().required()
     .max(150)
     .error(([error]) => {
       return {
         message: "Your full Name cannot exceed 150 characters.",
       };
     }),
-    country:Joi.optional(),
+    country:Joi.string(),
     company_name:Joi.optional(),
    state:Joi.optional(),
    city:Joi.optional(),
    zipcode:Joi.optional(),
-   zipcodes:Joi.optional(),
+   zipcode_2:Joi.optional(),
+   fare_amount:Joi.optional(),
    qualification:Joi.optional(),
-  address:Joi.optional(),
-
-
-  // middle_Name: Joi.optional(),
-  // last_Name: Joi.string()
-  //   .required()
-  //   .error(([error]) => {
-  //     return {
-  //       message: "Please enter your last Name",
-  //     };
-  //   })
-  //   .max(50)
-  //   .error(([error]) => {
-  //     return {
-  //       message: "Your last Name cannot exceed 50 characters.",
-  //     };
-  //   }),
-  // father_Name: Joi.string()
-  //   .required()
-  //   .error(([error]) => {
-  //     return {
-  //       message: "Please enter your father Name",
-  //     };
-  //   })
-  //   .max(50)
-  //   .error(([error]) => {
-  //     return {
-  //       message: "Your father Name cannot exceed 50 characters.",
-  //     };
-  //   }),
-  // mother_Name: Joi.string()
-  //   .required()
-  //   .error(([error]) => {
-  //     return {
-  //       message: "Please enter your mother Name",
-  //     };
-  //   })
-  //   .max(50)
-  //   .error(([error]) => {
-  //     return {
-  //       message: "Your mother Name cannot exceed 50 characters.",
-  //     };
-   // }),
-  // marital_status: Joi.string().required(),
-  dob: Joi.string().required(),
-  contact_number: Joi.string()
-    .required()
-    .error(([error]) => {
-      return {
-        message: "Contact number required",
-      };
-    }),
-  // category: Joi.string().required(),
-  // pan_Number: Joi.optional(),
-  // religion: Joi.optional(),
-  // minority: Joi.optional(),
-  // aadhar_number: Joi.string().required(),
-  // jan_aadhar: Joi.string().required(),
-  // body_mark: Joi.optional(),
-  role: Joi.optional(),
-  //disability_status: Joi.optional(),
-  gender: Joi.string(),
-  deviceType: Joi.optional(),
-  deviceToken: Joi.optional(),
-  password: Joi.string()
-    .min(8)
-    .max(20)
-    .required(),
-    confirm_password: Joi.string()
-    .required()
-    .valid(Joi.ref("password"))
-    .error(([error]) => {
-      return {
-        message: "Confirm password required.",
-      };
-    }),
-});
+    address:Joi.optional(),
+    dob: Joi.string().optional(),
+    contact_number: Joi.string()
+      .required()
+      .error(([error]) => {
+        return {
+          message: "Contact number required",
+        };
+      }),
+      role: Joi.optional(),
+      gender: Joi.string(),
+      deviceType: Joi.optional(),
+      deviceToken: Joi.optional(),
+      password: Joi.string()
+        .min(8)
+        .max(20)
+        .required(),
+        confirm_password: Joi.string()
+        .required()
+        .valid(Joi.ref("password"))
+        .error(([error]) => {
+          return {
+            message: "Confirm password required.",
+          };
+        }),
+    });
 
 module.exports = {
   logIn,

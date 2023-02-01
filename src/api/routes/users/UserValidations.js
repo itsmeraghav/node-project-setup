@@ -8,6 +8,47 @@ const requireId = Joi.object().keys({
     .allow(""),
 });
 
+const Restaurentsignup = Joi.object().keys({
+  
+  company_name: Joi.string()
+  .required(),
+  email: common.email,
+      dob: Joi.string()
+      .optional(),
+    
+      contact_number: Joi.string()
+      .required()
+      .error(([error]) => {
+        return {
+          message: "Contact number required",
+        };
+      }),
+      country:Joi.string()
+      .required(),
+      state:Joi.string()
+      .required(),
+      city:Joi.string()
+      .required(),
+      zipcode:Joi.string()
+      .required(),
+      qualification:Joi.string()
+      .required(),
+      password: Joi.string()
+        .min(8)
+        .max(20)
+        .required(),
+        confirm_password: Joi.string()
+        .required()
+        .valid(Joi.ref("password"))
+        .error(([error]) => {
+          return {
+            message: "Confirm password required.",
+          };
+        }),
+    });
+
+
+
 const updatePassword = Joi.object().keys({
   currentPassword: Joi.string().required(),
   //newPassword: common.password,
@@ -104,6 +145,7 @@ module.exports = {
   requireId,
   updatePassword,
   addTopic,
+  Restaurentsignup,
   // updateProfile,
   updateDestination,
   getNearByList,

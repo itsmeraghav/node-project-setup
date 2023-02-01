@@ -30,18 +30,16 @@ class AuthController {
       const platform = req.headers["x-testing-platform"];
 
       user = await User.findOne({
-        $or: [
+
+        $or:[
           {
             email: email,
           },
           {
-            contact_number: email,
-          },
-          {
-            unique_user_id: email,
-          },
-        ],
-      }).populate("role", "name");
+            contact_number:email,
+          }
+        ]  
+          }).populate("role", "name");
       if (!user) {
         return res.notFound(
           {},
@@ -56,12 +54,6 @@ class AuthController {
           {},
           req.__("USER_LOGIN_ERROR"),
           req.__("INCORRECT_EMAIL_PASSWORD")
-
-
-
-
-
-
         );
       }
 
@@ -125,33 +117,6 @@ class AuthController {
       const token = signToken(user, platform);
       const userJson = user.toJSON();
       [
-        "full_name",
-        "email",
-        "username",
-        "status",
-        "is_profile_completed",
-        "contact_number",
-        "alternate_contact_number",
-        "qualification",
-        "reference",
-        "profile_pic",
-        "country",
-        "state",
-        "city",
-        "zipcode",
-        "zipcodes",
-        "address",
-        "company-name",
-        "password",
-        "unique_code",
-        "hash",
-        "salt",
-        "role",
-        "dob",
-        "gender",
-        "fare_amount",
-        "owner_name",
-        "last_seen",
       ].forEach((key) => delete userJson[key]);
       return res.success(
         {
@@ -283,8 +248,7 @@ class AuthController {
           user.email,
           {
             name:
-              user.full_Name.charAt(0).toUpperCase() +
-              user.full_Name.slice(1),
+              user.full_Name.charAt(0).toUpperCase() + user.full_Name.slice(1),
             verification_code: otpCode,
           }
         )
@@ -363,31 +327,23 @@ class AuthController {
       full_name,
       email,
       username,
-      status,
-      is_profile_completed,
       contact_number,
-      alternate_contact_number,
-      qualification,
-      reference,
-      profile_pic,
       country,
       state,
       city,
       zipcode,
-      zipcodes,
       address,
       company_name,
-      password,
-      unique_code,
       hash,
       salt,
       role,
       dob,
-      gender,
+      qualification,
       fare_amount,
-      owner_name,
-      last_seen,
-      confirm_password
+      zipcode_2,
+      gender,
+      password,
+      confirm_password,
     } = req.body;
     try {
       let x = await User.findOne({ email, isDeleted: false });
@@ -418,8 +374,7 @@ class AuthController {
           req.__("USERNAME_EXISTS"),
           req.__("USERNAME_ALREADY_REGISTERED")
         );
-      }
-
+       }
       if (password !== confirm_password) {
         return res.warn(
           {},
@@ -433,34 +388,24 @@ class AuthController {
       user.full_name = full_name;
       user.email = email;
       user.username = username;
-      user.is_profile_completed = is_profile_completed;
-      user.status = status;
       user.contact_number = contact_number;
-      user.alternate_contact_number = alternate_contact_number;
-      user.qualification = qualification;
-      user.reference = reference;
-      user.profile_pic = profile_pic;
       user.country = country;
       user.state = state;
       user.city = city;
       user.zipcode = zipcode;
-      user.zipcodes = zipcodes;
       user.address = address;
       user.company_name = company_name;
       user.password = password;
-      user.unique_code = unique_code;
       user.hash = hash;
       user.salt = salt;
       user.role = role;
       user.dob = dob;
       user.gender = gender;
-      user.fare_amount = fare_amount;
-      user.owner_name = owner_name;
-      user.last_seen = last_seen;
       user.confirm_password = confirm_password;
-
+      user.zipcode_2 = zipcode_2;
+      user.fare_amount = fare_amount;
+      user.qualification = qualification;
       user.isVerified = false;
-      user.unique_user_id = randomuniqe(10);
 
       user = await user.save();
       return res.success(user, req.__("USER_SIGNUP"));
@@ -484,9 +429,9 @@ class AuthController {
     languagesList = languagesList.map((i) => {
       return user.selectedLanguages.indexOf(i._id) !== -1
         ? {
-          ...i,
-          isSelected: true,
-        }
+            ...i,
+            isSelected: true,
+          }
         : { ...i, isSelected: false };
     });
 
@@ -539,12 +484,11 @@ class AuthController {
           email,
           {
             name:
-              user.full_Name.charAt(0).toUpperCase() +
-              user.full_Name.slice(1),
+              user.full_Name.charAt(0).toUpperCase() + user.full_Name.slice(1),
             verification_code: otpCode,
           }
         )
-        .catch((error) => { });
+        .catch((error) => {});
       return res.success(
         {},
         req.__("EMAIL_SEND"),
@@ -594,7 +538,7 @@ class AuthController {
                 verification_code: otpCode,
               }
             )
-            .catch((error) => { });
+            .catch((error) => {});
         }
 
         return res.warn(

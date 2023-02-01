@@ -13,9 +13,9 @@ router.post(
 );
 
 router.post(
-  "/create",
-  // verifyToken,
-  UserController.create
+  "/restaurent-signup",
+  validate(validations.Restaurentsignup),
+  UserController.Restaurentsignup
 );
 
 router.get("/profile", verifyToken, UserController.profileAccountInfo);
@@ -96,9 +96,9 @@ router.post(
 );
 
 router.get(
-  "/list",
+  "/dropdown",
   // verifyToken,
-  UserController.listAll
+  UserController.dropdown
 );
 
 router.post(
@@ -121,7 +121,7 @@ router.delete(
 );
 
 router.get(
-  "/:_id",
+  "/detail/:_id",
   // verifyToken,
   UserController.detail
 );

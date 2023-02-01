@@ -46,27 +46,75 @@ class UserController {
     return res.success({}, "", req.__("PASSWORD_UPDATED"));
   }
 
-
-  async create(req, res, next) {
+  async Restaurentsignup(req, res, next) {
     let {
-      full_name
-    } = req.body;
+      company_name,
+      dob,
+      email,
+      password,
+      confirm_password,
+      country,
+      state,
+      city,
+      zipcode,
+      qualification,
+      contact_number
+         } = req.body;
     try {
-      var newRecord = new User(req.body);
-      return newRecord.save().then(results => {
-        return res.success(
-          results,
-          req.__(" USER_CREATE_SUCCESSFULLY")
-        );
-      })
-        .catch(err => {
-          return res.json({ data: err });
-        })
-    } catch (err) {
+      //
+      let x = await User.findOne({ email, isDeleted: false });
 
+      if (x) {
+        return res.warn(
+          {},
+          req.__("EMAIL_EXISTS"),
+          req.__("EMAIL_ALREADY_REGISTERED")
+        );
+      }
+
+      let y = await User.findOne({ contact_number, isDeleted: false });
+
+      if (y) {
+        return res.warn(
+          {},
+          req.__("contact_number_EXISTS"),
+          req.__("contact_number_ALREADY_REGISTERED")
+        );
+      }
+
+      if (password !== confirm_password) {
+        return res.warn(
+          {},
+          req.__("CONFIRM_PASSWORD_IS_NOT_SAME"),
+          req.__("PASSWORD_NOT_SAME")
+        );
+      }
+
+      let user = new User();
+      user.email = req.body.email;
+      user.password = req.body.password;
+      user.confirm_password = req.body.confirm_password;
+      user.company_name = req.body.company_name;
+      user.dob = req.body.dob;
+      user.country = req.body.country;
+      user.state = req.body.state;
+      user.city = req.body.city;
+      user.contact_number = req.body.contact_number;
+      user.zipcode = req.body.zipcode;
+      user.qualification = req.body.qualification;
+      user.role = "632613c82b236b92076d4cd2";
+      user.isVerified = false;
+      user = await user.save()
+      
+        .then((results) => {
+          return res.success(results, req.__("RESTURANT_CREATE_SUCCESSFULLY"));
+        })
+        .catch((err) => {
+          return res.json({ data: err });
+        });
+    } catch (err) {
       return next(err);
     }
-
   }
 
   async profileAccountInfo(req, res) {
@@ -135,20 +183,18 @@ class UserController {
       if (filterObj?.email) {
         conditions["email"] = filterObj?.email;
       }
-      if (filterObj?.first_Name) {
-        conditions["first_Name"] = filterObj?.first_Name;
+      if (filterObj?.full_name) {
+        conditions["full_name"] = filterObj?.full_name;
       }
       if (filterObj?.role) {
         conditions["role"] = filterObj?.role;
       }
-      if (filterObj?.isVerified) {
-        conditions["isVerified"] = filterObj?.isVerified;
-      }
+      
       if (filterObj?.isActive) {
         conditions["isActive"] = filterObj?.isActive;
       }
-      if (filterObj?.mobile_number) {
-        conditions["mobile_number"] = filterObj?.mobile_number;
+      if (filterObj?.contact_number) {
+        conditions["contact_number"] = filterObj?.contact_number;
       }
     }
     asyncParallel(
@@ -158,17 +204,23 @@ class UserController {
             conditions,
             {
               _id: 1,
-              photo: 1,
-              first_Name: 1,
-              last_Name: 1,
-              email: 1,
-              isActive: -1,
-              mobile_number: 1,
-              is_edit: 1,
-              isVerified: 1,
-              slug: 1,
-              role: 1,
-              district_id: 1,
+              full_name:1,
+              email:1,
+              username:1,
+              contact_number:1,
+              dob:1,
+              country:1,
+              state:1,
+              city:1,
+              password:1,
+              confirm_password:1,
+              zipcode:1,
+              zipcode_2:1,
+              fare_amount:1,
+              address:1,
+              company_name:1,
+              qualification:1,
+              gender:1,
               isSuspended: 1,
               created: 1,
               updatedAt: 1,
@@ -176,12 +228,6 @@ class UserController {
             { sort: { created: -1 }, skip: skip, limit: limit }
           )
             .populate("role", "name _id")
-            .populate({
-              path: "district_id",
-              populate: {
-                path: "unit_id",
-              },
-            })
             .exec((err, result) => {
               callback(err, result);
             });
@@ -281,33 +327,26 @@ class UserController {
         },
         {
           _id: 1,
-          full_name: 1,
-          email: 1,
-          username: 1,
-          status: 1,
-          is_profile_completed: 1,
-          contact_number: 1,
-          alternate_contact_number: 1,
-          qualification: 1,
-          reference: 1,
-          profile_pic: 1,
-          country: 1,
-          state: 1,
-          city: 1,
-          zipcode: 1,
-          zipcodes: 1,
-          address: 1,
-          company: 1,
-          password: 1,
-          unique_code: 1,
-          hash: 1,
-          salt: 1,
-          role: 1,
-          dob: 1,
-          gender: 1,
-          fare_amount: 1,
-          owner_name: 1,
-          last_seen: 1,
+              full_name:1,
+              email:1,
+              username:1,
+              contact_number:1,
+              dob:1,
+              country:1,
+              state:1,
+              city:1,
+              password:1,
+              confirm_password:1,
+              zipcode:1,
+              zipcode_2:1,
+              fare_amount:1,
+              address:1,
+              company_name:1,
+              qualification:1,
+              gender:1,
+              isSuspended: 1,
+              created: 1,
+              updatedAt: 1,
         }
       );
       if (data == null) return res.notFound({}, req.__("USER_NOT_EXIST"));
@@ -317,6 +356,7 @@ class UserController {
       return res.json({ data: err });
     }
   }
+
   async detailByEmail(req, res, next) {
     if (!req.params._id) {
       return res.notFound(
@@ -411,10 +451,10 @@ class UserController {
     }
   }
 
-  async listAll(req, res, next) {
+  async dropdown(req, res, next) {
     /** Filteration value */
 
-    var conditions = { isDeleted: false, isActive: 0 };
+    var conditions = { isDeleted: false, isActive: 1 };
     asyncParallel(
       {
         data: function (callback) {
@@ -424,7 +464,8 @@ class UserController {
               _id: 1,
               full_name: 1,
               email: 1,
-              slug: 1,
+              company_name:1
+              
             },
             { sort: { created_at: "desc" } },
             (err, result) => {

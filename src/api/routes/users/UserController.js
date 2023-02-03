@@ -1,7 +1,7 @@
 const {
   models: { User, Page, AdminSettings },
 } = require("../../../../lib/models");
-var slug = require('slug')
+var slug = require("slug");
 const moment = require("moment");
 const mongoose = require("mongoose");
 const mailer = require("../../../../lib/mailer");
@@ -58,8 +58,9 @@ class UserController {
       city,
       zipcode,
       qualification,
-      contact_number
-         } = req.body;
+      role,
+      contact_number,
+    } = req.body;
     try {
       //
       let x = await User.findOne({ email, isDeleted: false });
@@ -104,8 +105,9 @@ class UserController {
       user.qualification = req.body.qualification;
       user.role = "632613c82b236b92076d4cd2";
       user.isVerified = false;
-      user = await user.save()
-      
+      user = await user
+        .save()
+
         .then((results) => {
           return res.success(results, req.__("RESTURANT_CREATE_SUCCESSFULLY"));
         })
@@ -189,7 +191,7 @@ class UserController {
       if (filterObj?.role) {
         conditions["role"] = filterObj?.role;
       }
-      
+
       if (filterObj?.isActive) {
         conditions["isActive"] = filterObj?.isActive;
       }
@@ -199,28 +201,28 @@ class UserController {
     }
     asyncParallel(
       {
-        data: function (callback) {
+        data: function(callback) {
           User.find(
             conditions,
             {
               _id: 1,
-              full_name:1,
-              email:1,
-              username:1,
-              contact_number:1,
-              dob:1,
-              country:1,
-              state:1,
-              city:1,
-              password:1,
-              confirm_password:1,
-              zipcode:1,
-              zipcode_2:1,
-              fare_amount:1,
-              address:1,
-              company_name:1,
-              qualification:1,
-              gender:1,
+              full_name: 1,
+              email: 1,
+              username: 1,
+              contact_number: 1,
+              dob: 1,
+              country: 1,
+              state: 1,
+              city: 1,
+              password: 1,
+              confirm_password: 1,
+              zipcode: 1,
+              zipcode_2: 1,
+              fare_amount: 1,
+              address: 1,
+              company_name: 1,
+              qualification: 1,
+              gender: 1,
               isSuspended: 1,
               created: 1,
               updatedAt: 1,
@@ -234,20 +236,21 @@ class UserController {
               callback(err, result);
             });
         },
-        records_filtered: function (callback) {
+        records_filtered: function(callback) {
           User.countDocuments(conditions, (err, result) => {
             /* send success response */
             callback(err, result);
           });
         },
-        records_total: function (callback) {
+        records_total: function(callback) {
           User.countDocuments({ isDeleted: false }, (err, result) => {
             /* send success response */
+
             callback(err, result);
           });
         },
       },
-      function (err, results) {
+      function(err, results) {
         if (err) return res.json({ data: err });
 
         let data = {
@@ -329,26 +332,26 @@ class UserController {
         },
         {
           _id: 1,
-              full_name:1,
-              email:1,
-              username:1,
-              contact_number:1,
-              dob:1,
-              country:1,
-              state:1,
-              city:1,
-              password:1,
-              confirm_password:1,
-              zipcode:1,
-              zipcode_2:1,
-              fare_amount:1,
-              address:1,
-              company_name:1,
-              qualification:1,
-              gender:1,
-              isSuspended: 1,
-              created: 1,
-              updatedAt: 1,
+          full_name: 1,
+          email: 1,
+          username: 1,
+          contact_number: 1,
+          dob: 1,
+          country: 1,
+          state: 1,
+          city: 1,
+          password: 1,
+          confirm_password: 1,
+          zipcode: 1,
+          zipcode_2: 1,
+          fare_amount: 1,
+          address: 1,
+          company_name: 1,
+          qualification: 1,
+          gender: 1,
+          isSuspended: 1,
+          created: 1,
+          updatedAt: 1,
         }
       );
       if (data == null) return res.notFound({}, req.__("USER_NOT_EXIST"));
@@ -459,15 +462,14 @@ class UserController {
     var conditions = { isDeleted: false, isActive: 1 };
     asyncParallel(
       {
-        data: function (callback) {
+        data: function(callback) {
           User.find(
             conditions,
             {
               _id: 1,
               full_name: 1,
               email: 1,
-              company_name:1
-              
+              company_name: 1,
             },
             { sort: { created_at: "desc" } },
             (err, result) => {
@@ -476,7 +478,7 @@ class UserController {
           );
         },
       },
-      function (err, results) {
+      function(err, results) {
         if (err) return res.json({ data: err });
 
         let data = {
@@ -555,43 +557,27 @@ class UserController {
       let updateData = {};
       updateData.username = req.body.username
         ? req.body.username
-        : user.username
+        : user.username;
 
-      updateData.email = req.body.email
-        ? req.body.email
-        : user.email;
+      updateData.email = req.body.email ? req.body.email : user.email;
 
-      updateData.dob = req.body.dob
-        ? req.body.dob
-        : user.dob;
+      updateData.dob = req.body.dob ? req.body.dob : user.dob;
 
-      updateData.gender = req.body.gender
-      ? req.body.gender 
-      : user.gender;
+      updateData.gender = req.body.gender ? req.body.gender : user.gender;
 
       updateData.contact_number = req.body.contact_number
         ? req.body.contact_number
         : user.contact_number;
 
-      updateData.address = req.body.address
-        ? req.body.address
-        : user.address;
+      updateData.address = req.body.address ? req.body.address : user.address;
 
-      updateData.country = req.body.country
-        ? req.body.country
-        : user.country;
+      updateData.country = req.body.country ? req.body.country : user.country;
 
-      updateData.state = req.body.state
-        ? req.body.state
-        : user.state;
+      updateData.state = req.body.state ? req.body.state : user.state;
 
-      updateData.city = req.body.city
-        ? req.body.city
-        : user.city;
+      updateData.city = req.body.city ? req.body.city : user.city;
 
-      updateData.zipcode = req.body.zipcode
-        ? req.body.zipcode
-        : user.zipcode;
+      updateData.zipcode = req.body.zipcode ? req.body.zipcode : user.zipcode;
 
       // updateData.body_mark = req.body.body_mark
       //   ? req.body.body_mark
@@ -995,7 +981,7 @@ class UserController {
     console.log("conditions", conditions);
     asyncParallel(
       {
-        data: function (callback) {
+        data: function(callback) {
           User.find(
             conditions,
             {
@@ -1014,7 +1000,7 @@ class UserController {
           );
         },
       },
-      function (err, results) {
+      function(err, results) {
         if (err) return res.json({ data: err });
 
         let data = {

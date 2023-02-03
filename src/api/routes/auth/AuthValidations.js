@@ -40,8 +40,8 @@ const forgotPassword = Joi.object().keys({
 });
 
 const resetPassword = Joi.object().keys({
-  token: Joi.string().required(),
-  email: common.email,
+  
+ 
   password: Joi.string()
     .min(8)
     .max(20)

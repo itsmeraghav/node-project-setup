@@ -57,15 +57,19 @@ const {
                 is_edit: 1,
                 status: 1,
                 slug: 1,
+                user_id:1,
                 createdAt: 1,
                 updatedAt: 1,
+
               },
-              { sort: { created_at: "desc" }, skip: skip, limit: limit },
-              (err, result) => {
-                callback(err, result);
-              }
-            );
-          },
+              { sort: { created_at: "desc" }, skip: skip, limit: limit }
+              ).populate("user_id","_id full_name")
+              .exec(
+                (err, result) => {
+                  callback(err, result);
+                }
+              );
+            },
           records_filtered: function(callback) {
             AddDish.countDocuments(conditions, (err, result) => {
               /* send success response */

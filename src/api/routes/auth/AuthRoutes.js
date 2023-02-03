@@ -41,6 +41,7 @@ router.post(
   AuthController.resetPassword
 );
 
+
 router.post(
   "/verify-otp",
   validate(validations.verifyOtp),

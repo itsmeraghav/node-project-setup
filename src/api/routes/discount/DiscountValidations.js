@@ -19,7 +19,7 @@ const create = Joi.object().keys({
 
      const updateDiscount = Joi.object().keys({
        search_dish: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .required(),
+    .optional(),
 
 
      });

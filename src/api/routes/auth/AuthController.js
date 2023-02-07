@@ -37,6 +37,9 @@ class AuthController {
           },
           {
             contact_number:email,
+          },
+          {
+            username:email,
           }
         ]  
           }).populate("role", "name");

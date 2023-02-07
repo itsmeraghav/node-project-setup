@@ -35,9 +35,9 @@ const createtype = Joi.object().keys({
 
     const updateProfile = Joi.object().keys({
         title: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-            .required(),
+            .optional(),
         type: Joi.number()
-            .required(),
+            .optional(),
     });
 
 

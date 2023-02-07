@@ -18,6 +18,13 @@ const createtype = Joi.object().keys({
 });
 
 
+const updateProfile = Joi.object().keys({
+    search_product: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+        .optional(),
+        description: Joi.number()
+        .optional(),
+});
+
 
 
 
@@ -27,6 +34,7 @@ const createtype = Joi.object().keys({
 module.exports = {
 
     createtype,
+    updateProfile
     
 
 };

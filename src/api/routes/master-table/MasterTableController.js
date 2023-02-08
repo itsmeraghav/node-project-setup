@@ -40,6 +40,14 @@ const {
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
       var conditions = { is_deleted: 0 };
+
+      let filterObj = req.body.filter ? req.body.filter : null;
+      if (filterObj) {
+        //apply filter
+        if (filterObj?.type) {
+          conditions["type"] = filterObj?.type;
+        }
+      }
       asyncParallel(
         {
           data: function(callback) {
@@ -48,6 +56,7 @@ const {
               {
                 _id: 1,
                 title: 1,
+                type:1,
                 status: 1,
                 is_edit: 1,
                 slug: 1,

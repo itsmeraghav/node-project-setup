@@ -470,6 +470,7 @@ class UserController {
               full_name: 1,
               email: 1,
               company_name: 1,
+              role:1,
             },
             { sort: { created_at: "desc" } },
             (err, result) => {

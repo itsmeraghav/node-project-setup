@@ -20,7 +20,7 @@ const create = Joi.object().keys({
 
      const updateState = Joi.object().keys({
        name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .required(),
+    .optional(),
 
 
      });

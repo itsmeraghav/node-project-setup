@@ -1,5 +1,5 @@
 const {
-    models: { User, MasterTable },
+    models: { User, GroceryList },
   } = require("../../../../lib/models");
   var slug = require("slug");
   const asyncParallel = require("async/parallel");
@@ -9,10 +9,10 @@ const {
   
   class UserController {
     async create(req, res, next) {
-      let { title} = req.body;
+      let { list_title } = req.body;
       try {
-        var newRecord = new MasterTable(req.body);
-        newRecord.slug = slug(title, {
+        var newRecord = new GroceryList(req.body);
+        newRecord.slug = slug(list_title, {
           replacement: "-",
           lower: true,
           charmap: slug.charmap,
@@ -20,7 +20,7 @@ const {
         return newRecord
           .save()
           .then((results) => {
-            return res.success(results, req.__("MasterTable_CREATE_SUCCESSFULLY"));
+            return res.success(results, req.__("GroceryList_CREATE_SUCCESSFULLY"));
           })
           .catch((err) => {
             return res.json({ data: err });
@@ -39,29 +39,25 @@ const {
         ? parseInt(req.body.start)
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
-      var conditions = { is_deleted: 0 };
-
-      let filterObj = req.body.filter ? req.body.filter : null;
-      if (filterObj) {
-        //apply filter
-        if (filterObj?.type) {
-          conditions["type"] = filterObj?.type;
-        }
-      }
+      var conditions = { is_deleted: false };
       asyncParallel(
         {
           data: function(callback) {
-            MasterTable.find(
+            GroceryList.find(
               conditions,
               {
                 _id: 1,
-                title: 1,
-                status: 1,
-                is_edit: 1,
-                type:1,
-                slug: 1,
-                createdAt: 1,
-                updatedAt: 1,
+                list_title: 1,
+                 description: 1,
+                 item: 1,
+                 minimum_quantity: 1,
+                 unit: 1,
+                 quantity: 1,
+                 total: 1,
+                // is_edit: 1,
+                // status: 1,
+                // createdAt: 1,
+                // updatedAt: 1,
               },
               { sort: { created_at: "desc" }, skip: skip, limit: limit },
               (err, result) => {
@@ -70,13 +66,13 @@ const {
             );
           },
           records_filtered: function(callback) {
-            MasterTable.countDocuments(conditions, (err, result) => {
+            GroceryList.countDocuments(conditions, (err, result) => {
               /* send success response */
               callback(err, result);
             });
           },
           records_total: function(callback) {
-            MasterTable.countDocuments({ is_deleted: 0 }, (err, result) => {
+            GroceryList.countDocuments({ is_deleted: 0 }, (err, result) => {
               /* send success response */
               callback(err, result);
             });
@@ -92,39 +88,46 @@ const {
             recordsTotal:
               results && results.records_total ? results.records_total : 0,
           };
-          return res.success(data, req.__("MasterTable_LIST_GENREATED"));
+          return res.success(data, req.__("GroceryList_LIST_GENREATED"));
         }
       );
     }
   
+
+
     async detail(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MasterTable_NOT_EXIST")
+          req.__("GroceryList_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MasterTable.findOne(
+        let data = await GroceryList.findOne(
           {
             _id: req.params._id,
           },
           {
-            _id: 0,
-            title: 1,
-            status: 1,
-            type:1,
-            is_edit: 1,
-            updatedAt: 1,
-            createdAt:1,
-            // modified_at: 1,
+            // _id: 0,
+            // dish_title:1,
+            // description: 1,
+            // ingredients:1,
+            // tags:1,
+            // preparation_time:1,
+            // dish_photo:1,
+            // cost:1,
+            // status: 1,
+            // is_edit: 1,
+            // slug: 1,
+            // createdAt: 1,
+            
           }
         );
-        if (data == null) return res.notFound({}, req.__("MasterTable_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("GroceryList_NOT_EXIST"));
   
-        return res.success(data, req.__("MasterTable_DETAIL_SUCCESSFULLY"));
+        return res.success(data, req.__("GroceryList_DETAIL_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -135,21 +138,21 @@ const {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MasterTable_NOT_EXIST")
+          req.__("GroceryList_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MasterTable.updateOne(
+        let data = await GroceryList.updateOne(
           {
             _id: req.params._id,
           },
-          { is_deleted: 1 }
+          {is_deleted: true }
         );
   
-        if (data == null) return res.notFound({}, req.__("MasterTable_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("GroceryList_NOT_EXIST"));
   
-        return res.success(data, req.__("MasterTable_DELETE_SUCCESSFULLY"));
+        return res.success(data, req.__("GroceryList_DELETE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -160,17 +163,17 @@ const {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MasterTable_NOT_EXIST")
+          req.__("GroceryList_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MasterTable.findOne({
+        let data = await GroceryList.findOne({
           _id: req.params._id,
         });
-        if (data == null) return res.notFound({}, req.__("MasterTable_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("GroceryList_NOT_EXIST"));
   
-        let updatedData = await MasterTable.updateOne(
+        let updatedData = await GroceryList.updateOne(
           {
             _id: req.params._id,
           },
@@ -181,7 +184,7 @@ const {
           }
         );
   
-        return res.success(data, req.__("MasterTable_STATUS_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("GroceryList_STATUS_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         console.log("asdas", err);
         return res.json({ data: err });
@@ -193,15 +196,15 @@ const {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MasterTable_NOT_EXIST")
+          req.__("GroceryList_NOT_EXIST")
         );
       }
       let data = req.body;
       let { user } = req;
       try {
-        user = await MasterTable.findOne({
+        user = await GroceryList.findOne({
           _id: req.params._id,
-          is_deleted: 0,
+          // is_deleted: 0,
         });
   
         if (!user) {
@@ -220,11 +223,11 @@ const {
           );
         }
   
-        if (data == null) return res.notFound({}, req.__("MasterTable_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("GroceryList_NOT_EXIST"));
   
-        await MasterTable.findOneAndUpdate({ _id: req.params._id }, { ...data });
+        await GroceryList.findOneAndUpdate({ _id: req.params._id }, { ...data });
   
-        return res.success(data, req.__("MasterTable_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("GroceryList_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -237,17 +240,21 @@ const {
       asyncParallel(
         {
           data: function(callback) {
-            MasterTable.find(
+            GroceryList.find(
               conditions,
-              {
-                _id: 1,
-                title: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
+               {
+            //     _id: 0,
+            // dish_title:1,
+            // description: 1,
+            // ingredients:1,
+            // tags:1,
+            // preparation_time:1,
+            // dish_photo:1,
+            // cost:1,
+            // status: 1,
+            // is_edit: 1,
+            // slug: 1,
+            // createdAt: 1,
               },
               { sort: { created_at: "desc" } },
               (err, result) => {
@@ -258,26 +265,26 @@ const {
         },
         function(err, results) {
           if (err) return res.json({ data: err });
-  
+    
           let data = {
             records: results && results.data ? results.data : [],
           };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
+          return res.success(data, req.__("GroceryList_LIST_DONE"));
         }
       );
     }
   
-  //   async getAdminSetting(req, res) {
-  //     let adminSetting = await MasterTable.findOne();
-  //     const userJson = {};
-  //     if (adminSetting) {
-  //       userJson.distanceRadius = adminSetting.distanceRadius;
-  //       userJson.maximum = adminSetting.maximum;
-  //       userJson.minimum = adminSetting.minimum;
-  //     }
-  //     return res.success(userJson, req.__("SETTING_INFORMATION"));
-  //   }
-   }
+    // async getAdminSetting(req, res) {
+    //   let adminSetting = await GroceryList.findOne();
+    //   const userJson = {};
+    //   if (adminSetting) {
+    //     userJson.distanceRadius = adminSetting.distanceRadius;
+    //     userJson.maximum = adminSetting.maximum;
+    //     userJson.minimum = adminSetting.minimum;
+    //   }
+    //   return res.success(userJson, req.__("SETTING_INFORMATION"));
+    // }
+ }
   
   module.exports = new UserController();
   

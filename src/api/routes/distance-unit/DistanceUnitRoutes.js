@@ -18,4 +18,10 @@ router.put(
     // verifyToken,
     DistanceUnitController.update
   );
+
+  router.delete(
+    "/delete/:_id",
+    // verifyToken,
+    DistanceUnitController.delete
+  );
   module.exports = router;  

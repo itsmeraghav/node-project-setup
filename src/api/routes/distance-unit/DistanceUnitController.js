@@ -73,5 +73,30 @@ class UserController {
       return res.json({ data: err });
     }
   }
+  async delete(req, res, next) {
+    if (!req.params._id) {
+      return res.notFound(
+        {},
+        req.__("INVALID_REQUEST"),
+        req.__("DistanceUnit_NOT_EXIST")
+      );
+    }
+
+    try {
+      let data = await DistanceUnit.updateOne(
+        {
+          _id: req.params._id,
+        },
+        {is_deleted: true }
+      );
+
+      if (data == null) return res.notFound({}, req.__("DistanceUnit_NOT_EXIST"));
+
+      return res.success(data, req.__("DistanceUnit_DELETE_SUCCESSFULLY"));
+    } catch (err) {
+      return res.json({ data: err });
+    }
+  }
+
 }
 module.exports = new UserController();

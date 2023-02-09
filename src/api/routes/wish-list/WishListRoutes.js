@@ -18,4 +18,31 @@ router.put(
     // verifyToken,
     WishListController.update
   );
+
+  
+router.post(
+  "/list",
+  // verifyToken,
+  WishListController.list
+);
+
+router.get(
+  "/detail/:_id",  
+  // verifyToken,
+  WishListController.detail
+);
+router.delete(
+  "/:_id",
+  // verifyToken,
+  WishListController.delete
+);
+
+
+router.get(
+  "/dropdown",
+  // verifyToken,
+  WishListController.dropdown
+);
+
+
   module.exports = router;  

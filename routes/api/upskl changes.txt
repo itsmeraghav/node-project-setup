@@ -1,5 +1,0 @@
-footer  side space same
-blog - launching soon
-login redirect url : https://app.upskl.club/login
-register : https://app.upskl.club/register
-get started now  -> register

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Testing APP</title>
+  <link href="/css/style.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="pp-container font18">
+    <div class="logo"><img src="/images/logo.png" alt="Logo" style="max-width:150px;"></div>
+    <% for (const pages of allPages) { %>
+      <a href="<%= pages.slug %>">
+        <%= pages.title %>
+      </a>&nbsp;&nbsp;
+      <% } %>
+        <p>
+          <%- description %>
+        </p>
+  </div>
+</body>
+
+</html>

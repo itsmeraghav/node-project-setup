@@ -71,6 +71,30 @@ const updatePassword = Joi.object().keys({
     }),
 });
 
+const create = Joi.object().keys({
+ 
+  upload_profile: Joi.string().
+  optional(),
+  username:Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/).required(),
+      full_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+      .required(),
+      email:Joi.string().required(),
+      role:Joi.string().required(),
+     
+});
+
+const update = Joi.object().keys({
+ 
+  upload_profile: Joi.string().
+  optional(),
+  username:Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/).optional(),
+      full_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+      .optional(),
+      email:Joi.string().optional(),
+      role:Joi.string().optional(),
+     
+});
+
 const addTopic = Joi.object().keys({
   topicId: Joi.objectId()
     .valid()
@@ -143,6 +167,8 @@ const profileComplete = Joi.object().keys({
 
 module.exports = {
   requireId,
+  create,
+  update,
   updatePassword,
   addTopic,
   Restaurentsignup,

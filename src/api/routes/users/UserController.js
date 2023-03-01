@@ -46,6 +46,24 @@ class UserController {
     return res.success({}, "", req.__("PASSWORD_UPDATED"));
   }
 
+  async create(req, res, next) {
+    let { upload_profile} = req.body;
+    try {
+      var newRecord = new User(req.body);
+      return newRecord
+        .save()
+        .then((results) => {
+          return res.success(results, req.__("USER_CREATE_SUCCESSFULLY"));
+        })
+        .catch((err) => {
+          return res.json({ data: err });
+        });
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+
   async Restaurentsignup(req, res, next) {
     let {
       company_name,
@@ -332,6 +350,7 @@ class UserController {
         },
         {
           _id: 1,
+          upload_profile:1,
           full_name: 1,
           email: 1,
           username: 1,
@@ -362,6 +381,47 @@ class UserController {
     }
   }
 
+  async update(req, res, next) {
+    if (!req.params._id) {
+      return res.notFound(
+        {},
+        req.__("INVALID_REQUEST"),
+        req.__("User_NOT_EXIST")
+      );
+    }
+    let data = req.body;
+    let { user } = req;
+    try {
+      user = await User.findOne({
+        _id: req.params._id,
+        is_deleted: 0,
+      });
+
+      if (!user) {
+        return res.notFound(
+          {},
+          req.__("INVALID_REQUEST"),
+          req.__("USER_NOT_EXIST")
+        );
+      }
+
+      if (user.isSuspended) {
+        return res.notFound(
+          "",
+          req.__("YOUR_ACCOUNT_SUSPENDED"),
+          req.__("ACCOUNT_SUSPENDED")
+        );
+      }
+
+      if (data == null) return res.notFound({}, req.__("User_NOT_EXIST"));
+
+      await User.findOneAndUpdate({ _id: req.params._id }, { ...data });
+
+      return res.success(data, req.__("User_UPDATE_SUCCESSFULLY"));
+    } catch (err) {
+      return res.json({ data: err });
+    }
+  }
   async detailByEmail(req, res, next) {
     if (!req.params._id) {
       return res.notFound(

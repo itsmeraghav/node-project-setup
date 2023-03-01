@@ -79,7 +79,7 @@ class UserController {
       : DATATABLE_DEFAULT_LIMIT;
     let skip = req.body.start
       ? parseInt(req.body.start)
-      : DATATABLE_DEFAULT_SKIP;
+      : DATATABLE_DEFAULT_SKIP;            
     skip = skip === 0 ? 0 : (skip - 1) * limit;
     var conditions = { is_deleted: 0 };
     let filterObj = req.body.filter ? req.body.filter : null;
@@ -96,7 +96,7 @@ class UserController {
             conditions,
             {
               _id: 1,
-              name: 1,
+              name:1,
               item_name: 1,
               status: 1,
               is_edit: 1,

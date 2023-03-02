@@ -6,7 +6,7 @@ const validations = require("./RoleValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
-  "/",
+  "/create",
   // verifyToken,
   RoleController.create
 );
@@ -24,25 +24,25 @@ router.get(
 );
 
 router.get(
-  "/:slug",
+  "/detail/:_id",
   // verifyToken,
   RoleController.detail
 );
 
 router.delete(
-  "/:slug",
+  "/delete/:_id",
   // verifyToken,
   RoleController.delete
 );
 
 router.post(
-  "/update-status/:slug",
+  "/update-status/:_id",
   // verifyToken,
   RoleController.UpdateStatus
 );
 
 router.put(
-  "/:slug",
+  "/update/:_id",
   // verifyToken,
   RoleController.update
 );

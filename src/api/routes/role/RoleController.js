@@ -89,7 +89,7 @@ class UserController {
   }
 
   async detail(req, res, next) {
-    if (!req.params.slug) {
+    if (!req.params._id) {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
@@ -100,7 +100,7 @@ class UserController {
     try {
       let data = await Role.findOne(
         {
-          slug: req.params.slug,
+          _id: req.params._id,
         },
         {
           _id: 0,
@@ -121,7 +121,7 @@ class UserController {
   }
 
   async delete(req, res, next) {
-    if (!req.params.slug) {
+    if (!req.params._id) {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
@@ -132,7 +132,7 @@ class UserController {
     try {
       let data = await Role.updateOne(
         {
-          slug: req.params.slug,
+          _id: req.params._id,
         },
         { is_deleted: 1 }
       );
@@ -146,7 +146,7 @@ class UserController {
   }
 
   async UpdateStatus(req, res, next) {
-    if (!req.params.slug) {
+    if (!req.params._id) {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
@@ -156,13 +156,13 @@ class UserController {
 
     try {
       let data = await Role.findOne({
-        slug: req.params.slug,
+        _id: req.params._id,
       });
       if (data == null) return res.notFound({}, req.__("ROLE_NOT_EXIST"));
 
       let updatedData = await Role.updateOne(
         {
-          slug: req.params.slug,
+          _id: req.params._id,
         },
         {
           $set: {
@@ -179,7 +179,7 @@ class UserController {
   }
 
   async update(req, res, next) {
-    if (!req.params.slug) {
+    if (!req.params._id) {
       return res.notFound(  
         {},
         req.__("INVALID_REQUEST"),
@@ -190,7 +190,7 @@ class UserController {
     let { user } = req;
     try {
       user = await Role.findOne({
-        slug: req.params.slug,
+        _id: req.params._id,
         // is_deleted: 0,
       });
 

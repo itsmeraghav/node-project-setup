@@ -11,6 +11,18 @@ router.post(
   validate(validations.updatePassword),
   UserController.updatePassword
 );
+router.post(
+  "/create",
+ // verifyToken,
+  validate(validations.create),
+  UserController.create
+);
+router.put(
+  "/update/:_id",
+ // verifyToken,
+  validate(validations.update),
+  UserController.update
+);
 
 router.post(
   "/restaurent-signup",

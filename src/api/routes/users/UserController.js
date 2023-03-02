@@ -238,9 +238,12 @@ class UserController {
               zipcode_2: 1,
               fare_amount: 1,
               address: 1,
+              licence_expiration:1,
               company_name: 1,
               qualification: 1,
               gender: 1,
+              membership:1,
+              food_licence:1,
               isSuspended: 1,
               created: 1,
               updatedAt: 1,
@@ -248,6 +251,7 @@ class UserController {
             { sort: { created: -1 }, skip: skip, limit: limit }
           )
             .populate("role", "name _id")
+            .populate("country", "name _id")
             .populate("country", "name _id")
             .populate("state", "name _id")
             .exec((err, result) => {
@@ -364,10 +368,13 @@ class UserController {
           zipcode: 1,
           zipcode_2: 1,
           fare_amount: 1,
+          licence_expiration:1,
           address: 1,
           company_name: 1,
           qualification: 1,
           gender: 1,
+          food_licence:1,
+          membership:1,
           isSuspended: 1,
           created: 1,
           updatedAt: 1,
@@ -394,7 +401,7 @@ class UserController {
     try {
       user = await User.findOne({
         _id: req.params._id,
-        is_deleted: 0,
+        isDeleted: false,
       });
 
       if (!user) {

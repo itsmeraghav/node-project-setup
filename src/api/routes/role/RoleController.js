@@ -180,7 +180,7 @@ class UserController {
 
   async update(req, res, next) {
     if (!req.params.slug) {
-      return res.notFound(
+      return res.notFound(  
         {},
         req.__("INVALID_REQUEST"),
         req.__("ROLE_NOT_EXIST")
@@ -220,10 +220,10 @@ class UserController {
     }
   }
 
-  async listAll(req, res, next) {
+  async dropdown(req, res, next) {
     /** Filteration value */
 
-    var conditions = { is_deleted: 0, status: 1 };
+    var conditions = {  status: 1 };
     asyncParallel(
       {
         data: function(callback) {

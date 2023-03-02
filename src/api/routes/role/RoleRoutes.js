@@ -18,9 +18,9 @@ router.post(
 );
 
 router.get(
-  "/list",
+  "/dropdown",
   // verifyToken,
-  RoleController.listAll
+  RoleController.dropdown
 );
 
 router.get(

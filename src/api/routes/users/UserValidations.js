@@ -80,6 +80,9 @@ const create = Joi.object().keys({
       .required(),
       email:Joi.string().required(),
       role:Joi.string().required(),
+      membership:Joi.string().required(),
+      food_licence:Joi.string().required(),
+      licence_expiration:Joi.date().required(),
      
 });
 
@@ -92,6 +95,9 @@ const update = Joi.object().keys({
       .optional(),
       email:Joi.string().optional(),
       role:Joi.string().optional(),
+      membership:Joi.string().optional(),
+      licence_expiration:Joi.string().optional(),
+       licence_expiration:Joi.date().optional(),
      
 });
 

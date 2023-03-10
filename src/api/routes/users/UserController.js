@@ -209,13 +209,13 @@ class UserController {
       if (filterObj?.role) {
         conditions["role"] = filterObj?.role;
       }
-
       if (filterObj?.isActive) {
         conditions["isActive"] = filterObj?.isActive;
       }
-      if (filterObj?.contact_number) {
-        conditions["contact_number"] = filterObj?.contact_number;
+      if (filterObj?.membership) {
+        conditions["membership"] = filterObj?.membership;
       }
+    
     }
     asyncParallel(
       {
@@ -246,6 +246,7 @@ class UserController {
               membership:1,
               food_licence:1,
               isSuspended: 1,
+              isActive:1,
               created: 1,
               updatedAt: 1,
             },

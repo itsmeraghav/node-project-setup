@@ -209,13 +209,13 @@ class UserController {
       if (filterObj?.role) {
         conditions["role"] = filterObj?.role;
       }
-
       if (filterObj?.isActive) {
         conditions["isActive"] = filterObj?.isActive;
       }
-      if (filterObj?.contact_number) {
-        conditions["contact_number"] = filterObj?.contact_number;
+      if (filterObj?.membership) {
+        conditions["membership"] = filterObj?.membership;
       }
+    
     }
     asyncParallel(
       {
@@ -229,6 +229,7 @@ class UserController {
               username: 1,
               contact_number: 1,
               dob: 1,
+              role:1,
               country: 1,
               state: 1,
               city: 1,
@@ -245,6 +246,7 @@ class UserController {
               membership:1,
               food_licence:1,
               isSuspended: 1,
+              isActive:1,
               created: 1,
               updatedAt: 1,
             },
@@ -252,7 +254,7 @@ class UserController {
           )
             .populate("role", "name _id")
             .populate("country", "name _id")
-            .populate("country", "name _id")
+            .populate("membership", "name _id")
             .populate("state", "name _id")
             .exec((err, result) => {
               callback(err, result);

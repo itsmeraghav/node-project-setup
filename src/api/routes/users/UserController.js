@@ -229,6 +229,7 @@ class UserController {
               username: 1,
               contact_number: 1,
               dob: 1,
+              role:1,
               country: 1,
               state: 1,
               city: 1,
@@ -252,7 +253,7 @@ class UserController {
           )
             .populate("role", "name _id")
             .populate("country", "name _id")
-            .populate("country", "name _id")
+            .populate("membership", "name _id")
             .populate("state", "name _id")
             .exec((err, result) => {
               callback(err, result);

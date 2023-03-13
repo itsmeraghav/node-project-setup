@@ -256,16 +256,7 @@ class UserController {
     );
   }
 
-  async getAdminSetting(req, res) {
-    let adminSetting = await Role.findOne();
-    const userJson = {};
-    if (adminSetting) {
-      userJson.distanceRadius = adminSetting.distanceRadius;
-      userJson.maximum = adminSetting.maximum;
-      userJson.minimum = adminSetting.minimum;
-    }
-    return res.success(userJson, req.__("SETTING_INFORMATION"));
-  }
+
 }
 
 module.exports = new UserController();

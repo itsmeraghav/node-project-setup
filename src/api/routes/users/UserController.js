@@ -225,7 +225,7 @@ class UserController {
         conditions["email"] = filterObj?.email;
       }
       if (filterObj?.full_name) {
-        conditions["full_name"] = filterObj?.full_name;
+        conditions["username"] = filterObj?.username;
       }
       if (filterObj?.role) {
         conditions["role"] = filterObj?.role;

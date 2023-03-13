@@ -78,7 +78,7 @@ const create = Joi.object().keys({
   username:Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/).required(),
       full_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
       .required(),
-      email:Joi.string().required(),
+      email: common.email,
       role:Joi.string().required(),
       membership:Joi.string().required(),
       food_licence:Joi.string().required(),
@@ -87,7 +87,6 @@ const create = Joi.object().keys({
 });
 
 const update = Joi.object().keys({
- 
   upload_profile: Joi.string().
   optional(),
   username:Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/).optional(),

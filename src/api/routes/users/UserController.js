@@ -47,9 +47,30 @@ class UserController {
   }
 
   async create(req, res, next) {
-    let { upload_profile} = req.body;
+    let { upload_profile,email,username} = req.body;
     try {
+      let x = await User.findOne({ email, isDeleted: false });
+
+      if (x) {
+        return res.warn(
+          {},
+          req.__("EMAIL_EXISTS"),
+          req.__("EMAIL_ALREADY_REGISTERED")
+        );
+      }
+      let y = await User.findOne({ username, isDeleted: false });
+
+      if (y) {
+        return res.warn(
+          {},
+          req.__("USERNAME_EXISTS"),
+          req.__("USERNAME_ALREADY_REGISTERED")
+        );
+       }
+
       var newRecord = new User(req.body);
+      User.email = req.body.email;
+      User.username =req.body.username;
       return newRecord
         .save()
         .then((results) => {
@@ -411,14 +432,6 @@ class UserController {
           {},
           req.__("INVALID_REQUEST"),
           req.__("USER_NOT_EXIST")
-        );
-      }
-
-      if (user.isSuspended) {
-        return res.notFound(
-          "",
-          req.__("YOUR_ACCOUNT_SUSPENDED"),
-          req.__("ACCOUNT_SUSPENDED")
         );
       }
 

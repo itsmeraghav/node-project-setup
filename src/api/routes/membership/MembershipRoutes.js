@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const MembershipController = require("./MembershipController");
- const { validate } = require("../../util/validations");
+const { validate } = require("../../util/validations");
 const validations = require("./MembershipValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
- validate(validations.create),
+  //  validate(validations.create),
   MembershipController.create
 );
 
@@ -25,7 +25,7 @@ router.get(
 );
 
 router.get(
-  "/detail/:_id",  
+  "/detail/:_id",
   // verifyToken,
   MembershipController.detail
 );
@@ -44,7 +44,7 @@ router.post(
 
 router.put(
   "/update/:_id",
- validate(validations.updateMembership),
+  validate(validations.updateMembership),
   // verifyToken,
   MembershipController.update
 );

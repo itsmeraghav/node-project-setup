@@ -180,7 +180,7 @@ class UserController {
 
   async update(req, res, next) {
     if (!req.params.slug) {
-      return res.notFound(  
+      return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
         req.__("Features_NOT_EXIST")
@@ -223,7 +223,7 @@ class UserController {
   async dropdown(req, res, next) {
     /** Filteration value */
 
-    var conditions = {  status: 1 };
+    var conditions = { is_deleted: 0, status: 1 };
     asyncParallel(
       {
         data: function(callback) {
@@ -255,8 +255,6 @@ class UserController {
       }
     );
   }
-
-
 }
 
 module.exports = new UserController();

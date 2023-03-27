@@ -59,14 +59,7 @@ class UserController {
         data: function(callback) {
           Membership.find(
             conditions,
-            {
-              // _id: 1,
-              // membership_id: 1,
-              // status: 1,
-              // is_edit: 1,
-              // createdAt: 1,
-              // updatedAt: 1,
-            },
+            {},
             { sort: { created_at: "desc" }, skip: skip, limit: limit },
             (err, result) => {
               callback(err, result);

@@ -8,6 +8,7 @@ const { verifyToken } = require('../../util/auth');
 router.post(
     "/create",
     // verifyToken,
+    validate(validations.createtype),
     ethnicityController.create
 );
 
@@ -38,6 +39,7 @@ router.delete(
 router.put(
     "/:slug",
     // verifyToken,
+    validate(validations.updateProfile),
     ethnicityController.update
 );
  

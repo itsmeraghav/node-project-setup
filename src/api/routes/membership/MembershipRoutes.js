@@ -8,7 +8,7 @@ const { verifyToken } = require("../../util/auth");
 router.post(
   "/create",
   // verifyToken,
-  //  validate(validations.create),
+   validate(validations.create),
   MembershipController.create
 );
 

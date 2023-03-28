@@ -8,6 +8,7 @@ const { verifyToken } = require("../../util/auth");
 router.post(
   "/create",
   // verifyToken,
+  validate(validations.create),
   FeaturesController.create
 );
 
@@ -44,6 +45,7 @@ router.post(
 router.put(
   "/update/:slug",
   // verifyToken,
+  validate(validations.updateFeature),
   FeaturesController.update
 );
 

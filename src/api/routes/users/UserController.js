@@ -142,7 +142,7 @@ class UserController {
       user.contact_number = req.body.contact_number;
       user.zipcode = req.body.zipcode;
       user.qualification = req.body.qualification;
-      user.role = "632613c82b236b92076d4cd2";
+      user.role = "640ec4f7941ddd210c4daea2";
       user.isVerified = false;
       user = await user
         .save()
@@ -220,7 +220,7 @@ class UserController {
 
     let filterObj = req.body.filter ? req.body.filter : null;
     if (filterObj) {
-      //apply filter
+      //apply filter      
       if (filterObj?.email) {
         conditions["email"] = filterObj?.email;
       }
@@ -229,7 +229,7 @@ class UserController {
       }
       if (filterObj?.role) {
         conditions["role"] = filterObj?.role;
-      }
+      } 
       if (filterObj?.isActive) {
         conditions["isActive"] = filterObj?.isActive;
       }
@@ -1069,7 +1069,7 @@ class UserController {
             conditions,
             {
               _id: 1,
-              first_Name: 1,
+              full_name: 1,
 
               is_edit: 1,
 

@@ -2,7 +2,6 @@ const { Joi, common } = require("../../util/validations");
 const { languages } = require("../../../../lib/i18n");
 
 const createtype = Joi.object().keys({
-  //newPassword: common.password,
   enter_zipcode: Joi.string().required(),
  
 });

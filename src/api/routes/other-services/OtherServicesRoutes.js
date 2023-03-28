@@ -8,7 +8,7 @@ const { verifyToken } = require("../../util/auth");
 router.post(
   "/create",
   // verifyToken,
-//   validate(validations.createdish),
+ validate(validations.createservice),
   OtherServicesController.create
 );
 

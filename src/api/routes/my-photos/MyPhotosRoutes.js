@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const MyPhotosController = require("./MyPhotosController");
-// const { validate } = require("../../util/validations");
+const { validate } = require("../../util/validations");
 const validations = require("./MyPhotosValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
-//   validate(validations.createMyPhotos),
+ validate(validations.create),
   MyPhotosController.create
 );
 
@@ -44,7 +44,7 @@ router.post(
 
 router.put(
   "/update/:_id",
- // validate(validations.updateMyPhotos),
+  validate(validations.updatePhoto),
   // verifyToken,
   MyPhotosController.update
 );

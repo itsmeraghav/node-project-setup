@@ -9,10 +9,10 @@ const {
   
   class UserController {
     async create(req, res, next) {
-      let { username} = req.body;
+      let { email} = req.body;
       try {
         var newRecord = new AboutMe(req.body);
-        newRecord.slug = slug(username, {
+        newRecord.slug = slug(email, {
           replacement: "-",
           lower: true,
           charmap: slug.charmap,

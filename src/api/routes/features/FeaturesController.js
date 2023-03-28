@@ -1,8 +1,7 @@
 const {
-  models: { User, Membership },
+  models: { User, Features },
 } = require("../../../../lib/models");
 var slug = require("slug");
-const multer = require("multer");
 const asyncParallel = require("async/parallel");
 var _ = require("lodash");
 const DATATABLE_DEFAULT_LIMIT = 10;
@@ -12,7 +11,7 @@ class UserController {
   async create(req, res, next) {
     let { name } = req.body;
     try {
-      var newRecord = new Membership(req.body);
+      var newRecord = new Features(req.body);
       newRecord.slug = slug(name, {
         replacement: "-",
         lower: true,
@@ -21,7 +20,7 @@ class UserController {
       return newRecord
         .save()
         .then((results) => {
-          return res.success(results, req.__("Membership_CREATE_SUCCESSFULLY"));
+          return res.success(results, req.__("Features_CREATE_SUCCESSFULLY"));
         })
         .catch((err) => {
           return res.json({ data: err });
@@ -41,25 +40,20 @@ class UserController {
       : DATATABLE_DEFAULT_SKIP;
     skip = skip === 0 ? 0 : (skip - 1) * limit;
     var conditions = { is_deleted: 0 };
-    let filterObj = req.body.filter ? req.body.filter : null;
-    if (filterObj) {
-      //apply filter
-      if (filterObj?.name) {
-        conditions["name"] = filterObj?.name;
-      }
-      if (filterObj?.duration) {
-        conditions["duration"] = filterObj?.duration;
-      }
-      if (filterObj?.status) {
-        conditions["status"] = filterObj?.status;
-      }
-    }
     asyncParallel(
       {
         data: function(callback) {
-          Membership.find(
+          Features.find(
             conditions,
-            {},
+            {
+              slug: 1,
+              name: 1,
+              status: 1,
+              is_edit: 1,
+              slug: 1,
+              createdAt: 1,
+              updatedAt: 1,
+            },
             { sort: { created_at: "desc" }, skip: skip, limit: limit },
             (err, result) => {
               callback(err, result);
@@ -67,13 +61,13 @@ class UserController {
           );
         },
         records_filtered: function(callback) {
-          Membership.countDocuments(conditions, (err, result) => {
+          Features.countDocuments(conditions, (err, result) => {
             /* send success response */
             callback(err, result);
           });
         },
         records_total: function(callback) {
-          Membership.countDocuments({ is_deleted: 0 }, (err, result) => {
+          Features.countDocuments({ is_deleted: 0 }, (err, result) => {
             /* send success response */
             callback(err, result);
           });
@@ -89,87 +83,86 @@ class UserController {
           recordsTotal:
             results && results.records_total ? results.records_total : 0,
         };
-        return res.success(data, req.__("Membership_LIST_GENREATED"));
+        return res.success(data, req.__("Features_LIST_GENREATED"));
       }
     );
   }
 
   async detail(req, res, next) {
-    if (!req.params._id) {
+    if (!req.params.slug) {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("Membership_NOT_EXIST")
+        req.__("Features_NOT_EXIST")
       );
     }
 
     try {
-      let data = await Membership.findOne(
+      let data = await Features.findOne(
         {
-          _id: req.params._id,
+          slug: req.params.slug,
         },
         {
-          // _id: 1,
-          // name:1,
-          // slug:1,
-          // status: 1,
-          // is_edit: 1,
-          // updatedAt: 1,
-          // createdAt:1,
+          slug: 0,
+          name: 1,
+          status: 1,
+          is_edit: 1,
+          slug: 1,
+          // created_at: 1,
           // modified_at: 1,
         }
       );
-      if (data == null) return res.notFound({}, req.__("Membership_NOT_EXIST"));
+      if (data == null) return res.notFound({}, req.__("Features_NOT_EXIST"));
 
-      return res.success(data, req.__("Membership_DETAIL_SUCCESSFULLY"));
+      return res.success(data, req.__("Features_DETAIL_SUCCESSFULLY"));
     } catch (err) {
       return res.json({ data: err });
     }
   }
 
   async delete(req, res, next) {
-    if (!req.params._id) {
+    if (!req.params.slug) {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("Membership_NOT_EXIST")
+        req.__("Features_NOT_EXIST")
       );
     }
 
     try {
-      let data = await Membership.updateOne(
+      let data = await Features.updateOne(
         {
-          _id: req.params._id,
+          slug: req.params.slug,
         },
         { is_deleted: 1 }
       );
 
-      if (data == null) return res.notFound({}, req.__("Membership_NOT_EXIST"));
+      if (data == null) return res.notFound({}, req.__("Features_NOT_EXIST"));
 
-      return res.success(data, req.__("Membership_DELETE_SUCCESSFULLY"));
+      return res.success(data, req.__("Features_DELETE_SUCCESSFULLY"));
     } catch (err) {
       return res.json({ data: err });
     }
   }
 
   async UpdateStatus(req, res, next) {
-    if (!req.params._id) {
+    if (!req.params.slug) {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("Membership_NOT_EXIST")
+        req.__("Features_NOT_EXIST")
       );
     }
 
     try {
-      let data = await Membership.findOne({
-        _id: req.params._id,
+      let data = await Features.findOne({
+        slug: req.params.slug,
       });
-      if (data == null) return res.notFound({}, req.__("Membership_NOT_EXIST"));
+      if (data == null) return res.notFound({}, req.__("Features_NOT_EXIST"));
 
-      let updatedData = await Membership.updateOne(
+      let updatedData = await Features.updateOne(
         {
-          _id: req.params._id,
+          slug: req.params.slug,
         },
         {
           $set: {
@@ -178,7 +171,7 @@ class UserController {
         }
       );
 
-      return res.success(data, req.__("Membership_STATUS_UPDATE_SUCCESSFULLY"));
+      return res.success(data, req.__("Features_STATUS_UPDATE_SUCCESSFULLY"));
     } catch (err) {
       console.log("asdas", err);
       return res.json({ data: err });
@@ -186,19 +179,19 @@ class UserController {
   }
 
   async update(req, res, next) {
-    if (!req.params._id) {
+    if (!req.params.slug) {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("Membership_NOT_EXIST")
+        req.__("Features_NOT_EXIST")
       );
     }
     let data = req.body;
     let { user } = req;
     try {
-      user = await Membership.findOne({
-        _id: req.params._id,
-        is_deleted: 0,
+      user = await Features.findOne({
+        slug: req.params.slug,
+        // is_deleted: 0,
       });
 
       if (!user) {
@@ -217,11 +210,11 @@ class UserController {
         );
       }
 
-      if (data == null) return res.notFound({}, req.__("Membership_NOT_EXIST"));
+      if (data == null) return res.notFound({}, req.__("Features_NOT_EXIST"));
 
-      await Membership.findOneAndUpdate({ _id: req.params._id }, { ...data });
+      await Features.findOneAndUpdate({ slug: req.params.slug }, { ...data });
 
-      return res.success(data, req.__("Membership_UPDATE_SUCCESSFULLY"));
+      return res.success(data, req.__("Features_UPDATE_SUCCESSFULLY"));
     } catch (err) {
       return res.json({ data: err });
     }
@@ -234,15 +227,16 @@ class UserController {
     asyncParallel(
       {
         data: function(callback) {
-          Membership.find(
+          Features.find(
             conditions,
             {
-              // _id: 1,
-              // username: 1,
-              // status: 1,
-              // is_edit: 1,
-              //  created_at: 1,
-              //  modified_at: 1,
+              slug: 1,
+              name: 1,
+              status: 1,
+              is_edit: 1,
+              slug: 1,
+              // created_at: 1,
+              // modified_at: 1,
             },
             { sort: { created_at: "desc" } },
             (err, result) => {
@@ -257,7 +251,7 @@ class UserController {
         let data = {
           records: results && results.data ? results.data : [],
         };
-        return res.success(data, req.__("Membership_LIST_DONE"));
+        return res.success(data, req.__("Features_LIST_DONE"));
       }
     );
   }

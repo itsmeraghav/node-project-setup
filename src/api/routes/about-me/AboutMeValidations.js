@@ -11,7 +11,7 @@ const createAboutMe = Joi.object().keys({
         .required(),
         address: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
         .required(),
-        country: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+        country: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)  
         .required(),
         state: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
         .required(),

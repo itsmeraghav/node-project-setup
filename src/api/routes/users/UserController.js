@@ -10,8 +10,12 @@ const DATATABLE_DEFAULT_LIMIT = 10;
 const DATATABLE_DEFAULT_SKIP = 0;
 const { logError } = require("../../../../lib/util");
 var _ = require("lodash");
+const multer = require("multer");
+const upload_profile = multer({dest:"../../../../lib/uploader/public"});
 
-class UserController {
+
+
+class UserController {                 
   async updatePassword(req, res) {
     const { user } = req;
     const { currentPassword, newPassword } = req.body;
@@ -46,8 +50,11 @@ class UserController {
     return res.success({}, "", req.__("PASSWORD_UPDATED"));
   }
 
-  async create(req, res, next) {
+
+  async  create (req, res, next) {
+    
     let { upload_profile,email,username} = req.body;
+      
     try {
       let x = await User.findOne({ email, isDeleted: false });
 
@@ -71,6 +78,7 @@ class UserController {
       var newRecord = new User(req.body);
       User.email = req.body.email;
       User.username =req.body.username;
+      User.upload_profile = req.body.upload_profile;
       return newRecord
         .save()
         .then((results) => {
@@ -98,6 +106,7 @@ class UserController {
       zipcode,
       qualification,
       role,
+      upload_profile,
       contact_number,
     } = req.body;
     try {

@@ -19,7 +19,7 @@ const create = Joi.object().keys({
         duration: Joi.date() .optional(),
         features: Joi.array() .optional(),
         price: Joi.number() .optional(),
-        bidding: Joi.number() .optional(),
+        bidding: Joi.number() .optional(),                      
         
         singup_features: Joi.array() .optional(),
 

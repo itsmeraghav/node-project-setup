@@ -127,8 +127,7 @@ const {
   
     async delete(req, res, next) {
       if (!req.params._id) {
-        return res.notFound(
-          {},
+        return res.notFound({},
           req.__("INVALID_REQUEST"),
           req.__("FAQ_NOT_EXIST")
         );

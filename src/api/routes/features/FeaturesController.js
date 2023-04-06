@@ -234,7 +234,7 @@ class UserController {
               name: 1,
               status: 1,
               is_edit: 1,
-              slug: 1,
+   
               // created_at: 1,
               // modified_at: 1,
             },

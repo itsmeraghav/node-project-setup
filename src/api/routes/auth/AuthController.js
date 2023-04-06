@@ -24,13 +24,11 @@ var moment = require("moment");
 
 class AuthController {
   async logIn(req, res, next) {
+    const { email, password, deviceToken } = req.body;
     try {
-      const { email, password, deviceToken } = req.body;
-      let user;
       const platform = req.headers["x-testing-platform"];
 
-      user = await User.findOne({
-
+     let user = await User.findOne({
         $or:[
           {
             email: email,
@@ -38,9 +36,7 @@ class AuthController {
           {
             contact_number:email,
           },
-          {
-            contact_number:email,
-          }
+         
         ]  
           }).populate("role", "name");
       if (!user) {
@@ -56,7 +52,7 @@ class AuthController {
         return res.warn(
           {},
           req.__("USER_LOGIN_ERROR"),
-          req.__("INCORRECT_EMAIL_PASSWORD")
+          req.__("INCORRECT_PASSWORD")
         );
       }
 

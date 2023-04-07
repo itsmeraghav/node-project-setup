@@ -10,9 +10,6 @@ const DATATABLE_DEFAULT_LIMIT = 10;
 const DATATABLE_DEFAULT_SKIP = 0;
 const { logError } = require("../../../../lib/util");
 var _ = require("lodash");
-const multer = require("multer");
-const upload_profile = multer({dest:"../../../../lib/uploader/public"});
-
 
 
 

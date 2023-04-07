@@ -13,16 +13,7 @@ var _ = require("lodash");
 const multer = require("multer");
 const upload_profile = multer({dest:"../../../../lib/uploader/public"});
 
-const fileStorageEngine = multer.diskStorage({
-   destination: (req , file, cb)=>{
-    cb(null, '../../../../lib/uploader/public')
-   },
-   filename: (req, file, cb)=>{
-    cb(null, Date.now() + '--' + file.originalname)
-   },
-});
 
-const upload = multer ( {storage: fileStorageEngine});
 
 
 class UserController {       

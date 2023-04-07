@@ -149,7 +149,7 @@ class AuthController {
     user.deviceToken = null;
     await user.save();
     return res.success({}, req.__("LOGOUT_SUCCESS"));
-  }
+  }      
 
   async verifyOtp(req, res) {
     let { otp, otpType, contact_number, deviceToken } = req.body;

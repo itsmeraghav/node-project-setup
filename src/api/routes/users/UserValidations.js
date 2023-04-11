@@ -23,12 +23,12 @@ const Restaurentsignup = Joi.object().keys({
           message: "Contact number required",
         };
       }),
-      // country:Joi.string()
-      // .required(),
-      // state:Joi.string()
-      // .required(),
+       country:Joi.string()
+       .optional(),
+       state:Joi.string()
+       .optional(),
       city:Joi.string()
-      .required(),
+      .optional(),
       zipcode:Joi.string()
       .required(),
       qualification:Joi.string()

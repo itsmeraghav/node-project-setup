@@ -95,10 +95,11 @@ const signup = Joi.object().keys({
         message: "Your full Name cannot exceed 150 characters.",
       };
     }),
-    country:Joi.string(),
+    country:Joi.string().optional(),
+    state:Joi.string().optional(),
+    city:Joi.string().optional(),
+
     company_name:Joi.optional(),
-   state:Joi.optional(),
-   city:Joi.optional(),
    zipcode:Joi.optional(),
    zipcode_2:Joi.optional(),
    fare_amount:Joi.optional(),

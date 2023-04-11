@@ -11,8 +11,6 @@ const DATATABLE_DEFAULT_SKIP = 0;
 const { logError } = require("../../../../lib/util");
 var _ = require("lodash");
 
-
-
 class UserController {       
             
   async updatePassword(req, res) {

@@ -1,17 +1,17 @@
-const { Joi, common } = require('../../util/validations');
-const { languages } = require('../../../../lib/i18n');
+// const { Joi, common } = require('../../util/validations');
+// const { languages } = require('../../../../lib/i18n');
 
-const create = Joi.object().keys({
-    name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .required(),
-    });
-     const updateCountry = Joi.object().keys({
-       name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .optional(),
-     });
+// const create = Joi.object().keys({
+//     name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+//     .required(),
+//     });
+//      const updateCountry = Joi.object().keys({
+//        name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+//     .optional(),
+//      });
 
 
-module.exports = {
-       create,
-     updateCountry,
-};
+// module.exports = {
+//        create,
+//      updateCountry,
+// };

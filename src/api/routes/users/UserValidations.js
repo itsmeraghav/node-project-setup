@@ -24,11 +24,11 @@ const Restaurentsignup = Joi.object().keys({
         };
       }),
        country:Joi.string()
-       .required(),
+       .optional(),
        state:Joi.string()
-       .required(),
+       .optional(),
       city:Joi.string()
-      .required(),
+      .optional(),
       zipcode:Joi.string()
       .required(),
       qualification:Joi.string()

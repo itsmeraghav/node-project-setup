@@ -9,45 +9,34 @@ const requireId = Joi.object().keys({
 });
 
 const Restaurentsignup = Joi.object().keys({
-  
-  company_name: Joi.string()
-  .required(),
+  company_name: Joi.string().required(),
   email: common.email,
-      dob: Joi.string()
-      .optional(),
-    
-      contact_number: Joi.string()
-      .required()
-      .error(([error]) => {
-        return {
-          message: "Contact number required",
-        };
-      }),
-       country:Joi.string()
-       .optional(),
-       state:Joi.string()
-       .optional(),
-      city:Joi.string()
-      .optional(),
-      zipcode:Joi.string()
-      .required(),
-      qualification:Joi.string()
-      .required(),
-      password: Joi.string()
-        .min(8)
-        .max(20)
-        .required(),
-        confirm_password: Joi.string()
-        .required()
-        .valid(Joi.ref("password"))
-        .error(([error]) => {
-          return {
-            message: "Confirm password required.",
-          };
-        }),
-    });
-
-
+  dob: Joi.string().optional(),
+  contact_number: Joi.string()
+    .required()
+    .error(([error]) => {
+      return {
+        message: "Contact number required",
+      };
+    }),
+  country: Joi.string().optional(),
+  state: Joi.string().optional(),
+  city: Joi.string().optional(),
+  zipcode: Joi.string().required(),
+  qualification: Joi.string().required(),
+  password: Joi.string()
+    .min(8)
+    .max(20)
+    .required(),
+  confirm_password: Joi.string()
+    .required()
+    .valid(Joi.ref("password"))
+    .error(([error]) => {
+      return {
+        message: "Confirm password required.",
+      };
+    }),
+});
 
 const updatePassword = Joi.object().keys({
   currentPassword: Joi.string().required(),
@@ -72,32 +61,33 @@ const updatePassword = Joi.object().keys({
 });
 
 const create = Joi.object().keys({
- 
-  upload_profile: Joi.string().
-  optional(),
-  username:Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/).required(),
-      full_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-      .required(),
-      email: common.email,
-      role:Joi.string().required(),
-      membership:Joi.string().required(),
-      food_licence:Joi.string().required(),
-      licence_expiration:Joi.date().required(),
-     
+  upload_profile: Joi.string().optional(),
+  username: Joi.string()
+    .regex(/^[a-zA-Z][a-zA-Z ]*$/)
+    .required(),
+  full_name: Joi.string()
+    .regex(/^[a-zA-Z][a-zA-Z ]*$/)
+    .required(),
+  email: common.email,
+  role: Joi.string().required(),
+  membership: Joi.string().required(),
+  food_licence: Joi.string().required(),
+  licence_expiration: Joi.date().required(),
 });
 
 const update = Joi.object().keys({
-  upload_profile: Joi.string().
-  optional(),
-  username:Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/).optional(),
-      full_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-      .optional(),
-      email:Joi.string().optional(),
-      role:Joi.string().optional(),
-      membership:Joi.string().optional(),
-      licence_expiration:Joi.string().optional(),
-       licence_expiration:Joi.date().optional(),
-     
+  upload_profile: Joi.string().optional(),
+  username: Joi.string()
+    .regex(/^[a-zA-Z][a-zA-Z ]*$/)
+    .optional(),
+  full_name: Joi.string()
+    .regex(/^[a-zA-Z][a-zA-Z ]*$/)
+    .optional(),
+  email: Joi.string().optional(),
+  role: Joi.string().optional(),
+  membership: Joi.string().optional(),
+  licence_expiration: Joi.string().optional(),
+  licence_expiration: Joi.date().optional(),
 });
 
 const addTopic = Joi.object().keys({

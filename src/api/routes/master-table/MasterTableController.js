@@ -4,19 +4,20 @@ const {
   var slug = require("slug");
   const asyncParallel = require("async/parallel");
   var _ = require("lodash");
+const { title } = require("process");
   const DATATABLE_DEFAULT_LIMIT = 10;
   const DATATABLE_DEFAULT_SKIP = 0;
   
   class UserController {
     async create(req, res, next) {
-      let { title} = req.body;
+      let { cuisines} = req.body;
       try {
         var newRecord = new MasterTable(req.body);
-        newRecord.slug = slug(title, {
-          replacement: "-",
-          lower: true,
-          charmap: slug.charmap,
-        });
+        // newRecord.slug = slug(cuisines, {
+        //   replacement: "-",
+        //   lower: true,
+        //   charmap: slug.charmap,
+        // }); 
         return newRecord
           .save()
           .then((results) => {
@@ -55,20 +56,32 @@ const {
               conditions,
               {
                 _id: 1,
-                title: 1,
+                name: 1,
                 status: 1,
                 is_edit: 1,
                 type:1,
                 slug: 1,
+                type:1,
+                cuisine:1,
+                cuisines:1,
+                spice_level:1,
+                type:1,
                 createdAt: 1,
                 updatedAt: 1,
               },
-              { sort: { created_at: "desc" }, skip: skip, limit: limit },
-              (err, result) => {
-                callback(err, result);
-              }
-            );
-          },
+              { sort: { created: -1 }, skip: skip, limit: limit }
+              )
+                .populate("cuisines", "name _id type")
+                .populate("spice_level", "name _id type")
+                .populate("type", "name _id type")
+                .populate("cuisine", "name _id type")
+
+
+
+                .exec((err, result) => {
+                  callback(err, result);
+                });
+            },
           records_filtered: function(callback) {
             MasterTable.countDocuments(conditions, (err, result) => {
               /* send success response */
@@ -113,7 +126,8 @@ const {
           },
           {
             _id: 0,
-            title: 1,
+            name: 1,
+            cuisines:1,
             status: 1,
             type:1,
             is_edit: 1,
@@ -241,7 +255,7 @@ const {
               conditions,
               {
                 _id: 1,
-                title: 1,
+                name: 1,
                 type:1,
                 status: 1,
                 is_edit: 1,
@@ -249,12 +263,12 @@ const {
                  created_at: 1,
                  modified_at: 1,
               },
-              { sort: { created_at: "desc" } },
-              (err, result) => {
-                callback(err, result);
-              }
-            );
-          },
+              )
+                .populate("cuisines", "name _id type")
+                .exec((err, result) => {
+                  callback(err, result);
+                });
+            },
         },
         function(err, results) {
           if (err) return res.json({ data: err });

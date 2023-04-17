@@ -10,7 +10,7 @@ const { title } = require("process");
   
   class UserController {
     async create(req, res, next) {
-      let { cuisines} = req.body;
+      let { name} = req.body;
       try {
         var newRecord = new MasterTable(req.body);
         // newRecord.slug = slug(cuisines, {
@@ -23,7 +23,7 @@ const { title } = require("process");
           .then((results) => {
             return res.success(results, req.__("MasterTable_CREATE_SUCCESSFULLY"));
           })
-          .catch((err) => {
+          .catch((err) => {s
             return res.json({ data: err });
           });
       } catch (err) {
@@ -42,13 +42,16 @@ const { title } = require("process");
       skip = skip === 0 ? 0 : (skip - 1) * limit;
       var conditions = { is_deleted: 0 };
 
-      let filterObj = req.body.filter ? req.body.filter : null;
-      if (filterObj) {
-        //apply filter
-        if (filterObj?.type) {
-          conditions["type"] = filterObj?.type;
-        }
+      if(req.body.type){
+      conditions.type = req.body.type ? req.body.type : null;
       }
+      // conditions.type=
+      // if (filterObj) {
+      //   //apply filter
+      //   if (filterObj?.type) {
+      //     conditions["type"] = filterObj?.type;
+      //   }
+      // }
       asyncParallel(
         {
           data: function(callback) {
@@ -71,13 +74,7 @@ const { title } = require("process");
               },
               { sort: { created: -1 }, skip: skip, limit: limit }
               )
-                .populate("cuisines", "name _id type")
-                .populate("spice_level", "name _id type")
-                .populate("type", "name _id type")
-                .populate("cuisine", "name _id type")
-
-
-
+               
                 .exec((err, result) => {
                   callback(err, result);
                 });
@@ -128,6 +125,9 @@ const { title } = require("process");
             _id: 0,
             name: 1,
             cuisines:1,
+            cuisine:1,
+            spice_level:1,
+            type:1,
             status: 1,
             type:1,
             is_edit: 1,
@@ -135,7 +135,9 @@ const { title } = require("process");
             createdAt:1,
             // modified_at: 1,
           }
+          
         );
+        
         if (data == null) return res.notFound({}, req.__("MasterTable_NOT_EXIST"));
   
         return res.success(data, req.__("MasterTable_DETAIL_SUCCESSFULLY"));
@@ -247,7 +249,7 @@ const { title } = require("process");
     async dropdown(req, res, next) {
       /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1 };
+      var conditions = { is_deleted: 0, status: 1, };
       asyncParallel(
         {
           data: function(callback) {
@@ -280,6 +282,159 @@ const { title } = require("process");
         }
       );
     }
+
+
+    async dropdown_cuisines(req, res, next) {
+      /** Filteration value */
+  
+      var conditions = { is_deleted: 0, status: 1, type:1};
+      asyncParallel(
+        {
+          data: function(callback) {
+            MasterTable.find(
+              conditions,
+              {
+                _id: 1,
+                name: 1,
+                type:1,
+                status: 1,
+                is_edit: 1,
+                slug: 1,
+                 created_at: 1,
+                 modified_at: 1,
+              },
+              )
+                .populate("cuisines", "name _id type")
+                .exec((err, result) => {
+                  callback(err, result);
+                });
+            },
+        },
+        function(err, results) {
+          if (err) return res.json({ data: err });
+  
+          let data = {
+            records: results && results.data ? results.data : [],
+          };
+          return res.success(data, req.__("MasterTable_LIST_DONE"));
+        }
+      );
+    }
+
+    
+    async dropdown_spicelevel(req, res, next) {
+      /** Filteration value */
+  
+      var conditions = { is_deleted: 0, status: 1, type:2};
+      asyncParallel(
+        {
+          data: function(callback) {
+            MasterTable.find(
+              conditions,
+              {
+                _id: 1,
+                name: 1,
+                type:1,
+                status: 1,
+                is_edit: 1,
+                slug: 1,
+                 created_at: 1,
+                 modified_at: 1,
+              },
+              )
+                .populate("cuisines", "name _id type")
+                .exec((err, result) => {
+                  callback(err, result);
+                });
+            },
+        },
+        function(err, results) {
+          if (err) return res.json({ data: err });
+  
+          let data = {
+            records: results && results.data ? results.data : [],
+          };
+          return res.success(data, req.__("MasterTable_LIST_DONE"));
+        }
+      );
+    }
+  
+
+    async dropdown_type(req, res, next) {
+      /** Filteration value */
+  
+      var conditions = { is_deleted: 0, status: 1, type:3};
+      asyncParallel(
+        {
+          data: function(callback) {
+            MasterTable.find(
+              conditions,
+              {
+                _id: 1,
+                name: 1,
+                type:1,
+                status: 1,
+                is_edit: 1,
+                slug: 1,
+                 created_at: 1,
+                 modified_at: 1,
+              },
+              )
+                .populate("cuisines", "name _id type")
+                .exec((err, result) => {
+                  callback(err, result);
+                });
+            },
+        },
+        function(err, results) {
+          if (err) return res.json({ data: err });
+  
+          let data = {
+            records: results && results.data ? results.data : [],
+          };
+          return res.success(data, req.__("MasterTable_LIST_DONE"));
+        }
+      );
+    }
+
+    async dropdown_cuisine(req, res, next) {
+      /** Filteration value */
+  
+      var conditions = { is_deleted: 0, status: 1, type:4};
+      asyncParallel(
+        {
+          data: function(callback) {
+            MasterTable.find(
+              conditions,
+              {
+                _id: 1,
+                name: 1,
+                type:1,
+                status: 1,
+                is_edit: 1,
+                slug: 1,
+                 created_at: 1,
+                 modified_at: 1,
+              },
+              )
+                .populate("cuisines", "name _id type")
+                .exec((err, result) => {
+                  callback(err, result);
+                });
+            },
+        },
+        function(err, results) {
+          if (err) return res.json({ data: err });
+  
+          let data = {
+            records: results && results.data ? results.data : [],
+          };
+          return res.success(data, req.__("MasterTable_LIST_DONE"));
+        }
+      );
+    }
+  
+  
   
   //   async getAdminSetting(req, res) {
   //     let adminSetting = await MasterTable.findOne();

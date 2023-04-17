@@ -23,6 +23,26 @@ router.get(
   // verifyToken,
   MasterTableController.dropdown
 );
+router.get(
+  "/dropdown_cuisines",
+  // verifyToken,
+  MasterTableController.dropdown_cuisines
+);
+router.get(
+  "/dropdown_spicelevel",
+  // verifyToken,
+  MasterTableController.dropdown_spicelevel
+);
+router.get(
+  "/dropdown_type",
+  // verifyToken,
+  MasterTableController.dropdown_type
+);
+router.get(
+  "/dropdown_cuisine",
+  // verifyToken,
+  MasterTableController.dropdown_cuisine
+);
 
 router.get(
   "/:_id",  

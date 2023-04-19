@@ -8,7 +8,7 @@ const { verifyToken } = require("../../util/auth");
 router.post(
   "/create",
   // verifyToken,
-  validate(validations.createtype),
+ //validate(validations.createtype),
   MasterTableController.create
 );
 
@@ -22,6 +22,26 @@ router.get(
   "/dropdown",
   // verifyToken,
   MasterTableController.dropdown
+);
+router.get(
+  "/dropdown_cuisines",
+  // verifyToken,
+  MasterTableController.dropdown_cuisines
+);
+router.get(
+  "/dropdown_spicelevel",
+  // verifyToken,
+  MasterTableController.dropdown_spicelevel
+);
+router.get(
+  "/dropdown_type",
+  // verifyToken,
+  MasterTableController.dropdown_type
+);
+router.get(
+  "/dropdown_cuisine",
+  // verifyToken,
+  MasterTableController.dropdown_cuisine
 );
 
 router.get(
@@ -44,7 +64,7 @@ router.post(
 
 router.put(
   "/update/:_id",
-  validate(validations.updateProfile),
+ // validate(validations.updateProfile),
   // verifyToken,
   MasterTableController.update
 );

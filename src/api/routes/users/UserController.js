@@ -280,9 +280,7 @@ class UserController {
             { sort: { created: -1 }, skip: skip, limit: limit }
           )
             .populate("role", "name _id")
-            .populate("country", "name _id")
             .populate("membership", "name _id")
-            .populate("state", "name _id")
             .exec((err, result) => {
               callback(err, result);
             });

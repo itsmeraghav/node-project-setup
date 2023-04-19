@@ -42,9 +42,23 @@ const { title } = require("process");
       skip = skip === 0 ? 0 : (skip - 1) * limit;
       var conditions = { is_deleted: 0 };
 
-      if(req.body.type){
-      conditions.type = req.body.type ? req.body.type : null;
+      let filterObj = req.body.filter ? req.body.filter : null;
+      if (filterObj) {
+        //apply filter      
+        if (filterObj?.type) {
+          conditions["type"] = filterObj?.type;
+        }
       }
+
+
+
+
+      // if(req.body.type){
+      // conditions.type = req.body.type ? req.body.type : null;
+      // }
+
+
+
       // conditions.type=
       // if (filterObj) {
       //   //apply filter
@@ -65,16 +79,12 @@ const { title } = require("process");
                 type:1,
                 slug: 1,
                 type:1,
-                cuisine:1,
-                cuisines:1,
-                spice_level:1,
-                type:1,
                 createdAt: 1,
                 updatedAt: 1,
               },
               { sort: { created: -1 }, skip: skip, limit: limit }
               )
-               
+                .populate("type", "name _id")
                 .exec((err, result) => {
                   callback(err, result);
                 });
@@ -249,7 +259,7 @@ const { title } = require("process");
     async dropdown(req, res, next) {
       /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1, };
+      var conditions = { is_deleted: 0, status: 1};
       asyncParallel(
         {
           data: function(callback) {
@@ -287,7 +297,7 @@ const { title } = require("process");
     async dropdown_cuisines(req, res, next) {
       /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1, type:1};
+      var conditions = { is_deleted: 0, status: 1, type:"643d45de298ed838a0e8b4c9"};
       asyncParallel(
         {
           data: function(callback) {
@@ -325,7 +335,7 @@ const { title } = require("process");
     async dropdown_spicelevel(req, res, next) {
       /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1, type:2};
+      var conditions = { is_deleted: 0, status: 1, type:"643d45d6298ed838a0e8b4c5"};
       asyncParallel(
         {
           data: function(callback) {
@@ -363,7 +373,7 @@ const { title } = require("process");
     async dropdown_type(req, res, next) {
       /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1, type:3};
+      var conditions = { is_deleted: 0, status: 1, type:"643d45ca298ed838a0e8b4c1"};
       asyncParallel(
         {
           data: function(callback) {
@@ -400,7 +410,7 @@ const { title } = require("process");
     async dropdown_cuisine(req, res, next) {
       /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1, type:4};
+      var conditions = { is_deleted: 0, status: 1, type:"643d45c0298ed838a0e8b4bd"};
       asyncParallel(
         {
           data: function(callback) {

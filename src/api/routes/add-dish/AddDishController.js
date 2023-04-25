@@ -1,5 +1,5 @@
 const {
-    models: { User, AddDish },
+    models: { User, AddDish,MasterTable },
   } = require("../../../../lib/models");
   var slug = require("slug");
   const asyncParallel = require("async/parallel");
@@ -16,11 +16,12 @@ const {
           replacement: "-",
           lower: true,
           charmap: slug.charmap,
-        });
+        })
         return newRecord
           .save()
           .then((results) => {
             return res.success(results, req.__("AddDish_CREATE_SUCCESSFULLY"));
+
           })
           .catch((err) => {
             return res.json({ data: err });
@@ -48,12 +49,12 @@ const {
               {
                 _id: 1,
                 dish_title: 1,
-                // description: 1,
-                // ingredients: 1,
-                // tags: 1,
-                // preparation_time: 1,
-                // cost: 1,
-                // dish_photo: 1,
+                description: 1,
+                ingredients: 1,
+                tags: 1,
+                preparation_time: 1,
+                cost: 1,
+                dish_photo: 1,
                 is_edit: 1,
                 status: 1,
                 slug: 1,
@@ -97,8 +98,6 @@ const {
         }
       );
     }
-  
-
 
     async detail(req, res, next) {
       if (!req.params._id) {
@@ -137,7 +136,7 @@ const {
         return res.json({ data: err });
       }
     }
-  
+
     async delete(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
@@ -162,7 +161,7 @@ const {
         return res.json({ data: err });
       }
     }
-  
+
     async UpdateStatus(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
@@ -195,7 +194,7 @@ const {
         return res.json({ data: err });
       }
     }
-  
+
     async update(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
@@ -237,7 +236,7 @@ const {
         return res.json({ data: err });
       }
     }
-  
+
     async dropdown(req, res, next) {
       /** Filteration value */
   
@@ -280,17 +279,7 @@ const {
         }
       );
     }
-  
-    // async getAdminSetting(req, res) {
-    //   let adminSetting = await AddDish.findOne();
-    //   const userJson = {};
-    //   if (adminSetting) {
-    //     userJson.distanceRadius = adminSetting.distanceRadius;
-    //     userJson.maximum = adminSetting.maximum;
-    //     userJson.minimum = adminSetting.minimum;
-    //   }
-    //   return res.success(userJson, req.__("SETTING_INFORMATION"));
-    // }
+    
   }
   
   module.exports = new UserController();

@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const AddDishController = require("./AddDishController");
 const { validate } = require("../../util/validations");
-const validations = require("./AddDishValidations");
+// const validations = require("./AddDishValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
-  validate(validations.createdish),
+  // validate(validations.createdish),
   AddDishController.create
 );
 
@@ -45,7 +45,7 @@ router.post(
 router.put(
   "/update/:_id",
   // verifyToken,
-  validate(validations.updateProfile),
+  // validate(validations.updateProfile),
   AddDishController.update
 );
 

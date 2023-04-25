@@ -10,6 +10,11 @@ const DATATABLE_DEFAULT_LIMIT = 10;
 const DATATABLE_DEFAULT_SKIP = 0;
 const { logError } = require("../../../../lib/util");
 var _ = require("lodash");
+var SendGridKey = process.env.SENDGRID_API_KEY;
+var apiEnv = process.env.NODE_ENV;
+console.log("this is env:", apiEnv);
+// var moment = require("moment");
+
 
 class UserController {       
             
@@ -46,7 +51,6 @@ class UserController {
 
     return res.success({}, "", req.__("PASSWORD_UPDATED"));
   }
-
 
   async  create (req, res, next) {
     
@@ -88,7 +92,6 @@ class UserController {
       return next(err);
     }
   }
-
 
   async Restaurentsignup(req, res, next) {
     let {
@@ -448,6 +451,7 @@ class UserController {
       return res.json({ data: err });
     }
   }
+
   async detailByEmail(req, res, next) {
     if (!req.params._id) {
       return res.notFound(
@@ -980,6 +984,7 @@ class UserController {
   //     return next(err);
   //   }
   // }
+  
   async UpdateStatus(req, res, next) {
     if (!req.params._id) {
       return res.notFound(

@@ -40,18 +40,15 @@ const { title } = require("process");
         ? parseInt(req.body.start)
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
-      var conditions = { is_deleted: 0 };
+      var conditions = { is_deleted: 0,type:req.body.type,status:req.body.status };
 
-      let filterObj = req.body.filter ? req.body.filter : null;
-      if (filterObj) {
-        //apply filter      
-        if (filterObj?.type) {
-          conditions["type"] = filterObj?.type;
-        }
-      }
-
-
-
+     // let filterObj = req.body.filter ? req.body.filter : null;
+      // if (filterObj) {
+      //   //apply filter      
+      //   if (filterObj?.type) {
+      //     conditions["type"] = filterObj?.type;
+      //   }
+      // }
 
       // if(req.body.type){
       // conditions.type = req.body.type ? req.body.type : null;
@@ -259,7 +256,7 @@ const { title } = require("process");
     async dropdown(req, res, next) {
       /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1};
+      var conditions = { is_deleted: 0, status: 1,type:req.body.type};
       asyncParallel(
         {
           data: function(callback) {
@@ -294,336 +291,16 @@ const { title } = require("process");
     }
 
 
-    async dropdown_cuisines(req, res, next) {
-      /** Filteration value */
-  
-      var conditions = { is_deleted: 0, status: 1, type:"643d45de298ed838a0e8b4c9"};
-      asyncParallel(
-        {
-          data: function(callback) {
-            MasterTable.find(
-              conditions,
-              {
-                _id: 1,
-                name: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
-              },
-              )
-                .populate("cuisines", "name _id type")
-                .exec((err, result) => {
-                  callback(err, result);
-                });
-            },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
-  
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
-        }
-      );
-    }
+   
 
     
-    async dropdown_spicelevel(req, res, next) {
-      /** Filteration value */
-  
-      var conditions = { is_deleted: 0, status: 1, type:"643d45d6298ed838a0e8b4c5"};
-      asyncParallel(
-        {
-          data: function(callback) {
-            MasterTable.find(
-              conditions,
-              {
-                _id: 1,
-                name: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
-              },
-              )
-                .populate("cuisines", "name _id type")
-                .exec((err, result) => {
-                  callback(err, result);
-                });
-            },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
-  
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
-        }
-      );
-    }
+ 
   
 
-    async dropdown_type(req, res, next) {
-      /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1, type:"643d45ca298ed838a0e8b4c1"};
-      asyncParallel(
-        {
-          data: function(callback) {
-            MasterTable.find(
-              conditions,
-              {
-                _id: 1,
-                name: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-               created_at: 1,
-               modified_at: 1,
-              },
-              )
-                .populate("cuisines", "name _id type")
-                .exec((err, result) => {
-                  callback(err, result);
-                });
-            },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
-  
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
-        }
-      );
-    }
 
-    async dropdown_cuisine(req, res, next) {
-      /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1, type:"643d45c0298ed838a0e8b4bd"};
-      asyncParallel(
-        {
-          data: function(callback) {
-            MasterTable.find(
-              conditions,
-              {
-                _id: 1,
-                name: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
-              },
-              )
-                .populate("cuisines", "name _id type")
-                .exec((err, result) => {
-                  callback(err, result);
-                });
-            },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
   
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
-        }
-      );
-    }
-  
-    async dropdown_ethnicity(req, res, next) {
-      /** Filteration value */
-  
-      var conditions = { is_deleted: 0, status: 1, type:"6440ced58b760e15f4a25390"};
-      asyncParallel(
-        {
-          data: function(callback) {
-            MasterTable.find(
-              conditions,
-              {
-                _id: 1,
-                name: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
-              },
-              )
-                .populate("cuisines", "name _id type")
-                .exec((err, result) => {
-                  callback(err, result);
-                });
-            },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
-  
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
-        }
-      );
-    }
-    async dropdown_language(req, res, next) {
-      /** Filteration value */
-  
-      var conditions = { is_deleted: 0, status: 1, type:"6440cf868b760e15f4a253b1"};
-      asyncParallel(
-        {
-          data: function(callback) {
-            MasterTable.find(
-              conditions,
-              {
-                _id: 1,
-                name: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
-              },
-              )
-                .populate("cuisines", "name _id type")
-                .exec((err, result) => {
-                  callback(err, result);
-                });
-            },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
-  
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
-        }
-      );
-    }
-    async dropdown_otherservice(req, res, next) {
-      /** Filteration value */
-  
-      var conditions = { is_deleted: 0, status: 1, type:"6440cfe78b760e15f4a253c9"};
-      asyncParallel(
-        {
-          data: function(callback) {
-            MasterTable.find(
-              conditions,
-              {
-                _id: 1,
-                name: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
-              },
-              )
-                .populate("cuisines", "name _id type")
-                .exec((err, result) => {
-                  callback(err, result);
-                });
-            },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
-  
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
-        }
-      );
-    }
-    async dropdown_sampleinterval(req, res, next) {
-      /** Filteration value */
-  
-      var conditions = { is_deleted: 0, status: 1, type:"64411db9f77cb1268cb5d122"};
-      asyncParallel(
-        {
-          data: function(callback) {
-            MasterTable.find(
-              conditions,
-              {
-                _id: 1,
-                name: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
-              },
-              )
-                .populate("cuisines", "name _id type")
-                .exec((err, result) => {
-                  callback(err, result);
-                });
-            },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
-  
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
-        }
-      );
-    }
-    async dropdown_discount(req, res, next) {
-      /** Filteration value */
-  
-      var conditions = { is_deleted: 0, status: 1, type:"644283f0fc642c1408f2c7ef"};
-      asyncParallel(
-        {
-          data: function(callback) {
-            MasterTable.find(
-              conditions,
-              {
-                _id: 1,
-                name: 1,
-                type:1,
-                status: 1,
-                is_edit: 1,
-                slug: 1,
-                 created_at: 1,
-                 modified_at: 1,
-              },
-              )
-                .populate("cuisines", "name _id type")
-                .exec((err, result) => {
-                  callback(err, result);
-                });
-            },
-        },
-        function(err, results) {
-          if (err) return res.json({ data: err });
-  
-          let data = {
-            records: results && results.data ? results.data : [],
-          };
-          return res.success(data, req.__("MasterTable_LIST_DONE"));
-        }
-      );
-    }
   
   //   async getAdminSetting(req, res) {
   //     let adminSetting = await MasterTable.findOne();

@@ -45,13 +45,13 @@ const {
       if (filterObj) {
         //apply filter      
         if (filterObj?. spice_level) {
-          conditions[" spice_level"] = filterObj?. spice_level;
+          conditions["spice_level"] = filterObj?. spice_level;
         }
         if (filterObj?. dish_title) {
-          conditions[" dish_title"] = filterObj?. dish_title;
+          conditions["dish_title"] = filterObj?. dish_title;
         }
         if (filterObj?. cuisine_type) {
-          conditions[" cuisine_type"] = filterObj?. cuisine_type;
+          conditions["cuisine_type"] = filterObj?. cuisine_type;
         }
       }
 
@@ -61,34 +61,20 @@ const {
             AddDish.find(
               conditions,
               {
-                _id: 1,
-                dish_title: 1,
-                description: 1,
-                ingredients: 1,
-                tags: 1,
-                spice_level:1,
-                food_type:1,
-                sample_interval:1,
-                weekly_speciality:1,
-                discount:1,
-                preparation_time: 1,
-                cost: 1,
-                dish_photo: 1,
-                is_edit: 1,
-                status: 1,
-                slug: 1,
-                user_id:1,
-                createdAt: 1,
-                updatedAt: 1,
-
+               
               },
               { sort: { created_at: "desc" }, skip: skip, limit: limit }
-              ).populate("user_id","_id full_name")
+              ).populate("spice_level","_id name")
+              .populate("cuisine_type","_id name")
+              .populate("food_type","_id name")
+              .populate("sample_interval","_id name")
+              .populate("weekly_speciality","_id name")
+              .populate("discount","_id name")
               .exec(
                 (err, result) => {
                   callback(err, result);
-                }
-              );
+                })
+              ;
             },
           records_filtered: function(callback) {
             AddDish.countDocuments(conditions, (err, result) => {

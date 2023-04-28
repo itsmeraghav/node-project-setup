@@ -18,55 +18,10 @@ router.post(
   MasterTableController.list
 );
 
-router.get(
+router.post(
   "/dropdown",
   // verifyToken,
   MasterTableController.dropdown
-);
-router.get(
-  "/dropdown_cuisines",
-  // verifyToken,
-  MasterTableController.dropdown_cuisines
-);
-router.get(
-  "/dropdown_spicelevel",
-  // verifyToken,
-  MasterTableController.dropdown_spicelevel
-);
-router.get(
-  "/dropdown_type",
-  // verifyToken,
-  MasterTableController.dropdown_type
-);
-router.get(
-  "/dropdown_cuisine",
-  // verifyToken,
-  MasterTableController.dropdown_cuisine
-);
-router.get(
-  "/dropdown_ethnicity",
-  // verifyToken,
-  MasterTableController.dropdown_ethnicity
-);
-router.get(
-  "/dropdown_language",
-  // verifyToken,
-  MasterTableController.dropdown_language
-);
-router.get(
-  "/dropdown_otherservice",
-  // verifyToken,
-  MasterTableController.dropdown_otherservice
-);
-router.get(
-  "/dropdown_sampleinterval",
-  // verifyToken,
-  MasterTableController.dropdown_sampleinterval
-);
-router.get(
-  "/dropdown_discount",
-  // verifyToken,
-  MasterTableController.dropdown_discount
 );
 
 

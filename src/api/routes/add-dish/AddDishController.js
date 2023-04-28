@@ -41,6 +41,20 @@ const {
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
       var conditions = { isDeleted: false };
+      let filterObj = req.body.filter ? req.body.filter : null;
+      if (filterObj) {
+        //apply filter      
+        if (filterObj?. spice_level) {
+          conditions[" spice_level"] = filterObj?. spice_level;
+        }
+        if (filterObj?. dish_title) {
+          conditions[" dish_title"] = filterObj?. dish_title;
+        }
+        if (filterObj?. cuisine_type) {
+          conditions[" cuisine_type"] = filterObj?. cuisine_type;
+        }
+      }
+
       asyncParallel(
         {
           data: function(callback) {
@@ -52,6 +66,11 @@ const {
                 description: 1,
                 ingredients: 1,
                 tags: 1,
+                spice_level:1,
+                food_type:1,
+                sample_interval:1,
+                weekly_speciality:1,
+                discount:1,
                 preparation_time: 1,
                 cost: 1,
                 dish_photo: 1,

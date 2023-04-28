@@ -123,6 +123,7 @@ class AuthController {
           user: userJson,
           baseProfileUrl: process.env.AWS_S3_BASE,
         },
+       
         req.__("LOGIN_SUCCESS")
       );
     } catch (err) {

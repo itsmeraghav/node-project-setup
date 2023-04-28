@@ -40,15 +40,18 @@ const { title } = require("process");
         ? parseInt(req.body.start)
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
-      var conditions = { is_deleted: 0,type:req.body.type,status:req.body.status };
+      var conditions = { is_deleted: 0 };
 
-     // let filterObj = req.body.filter ? req.body.filter : null;
-      // if (filterObj) {
-      //   //apply filter      
-      //   if (filterObj?.type) {
-      //     conditions["type"] = filterObj?.type;
-      //   }
-      // }
+     let filterObj = req.body.filter ? req.body.filter : null;
+      if (filterObj) {
+        //apply filter      
+        if (filterObj?.type) {
+          conditions["type"] = filterObj?.type;
+        }
+        if (filterObj?.status) {
+          conditions["status"] = filterObj?.status;
+        }
+      }
 
       // if(req.body.type){
       // conditions.type = req.body.type ? req.body.type : null;

@@ -12,11 +12,11 @@ const {
       let { dish_title } = req.body;
       try {
         var newRecord = new AddDish(req.body);
-        newRecord.slug = slug(dish_title, {
-          replacement: "-",
-          lower: true,
-          charmap: slug.charmap,
-        })
+        // newRecord.slug = slug(dish_title, {
+        //   replacement: "-",
+        //   lower: true,
+        //   charmap: slug.charmap,
+        // })
         return newRecord
           .save()
           .then((results) => {

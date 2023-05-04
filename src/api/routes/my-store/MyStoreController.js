@@ -12,11 +12,11 @@ const {
       let { search_product } = req.body;
       try {
         var newRecord = new MyStore(req.body);
-        newRecord.slug = slug(search_product, {
-          replacement: "-",
-          lower: true,
-          charmap: slug.charmap,
-        });
+        // newRecord.slug = slug(search_product, {
+        //   replacement: "-",
+        //   lower: true,
+        //   charmap: slug.charmap,
+        // });
         return newRecord
           .save()
           .then((results) => {

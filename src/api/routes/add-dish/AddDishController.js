@@ -47,8 +47,8 @@ const {
         if (filterObj?. spice_level) {
           conditions["spice_level"] = filterObj?. spice_level;
         }
-        if (filterObj?. dish_title) {
-          conditions["dish_title"] = filterObj?. dish_title;
+        if (filterObj?. food_type) {
+          conditions["food_type"] = filterObj?. food_type;
         }
         if (filterObj?. cuisine_type) {
           conditions["cuisine_type"] = filterObj?. cuisine_type;

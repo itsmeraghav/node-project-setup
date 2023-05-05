@@ -43,7 +43,10 @@ const {
       var conditions = { isDeleted: false };
       let filterObj = req.body.filter ? req.body.filter : null;
       if (filterObj) {
-        //apply filter      
+        //apply filter 
+        if (filterObj?. dish_title) {
+          conditions["dish_title"] = filterObj?. dish_title;
+        }     
         if (filterObj?. spice_level) {
           conditions["spice_level"] = filterObj?. spice_level;
         }

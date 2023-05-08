@@ -40,6 +40,11 @@ router.post(
   validate(validations.resetPassword),
   AuthController.resetPassword
 );
+router.post(
+  "/change-password",
+  validate(validations.changePassword),
+  AuthController.changePassword
+);
 
 
 router.post(

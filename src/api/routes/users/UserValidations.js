@@ -29,11 +29,11 @@ const Restaurentsignup = Joi.object().keys({
     .max(20)
     .required(),
   confirm_password: Joi.string()
-    .required()
+    
     .valid(Joi.ref("password"))
     .error(([error]) => {
       return {
-        message: "Confirm password required.",
+        message: "password required.",
       };
     }),
 });

@@ -10,7 +10,12 @@ const logIn = Joi.object().keys({
     .optional()
     .allow(""),
 });
-
+const changePassword = Joi.object().keys({
+  _id: Joi.string().optional(),
+  oldPassword: Joi.string().optional(),
+  password: Joi.string().optional(),
+  
+});
 const socialLogIn = Joi.object().keys({
   socialType: Joi.string().required(),
   socailId: Joi.string().required(),
@@ -46,8 +51,9 @@ const resetPassword = Joi.object().keys({
     .min(8)
     .max(20)
     .required(),
-    confirm_password: Joi.string()
-    .required()
+    confirm_password: Joi.string(),
+    email:Joi.string()
+    
     .valid(Joi.ref("password"))
     .error(([error]) => {
       const { locale } = error.options;
@@ -58,7 +64,7 @@ const resetPassword = Joi.object().keys({
           "password"
         ),
       };
-    }),
+   }),
 });
 
 const updateNotification = Joi.object().keys({
@@ -121,18 +127,19 @@ const signup = Joi.object().keys({
         .min(8)
         .max(20)
         .required(),
-        confirm_password: Joi.string()
-        .required()
-        .valid(Joi.ref("password"))
-        .error(([error]) => {
-          return {
-            message: "Confirm password required.",
-          };
-        }),
+         confirm_password: Joi.string()
+        
+        // .valid(Joi.ref("password"))
+        // .error(([error]) => {
+        //   return {
+        //     message: "password required.",
+        //   };
+        // }),
     });
 
 module.exports = {
   logIn,
+  changePassword,
   socialLogIn,
   socialSignup,
   resetPassword,

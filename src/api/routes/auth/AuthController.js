@@ -533,8 +533,8 @@ class AuthController {
               email,
               {
                 name:
-                  user.fullName.charAt(0).toUpperCase() +
-                  user.fullName.slice(1),
+                   user.full_name,//charAt(0).toUpperCase() +
+                  //user.full_name.slice(1),
                 verification_code: otpCode,
               }
             )
@@ -562,7 +562,7 @@ class AuthController {
     const userSave = await user.save();
     mailer
       .sendMail("password-update", req.__("PASSWORD_UPDATED"), user.email, {
-        name: user.full_Name,
+        name: user.full_name,
       })
       .catch((error) => {
         logError(`Failed to send password password email to ${user.email}`);
@@ -575,13 +575,12 @@ class AuthController {
   }
 
   async changePassword(req, res) {
-    const { password, oldPassword } = req.body;
-    const { _id } = req.user;
+    const { password, oldPassword,_id } = req.body;
+    //const { _id } = req.user;
 
     let user = await User.findOne({
       _id,
       isDeleted: false,
-      isVerified: true,
     });
     if (!user) {
       return res.badRequest({}, req.__("USER_NOT_EXISTS"));
@@ -594,7 +593,7 @@ class AuthController {
     const userSave = await user.save();
     mailer
       .sendMail("password-update", req.__("PASSWORD_UPDATED"), user.email, {
-        name: user.full_Name,
+        name: user.full_name,
       })
       .catch((error) => {
         logError(`Failed to send password password email to ${user.email}`);

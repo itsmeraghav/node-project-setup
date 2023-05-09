@@ -5,8 +5,12 @@ const { languages } = require('../../../../lib/i18n');
 
 const createservice = Joi.object().keys({
     
-    service_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .required(),
+    // service_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+    // .required(),
+    question: Joi.string()
+    .optional(),
+    answer: Joi.string()
+    .optional(),
      
        
 });
@@ -15,8 +19,8 @@ const createservice = Joi.object().keys({
 
 
 const updateProfile = Joi.object().keys({
-    service_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-    .optional(),
+//     service_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+//     .optional(),
 });
 
 

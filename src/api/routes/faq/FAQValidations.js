@@ -19,10 +19,12 @@ const createservice = Joi.object().keys({
 
 
 const updateProfile = Joi.object().keys({
-//     service_name: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
-//     .optional(),
-});
 
+    question: Joi.string()
+    .optional(),
+    answer: Joi.string()
+    .optional(),
+});
 
 module.exports = {
 

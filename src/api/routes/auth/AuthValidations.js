@@ -14,6 +14,7 @@ const changePassword = Joi.object().keys({
   _id: Joi.string().optional(),
   oldPassword: Joi.string().optional(),
   password: Joi.string().optional(),
+  confirm_password:Joi.string().optional(),
   
 });
 const socialLogIn = Joi.object().keys({

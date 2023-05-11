@@ -484,7 +484,7 @@ class AuthController {
           email,
           {
             name:
-              user.full_Name.charAt(0).toUpperCase() + user.full_Name.slice(1),
+              user.full_name.charAt(0).toUpperCase() + user.full_name.slice(1),
             verification_code: otpCode,
           }
         )

@@ -153,11 +153,11 @@ class AuthController {
   }      
 
   async verifyOtp(req, res) {
-    let { otp, otpType, contact_number, deviceToken } = req.body;
+    let { otp, otpType, email, deviceToken } = req.body;
     const time = utcDateTime().valueOf() - 900000;
 
     const otpObj = await Otp.findOne({
-      contact_number,
+      email,
       otp,
       otpType,
       otpTokenIssuedAt: { $gt: time },
@@ -167,7 +167,7 @@ class AuthController {
       return res.warn({}, req.__("INVALID_OTP"), req.__("INCORRECT_PASSCODE"));
     //
     await Otp.findOneAndUpdate(
-      { contact_number, otp },
+      { email, otp },
       { $set: { isVerified: true } }
     );
     if (otpType == "FORGOT") {
@@ -203,14 +203,14 @@ class AuthController {
       }
     } else if (otpType == "SIGNUP") {
       await User.findOneAndUpdate(
-        { contact_number, isDeleted: false },
+        { email, isDeleted: false },
         { $set: { isVerified: true } }
       );
 
       return res.success({}, "", req.__("OTP_VERIFIED"));
     } else if (otpType == "LOGIN") {
       await User.findOneAndUpdate(
-        { contact_number, isDeleted: false },
+        { email, isDeleted: false },
         { $set: { isVerified: true } }
       );
     }
@@ -501,53 +501,12 @@ class AuthController {
   }
 
   async resetPassword(req, res) {
-    const { email, password, token } = req.body;
+    const { email, password, token, otpType } = req.body;
     let user = await User.findOne({
-      email,
+          email: email,
       resetPasswordToken: token,
       isDeleted: false,
     });
-    if (user) {
-      if (!user.isVerified) {
-        let otpAdded = await Otp.findOne({ email, otpType: "SIGNUP" });
-        if ((otpAdded && !otpAdded.isVerified) || !otpAdded) {
-          let otpData;
-          if (otpAdded && !otpAdded.isVerified) {
-            otpData = otpAdded;
-          } else {
-            otpData = new Otp();
-          }
-
-          let otpCode = generateOtp();
-          otpData.otp = otpCode;
-          otpData.email = email;
-          otpData.otpType = "SIGNUP";
-          otpData.isVerified = false;
-          otpData.otpTokenIssuedAt = utcDateTime().valueOf();
-          await otpData.save();
-
-          mailer
-            .sendMail(
-              "email-verify",
-              "Please Verify Your testing Account",
-              email,
-              {
-                name:
-                   user.full_name,//charAt(0).toUpperCase() +
-                  //user.full_name.slice(1),
-                verification_code: otpCode,
-              }
-            )
-            .catch((error) => {});
-        }
-
-        return res.warn(
-          { userId: user._id, emailVerified: user.isVerified },
-          req.__("EMAIL_SEND"),
-          req.__("LOGIN_VERIFICATION_EMAIL_SENT")
-        );
-      }
-    }
     if (!user) {
       return res.badRequest(
         {},
@@ -558,16 +517,8 @@ class AuthController {
     //const resetPasswordToken = randomAlphabetic(18);
     user.resetPasswordToken = "";
     user.password = password;
-    user.isVerified = true;
+    // user.isVerified = true;
     const userSave = await user.save();
-    mailer
-      .sendMail("password-update", req.__("PASSWORD_UPDATED"), user.email, {
-        name: user.full_name,
-      })
-      .catch((error) => {
-        logError(`Failed to send password password email to ${user.email}`);
-        logError(error);
-      });
 
     if (!userSave) return res.badRequest({}, req.__("PASSWORD_NOT_SAVED"), "");
 

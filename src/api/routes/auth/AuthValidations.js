@@ -53,19 +53,20 @@ const resetPassword = Joi.object().keys({
     .max(20)
     .required(),
     confirm_password: Joi.string(),
-    email:Joi.string()
+    email:Joi.string(),
+    token:Joi.string(),
     
-    .valid(Joi.ref("password"))
-    .error(([error]) => {
-      const { locale } = error.options;
-      const language = languages[locale];
-      return {
-        message: language.validation.custom.sameAs(
-          error.context.key,
-          "password"
-        ),
-      };
-   }),
+    // .valid(Joi.ref("password"))
+    // .error(([error]) => {
+    //   const { locale } = error.options;
+    //   const language = languages[locale];
+      // return {
+      //   message: language.validation.custom.sameAs(
+      //     error.context.key,
+      //     "password"
+      //   ),
+      // };
+   //}),
 });
 
 const updateNotification = Joi.object().keys({
@@ -75,7 +76,9 @@ const updateNotification = Joi.object().keys({
 const verifyOtp = Joi.object().keys({
   otp: Joi.string().required(),
   otpType: Joi.string().required(),
-  mobile_number: Joi.string().required(),
+  email: Joi.string().required(),
+
+  // mobile_number: Joi.string().required(),
   deviceToken: Joi.string()
     .trim()
     .optional()

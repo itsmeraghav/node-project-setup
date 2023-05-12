@@ -42,11 +42,11 @@ router.delete(
 // //   FAQController.UpdateStatus
 // // );
 
-// router.put(
-//   "/update/:_id",
-//   // verifyToken,
-//   validate(validations.updateProfile),
-//   FAQController.update
-// );
+router.put(
+  "/update/:_id",
+  // verifyToken,
+ // validate(validations.updateProfile),
+  FAQController.update
+);
 
 module.exports = router;

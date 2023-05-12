@@ -174,47 +174,47 @@ const {
     // //   }
     // // }
   
-    // async update(req, res, next) {
-    //   if (!req.params._id) {
-    //     return res.notFound(
-    //       {},
-    //       req.__("INVALID_REQUEST"),
-    //       req.__("FAQ_NOT_EXIST")
-    //     );
-    //   }
-    //   let data = req.body;
-    //   let { user } = req;
-    //   try {
-    //     user = await FAQ.findOne({
-    //       _id: req.params._id,
-    //       // is_deleted: 0,
-    //     });
+    async update(req, res, next) {
+      if (!req.params._id) {
+        return res.notFound(
+          {},
+          req.__("INVALID_REQUEST"),
+          req.__("FAQ_NOT_EXIST")
+        );
+      }
+      let data = req.body;
+      let { user } = req;
+      try {
+        user = await FAQ.findOne({
+          _id: req.params._id,
+          is_deleted: 0,
+        });
   
-    //     if (!user) {
-    //       return res.notFound(
-    //         {},
-    //         req.__("INVALID_REQUEST"),
-    //         req.__("USER_NOT_EXIST")
-    //       );
-    //     }
+        if (!user) {
+          return res.notFound(
+            {},
+            req.__("INVALID_REQUEST"),
+            req.__("USER_NOT_EXIST")
+          );
+        }
   
-    //     if (user.isSuspended) {
-    //       return res.notFound(
-    //         "",
-    //         req.__("YOUR_ACCOUNT_SUSPENDED"),
-    //         req.__("ACCOUNT_SUSPENDED")
-    //       );
-    //     }
+        if (user.isSuspended) {
+          return res.notFound(
+            "",
+            req.__("YOUR_ACCOUNT_SUSPENDED"),
+            req.__("ACCOUNT_SUSPENDED")
+          );
+        }
   
-    //     if (data == null) return res.notFound({}, req.__("FAQ_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("FAQ_NOT_EXIST"));
   
-    //     await FAQ.findOneAndUpdate({ _id: req.params._id }, { ...data });
+        await FAQ.findOneAndUpdate({ _id: req.params._id }, { ...data });
   
-    //     return res.success(data, req.__("FAQ_UPDATE_SUCCESSFULLY"));
-    //   } catch (err) {
-    //     return res.json({ data: err });
-    //   }
-    // }
+        return res.success(data, req.__("FAQ_UPDATE_SUCCESSFULLY"));
+      } catch (err) {
+        return res.json({ data: err });
+      }
+    }
   
     // // async dropdown(req, res, next) {
     // //   /** Filteration value */

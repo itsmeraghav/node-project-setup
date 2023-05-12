@@ -18,7 +18,12 @@ const createAboutMe = Joi.object().keys({
         city: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
         .required(),
         gender: Joi.string().required(),
-        dob:Joi.date().required()
+        dob:Joi.date().required(),
+        about_me:Joi.string().required(),
+        ethnicity:Joi.string().required(),
+        language:Joi.string().required(),
+        select_cuisines_detail:Joi.string().required(),
+        other_service_offered:Joi.string().required()
     });
 
 

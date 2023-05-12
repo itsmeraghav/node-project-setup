@@ -46,19 +46,19 @@ const {
             AboutMe.find(
               conditions,
               {
-                _id: 1,
-                username: 1,
-                status: 1,
-                // is_edit: 1,
-                // createdAt: 1,
-                // updatedAt: 1,
+               
               },
-              { sort: { created_at: "desc" }, skip: skip, limit: limit },
-              (err, result) => {
-                callback(err, result);
-              }
-            );
-          },
+              { sort: { created_at: "desc" }, skip: skip, limit: limit }
+              ).populate("ethnicity","_id name")
+              .populate("language","_id name")
+              .populate("select_cuisines_detail","_id name")
+              .populate("other_service_offered","_id name")
+              .exec(
+                (err, result) => {
+                  callback(err, result);
+                })
+              ;
+            },
           records_filtered: function(callback) {
             AboutMe.countDocuments(conditions, (err, result) => {
               /* send success response */

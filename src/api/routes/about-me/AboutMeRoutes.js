@@ -8,7 +8,7 @@ const { verifyToken } = require("../../util/auth");
 router.post(
   "/create",
   // verifyToken,
-  validate(validations.createAboutMe),
+ // validate(validations.createAboutMe),
   AboutMeController.create
 );
 
@@ -44,7 +44,7 @@ router.post(
 
 router.put(
   "/update/:_id",
-  validate(validations.updateAboutMe),
+ // validate(validations.updateAboutMe),
   // verifyToken,
   AboutMeController.update
 );

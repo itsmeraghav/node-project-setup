@@ -12,11 +12,11 @@ const {
       let { email} = req.body;
       try {
         var newRecord = new AboutMe(req.body);
-        newRecord.slug = slug(email, {
-          replacement: "-",
-          lower: true,
-          charmap: slug.charmap,
-        });
+        // newRecord.slug = slug(email, {
+        //   replacement: "-",
+        //   lower: true,
+        //   charmap: slug.charmap,
+        // });
         return newRecord
           .save()
           .then((results) => {
@@ -112,12 +112,18 @@ const {
             state:1,
             city:1,
             address:1,
+            about_me:1,
+            ethnicity:1,
+            language:1,
+            select_cuisines_detail:1,
+            other_service_offered:1,
             status: 1,
             is_edit: 1,
             updatedAt: 1,
             createdAt:1,
             // modified_at: 1,
           }
+          
         );
         if (data == null) return res.notFound({}, req.__("AboutMe_NOT_EXIST"));
   

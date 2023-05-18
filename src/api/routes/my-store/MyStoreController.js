@@ -134,30 +134,30 @@ const {
       }
     }
   
-    // async delete(req, res, next) {
-    //   if (!req.params._id) {
-    //     return res.notFound(
-    //       {},
-    //       req.__("INVALID_REQUEST"),
-    //       req.__("MyStore_NOT_EXIST")
-    //     );
-    //   }
+    async delete(req, res, next) {
+      if (!req.params._id) {
+        return res.notFound(
+          {},
+          req.__("INVALID_REQUEST"),
+          req.__("MyStore_NOT_EXIST")
+        );
+      }
   
-    //   try {
-    //     let data = await MyStore.updateOne(
-    //       {
-    //         _id: req.params._id,
-    //       },
-    //       {is_deleted: true }
-    //     );
+      try {
+        let data = await MyStore.updateOne(
+          {
+            _id: req.params._id,
+          },
+          {is_deleted: true }
+        );
   
-    //     if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("MyStore_NOT_EXIST"));
   
-    //     return res.success(data, req.__("MyStore_DELETE_SUCCESSFULLY"));
-    //   } catch (err) {
-    //     return res.json({ data: err });
-    //   }
-    // }
+        return res.success(data, req.__("MyStore_DELETE_SUCCESSFULLY"));
+      } catch (err) {
+        return res.json({ data: err });
+      }
+    }
   
     async UpdateStatus(req, res, next) {
       if (!req.params._id) {

@@ -1,7 +1,7 @@
 const {
     models: { User, AboutMe },
   } = require("../../../../lib/models");
-  var slug = require("slug");
+  // var slug = require("slug");
   const asyncParallel = require("async/parallel");
   var _ = require("lodash");
   const DATATABLE_DEFAULT_LIMIT = 10;

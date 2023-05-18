@@ -30,11 +30,11 @@ router.get(
   MyStoreController.detail
 );
 
-// router.delete(
-//   "/delete/:_id",
-//   // verifyToken,
-//   MyStoreController.delete
-// );
+router.delete(
+  "/delete/:_id",
+  // verifyToken,
+  MyStoreController.delete
+);
 
 router.post(
   "/update-status/:_id",

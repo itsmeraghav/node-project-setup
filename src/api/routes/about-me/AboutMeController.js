@@ -57,6 +57,7 @@ const {
                 (err, result) => {
                   callback(err, result);
                 })
+                
               ;
             },
           records_filtered: function(callback) {

@@ -1,5 +1,5 @@
 const {
-    models: { User, GroceryList },
+    models: { User, Dishes,MasterTable },
   } = require("../../../../lib/models");
   var slug = require("slug");
   const asyncParallel = require("async/parallel");
@@ -9,18 +9,19 @@ const {
   
   class UserController {
     async create(req, res, next) {
-      let { list_title } = req.body;
+      let { dish_title } = req.body;
       try {
-        var newRecord = new GroceryList(req.body);
-        newRecord.slug = slug(list_title, {
-          replacement: "-",
-          lower: true,
-          charmap: slug.charmap,
-        });
+        var newRecord = new Dishes(req.body);
+        // newRecord.slug = slug(dish_title, {
+        //   replacement: "-",
+        //   lower: true,
+        //   charmap: slug.charmap,
+        // })
         return newRecord
           .save()
           .then((results) => {
-            return res.success(results, req.__("GroceryList_CREATE_SUCCESSFULLY"));
+            return res.success(results, req.__("Dishes_CREATE_SUCCESSFULLY"));
+
           })
           .catch((err) => {
             return res.json({ data: err });
@@ -39,40 +40,54 @@ const {
         ? parseInt(req.body.start)
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
-      var conditions = { is_deleted: false };
+      var conditions = { isDeleted: false };
+      let filterObj = req.body.filter ? req.body.filter : null;
+      if (filterObj) {
+        //apply filter 
+        if (filterObj?. dish_title) {
+          conditions["dish_title"] = filterObj?. dish_title;
+        }     
+        if (filterObj?. spice_level) {
+          conditions["spice_level"] = filterObj?. spice_level;
+        }
+        if (filterObj?. food_type) {
+          conditions["food_type"] = filterObj?. food_type;
+        }
+        if (filterObj?. cuisine_type) {
+          conditions["cuisine_type"] = filterObj?. cuisine_type;
+        }
+      }
+
       asyncParallel(
         {
           data: function(callback) {
-            GroceryList.find(
+            Dishes.find(
               conditions,
               {
-                _id: 1,
-                list_title: 1,
-                 description: 1,
-                 item: 1,
-                 minimum_quantity: 1,
-                 unit: 1,
-                 quantity: 1,
-                 total: 1,
-                // is_edit: 1,
-                // status: 1,
-                // createdAt: 1,
-                // updatedAt: 1,
+               
               },
-              { sort: { created_at: "desc" }, skip: skip, limit: limit },
-              (err, result) => {
-                callback(err, result);
-              }
-            );
-          },
+              { sort: { created_at: "desc" }, skip: skip, limit: limit }
+              ).populate("spice_level","_id name")
+              .populate("cuisine_type","_id name")
+              .populate("food_type","_id name")
+              .populate("sample_interval","_id name")
+              .populate("weekly_speciality","_id name")
+              .populate("discount_type","_id name")
+              .populate("user_id","_id full_name")
+              .exec(
+                (err, result) => {
+                  callback(err, result);
+                })
+              ;
+            },
           records_filtered: function(callback) {
-            GroceryList.countDocuments(conditions, (err, result) => {
+            Dishes.countDocuments(conditions, (err, result) => {
               /* send success response */
               callback(err, result);
             });
           },
           records_total: function(callback) {
-            GroceryList.countDocuments({ is_deleted: 0 }, (err, result) => {
+            Dishes.countDocuments({ is_deleted: 0 }, (err, result) => {
               /* send success response */
               callback(err, result);
             });
@@ -88,92 +103,90 @@ const {
             recordsTotal:
               results && results.records_total ? results.records_total : 0,
           };
-          return res.success(data, req.__("GroceryList_LIST_GENREATED"));
+          return res.success(data, req.__("Dishes_LIST_GENREATED"));
         }
       );
     }
-  
-
 
     async detail(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("GroceryList_NOT_EXIST")
+          req.__("Dishes_NOT_EXIST")
         );
       }
   
       try {
-        let data = await GroceryList.findOne(
+        let data = await Dishes.findOne(
           {
             _id: req.params._id,
           },
           {
-            //  _id: 0,
-            //  list_title:1,
+            // _id: 0,
+            // dish_title:1,
             // description: 1,
-            // minimum_quantity:1,
-            // unit:1,
-            // quantity:1,
-            // total:1,
-            // item_photo:1,
+            // ingredients:1,
+            // tags:1,
+            // preparation_time:1,
+            // dish_photo:1,
+            // cost:1,
             // status: 1,
-            // is_edit: 1,
-            
+            // is_edit: 1, 
+            // slug: 1,
             // createdAt: 1,
             
-          },
+          }
         );
-        if (data == null) return res.notFound({}, req.__("GroceryList_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Dishes_NOT_EXIST"));
   
-        return res.success(data, req.__("GroceryList_DETAIL_SUCCESSFULLY"));
+        return res.success(data, req.__("Dishes_DETAIL_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
     }
-  
+
     async delete(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("GroceryList_NOT_EXIST")
+          req.__("Dishes_NOT_EXIST")
         );
       }
   
       try {
-        let data = await GroceryList.updateOne(
+        let data = await Dishes.updateOne(
           {
             _id: req.params._id,
           },
-          {is_deleted: true }
+          {isDeleted: true }
         );
   
-        if (data == null) return res.notFound({}, req.__("GroceryList_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Dishes_NOT_EXIST"));
   
-        return res.success(data, req.__("GroceryList_DELETE_SUCCESSFULLY"));
+        return res.success(data, req.__("Dishes_DELETE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
     }
-  
+
     async UpdateStatus(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("GroceryList_NOT_EXIST")
+          req.__("Dishes_NOT_EXIST")
         );
       }
   
       try {
-        let data = await GroceryList.findOne({
+        let data = await Dishes.findOne({
           _id: req.params._id,
         });
-        if (data == null) return res.notFound({}, req.__("GroceryList_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Dishes_NOT_EXIST"));
   
-        let updatedData = await GroceryList.updateOne(
+        let updatedData = await Dishes.updateOne(
           {
             _id: req.params._id,
           },
@@ -184,25 +197,25 @@ const {
           }
         );
   
-        return res.success(data, req.__("GroceryList_STATUS_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("Dishes_STATUS_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         console.log("asdas", err);
         return res.json({ data: err });
       }
     }
-  
+
     async update(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("GroceryList_NOT_EXIST")
+          req.__("Dishes_NOT_EXIST")
         );
       }
       let data = req.body;
       let { user } = req;
       try {
-        user = await GroceryList.findOne({
+        user = await Dishes.findOne({
           _id: req.params._id,
           // is_deleted: 0,
         });
@@ -223,38 +236,38 @@ const {
           );
         }
   
-        if (data == null) return res.notFound({}, req.__("GroceryList_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Dishes_NOT_EXIST"));
   
-        await GroceryList.findOneAndUpdate({ _id: req.params._id }, { ...data });
+        await Dishes.findOneAndUpdate({ _id: req.params._id }, { ...data });
   
-        return res.success(data, req.__("GroceryList_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("Dishes_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
     }
-  
+
     async dropdown(req, res, next) {
       /** Filteration value */
   
-      var conditions = { is_deleted: 0, status: 1 };
+      var conditions = { isDeleted: 0, status: 1 };
       asyncParallel(
         {
           data: function(callback) {
-            GroceryList.find(
+            Dishes.find(
               conditions,
                {
-            //     _id: 0,
-            // dish_title:1,
-            // description: 1,
-            // ingredients:1,
-            // tags:1,
-            // preparation_time:1,
-            // dish_photo:1,
-            // cost:1,
-            // status: 1,
-            // is_edit: 1,
-            // slug: 1,
-            // createdAt: 1,
+                _id: 0,
+            dish_title:1,
+            description: 1,
+            ingredients:1,
+            tags:1,
+            preparation_time:1,
+            dish_photo:1,
+            cost:1,
+            status: 1,
+            is_edit: 1,
+            slug: 1,
+            createdAt: 1,
               },
               { sort: { created_at: "desc" } },
               (err, result) => {
@@ -265,26 +278,18 @@ const {
         },
         function(err, results) {
           if (err) return res.json({ data: err });
-    
+  
+  
+
           let data = {
             records: results && results.data ? results.data : [],
           };
-          return res.success(data, req.__("GroceryList_LIST_DONE"));
+          return res.success(data, req.__("Dishes_LIST_DONE"));
         }
       );
     }
-  
-    // async getAdminSetting(req, res) {
-    //   let adminSetting = await GroceryList.findOne();
-    //   const userJson = {};
-    //   if (adminSetting) {
-    //     userJson.distanceRadius = adminSetting.distanceRadius;
-    //     userJson.maximum = adminSetting.maximum;
-    //     userJson.minimum = adminSetting.minimum;
-    //   }
-    //   return res.success(userJson, req.__("SETTING_INFORMATION"));
-    // }
- }
+    
+  }
   
   module.exports = new UserController();
   

@@ -1,52 +1,52 @@
 const express = require("express");
 const router = express.Router();
-const GroceryListController = require("./GroceryListController");
+const GroceryController = require("./GroceryController");
 const { validate } = require("../../util/validations");
-const validations = require("./GroceryListValidations");
+const validations = require("./GroceryValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
  validate(validations.createtype),
-  GroceryListController.create
+  GroceryController.create
 );
 
 router.post(
   "/list",
   // verifyToken,
-  GroceryListController.list
+  GroceryController.list
 );
 
 router.get(
   "/dropdown",
   // verifyToken,
-  GroceryListController.dropdown
+  GroceryController.dropdown
 );
 
 router.get(
   "/detail/:_id",
   // verifyToken,
-  GroceryListController.detail
+  GroceryController.detail
 );
 
 router.delete(
   "/delete/:_id",
   // verifyToken,
-  GroceryListController.delete
+  GroceryController.delete
 );
 
 router.post(
   "/update-status/:_id",
   // verifyToken,
-  GroceryListController.UpdateStatus
+  GroceryController.UpdateStatus
 );
 
 router.put(
   "/update/:_id",
   // verifyToken,
    validate(validations.updateProfile),
-  GroceryListController.update
+  GroceryController.update
 );
 
 module.exports = router;

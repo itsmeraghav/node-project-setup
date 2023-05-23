@@ -1,6 +1,6 @@
 
   const {
-    models: { User, MyPhotos },
+    models: { User, Gallery },
   } = require("../../../../lib/models");
   var slug = require("slug");
   const multer = require("multer");
@@ -14,7 +14,7 @@
     async create(req, res, next) {
       let { image} = req.body;
       try {
-        var newRecord = new MyPhotos(req.body);
+        var newRecord = new Gallery(req.body);
         newRecord.slug = slug(image, {
           replacement: "-",
           lower: true,
@@ -23,7 +23,7 @@
         return newRecord
           .save()
           .then((results) => {
-            return res.success(results, req.__("MyPhotos_CREATE_SUCCESSFULLY"));
+            return res.success(results, req.__("Photo_Uploded_SUCCESSFULLY"));
           })
           .catch((err) => {
             return res.json({ data: err });
@@ -46,30 +46,27 @@
       asyncParallel(
         {
           data: function(callback) {
-            MyPhotos.find(
+            Gallery.find(
               conditions,
               {
-                _id: 1,
-                image: 1,
-                status: 1,
-                // is_edit: 1,
-                // createdAt: 1,
-                // updatedAt: 1,
+                
               },
-              { sort: { created_at: "desc" }, skip: skip, limit: limit },
-              (err, result) => {
-                callback(err, result);
-              }
-            );
-          },
+              { sort: { created_at: "desc" }, skip: skip, limit: limit })
+              .populate("user_id","_id full_name")
+              .exec(
+                (err, result) => {
+                  callback(err, result);
+                })
+              ;
+            },
           records_filtered: function(callback) {
-            MyPhotos.countDocuments(conditions, (err, result) => {
+            Gallery.countDocuments(conditions, (err, result) => {
               /* send success response */
               callback(err, result);
             });
           },
           records_total: function(callback) {
-            MyPhotos.countDocuments({ is_deleted: 0 }, (err, result) => {
+            Gallery.countDocuments({ is_deleted: 0 }, (err, result) => {
               /* send success response */
               callback(err, result);
             });
@@ -85,7 +82,7 @@
             recordsTotal:
               results && results.records_total ? results.records_total : 0,
           };
-          return res.success(data, req.__("MyPhotos_LIST_GENREATED"));
+          return res.success(data, req.__("Gallery_LIST_GENREATED"));
         }
       );
     }
@@ -95,12 +92,12 @@
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MyPhotos_NOT_EXIST")
+          req.__("PHOTO_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MyPhotos.findOne(
+        let data = await Gallery.findOne(
           {
             _id: req.params._id,
           },
@@ -114,9 +111,9 @@
             // modified_at: 1,
           }
         );
-        if (data == null) return res.notFound({}, req.__("MyPhotos_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("PHOTO_NOT_EXIST"));
   
-        return res.success(data, req.__("MyPhotos_DETAIL_SUCCESSFULLY"));
+        return res.success(data, req.__("PHOTO_DETAIL_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -127,21 +124,21 @@
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MyPhotos_NOT_EXIST")
+          req.__("PHOTO_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MyPhotos.updateOne(
+        let data = await Gallery.updateOne(
           {
             _id: req.params._id,
           },
           { is_deleted: 1 }
         );
   
-        if (data == null) return res.notFound({}, req.__("MyPhotos_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("PHOTO_NOT_EXIST"));
   
-        return res.success(data, req.__("MyPhotos_DELETE_SUCCESSFULLY"));
+        return res.success(data, req.__("Gallery_DELETE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -152,17 +149,17 @@
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MyPhotos_NOT_EXIST")
+          req.__("PHOTO_NOT_EXIST")
         );
       }
   
       try {
-        let data = await MyPhotos.findOne({
+        let data = await Gallery.findOne({
           _id: req.params._id,
         });
-        if (data == null) return res.notFound({}, req.__("MyPhotos_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("PHOTO_NOT_EXIST"));
   
-        let updatedData = await MyPhotos.updateOne(
+        let updatedData = await Gallery.updateOne(
           {
             _id: req.params._id,
           },
@@ -173,7 +170,7 @@
           }
         );
   
-        return res.success(data, req.__("MyPhotos_STATUS_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("PHOTO_STATUS_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         console.log("asdas", err);
         return res.json({ data: err });
@@ -185,13 +182,13 @@
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("MyPhotos_NOT_EXIST")
+          req.__("PHOTO_NOT_EXIST")
         );
       }
       let data = req.body;
       let { user } = req;
       try {
-        user = await MyPhotos.findOne({
+        user = await Gallery.findOne({
           _id: req.params._id,
           is_deleted: 0,
         });
@@ -212,11 +209,11 @@
           );
         }
   
-        if (data == null) return res.notFound({}, req.__("MyPhotos_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("PHOTO_NOT_EXIST"));
   
-        await MyPhotos.findOneAndUpdate({ _id: req.params._id }, { ...data });
+        await Gallery.findOneAndUpdate({ _id: req.params._id }, { ...data });
   
-        return res.success(data, req.__("MyPhotos_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("PHOTO_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -229,7 +226,7 @@
     //   asyncParallel(
     //     {
     //       data: function(callback) {
-    //         MyPhotos.find(
+    //         Gallery.find(
     //           conditions,
     //           {
     //             // _id: 1,
@@ -252,13 +249,13 @@
     //       let data = {
     //         records: results && results.data ? results.data : [],
     //       };
-    //       return res.success(data, req.__("MyPhotos_LIST_DONE"));
+    //       return res.success(data, req.__("Gallery_LIST_DONE"));
     //     }
     //   );
     // }
   
 //   async getAdminSetting(req, res) {
-//     let adminSetting = await MyPhotos.findOne();
+//     let adminSetting = await Gallery.findOne();
 //     const userJson = {};
 //     if (adminSetting) {
 //       userJson.distanceRadius = adminSetting.distanceRadius;

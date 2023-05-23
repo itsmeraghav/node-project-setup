@@ -116,6 +116,14 @@ class AuthController {
       const token = signToken(user, platform);
       const userJson = user.toJSON();
       [
+        "password",
+        "OTPVerification",
+        "OTPExpires",
+        "isSuspended",
+        "isDeleted",
+        "isFreezed",
+        "confirm_password",
+        "authTokenIssuedAt"
       ].forEach((key) => delete userJson[key]);
       return res.success(
         {

@@ -2,8 +2,7 @@ const { Joi, common } = require('../../util/validations');
 const { languages } = require('../../../../lib/i18n');
 
 const create = Joi.object().keys({
-    name: Joi.string().required(),
-    designation: Joi.string().optional(),
+    user_id: Joi.string().required(),
     date: Joi.date().optional(),
   });
    

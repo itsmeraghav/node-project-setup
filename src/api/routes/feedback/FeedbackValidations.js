@@ -5,6 +5,8 @@ const create = Joi.object().keys({
     user_id: Joi.string().required(),
     date: Joi.date().optional(),
     description: Joi.string().optional(),
+    rating: Joi.number().optional(),
+
 
   });
    

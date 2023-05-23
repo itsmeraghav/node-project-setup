@@ -9,14 +9,14 @@ const {
   
   class UserController {
     async create(req, res, next) {
-      let { service_name } = req.body;
+      let {  years_of_experience } = req.body;
       try {
         var newRecord = new OtherServices(req.body);
-        newRecord.slug = slug(service_name, {
-          replacement: "-",
-          lower: true,
-          charmap: slug.charmap,
-        });
+        // newRecord.slug = slug( years_of_experience, {
+        //   replacement: "-",
+        //   lower: true,
+        //   charmap: slug.charmap,
+        // });
         return newRecord
           .save()
           .then((results) => {
@@ -46,8 +46,8 @@ const {
             OtherServices.find(
               conditions,
               {
-                _id: 1,
-                service_name: 1,
+                // _id: 1,
+                // service_name: 1,
                 // description: 1,
                 // ingredients: 1,
                 // tags: 1,
@@ -60,12 +60,15 @@ const {
                 // createdAt: 1,
                 // updatedAt: 1,
               },
-              { sort: { created_at: "desc" }, skip: skip, limit: limit },
-              (err, result) => {
-                callback(err, result);
-              }
-            );
-          },
+              { sort: { created_at: "desc" }, skip: skip, limit: limit }
+              ).populate("user_id","_id full_name")
+              .populate("other_service_offered","_id name")
+              .exec(
+                (err, result) => {
+                  callback(err, result);
+                })
+              ;
+            },
           records_filtered: function(callback) {
             OtherServices.countDocuments(conditions, (err, result) => {
               /* send success response */

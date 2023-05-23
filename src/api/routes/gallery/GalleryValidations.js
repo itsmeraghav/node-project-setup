@@ -4,8 +4,12 @@ const { languages } = require('../../../../lib/i18n');
 
 const create = Joi.object().keys({
     image: Joi.string()
-    .optional(),
+    .required(),
+    user_id: Joi.string()
+    .required(),
     });
+   
+    
 
      const updatePhoto = Joi.object().keys({
         image: Joi.string()

@@ -1,21 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const MyPhotosController = require("./MyPhotosController");
+const Gallery = require("./GalleryController");
 const { validate } = require("../../util/validations");
-const validations = require("./MyPhotosValidations");
+const validations = require("./GalleryValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
  validate(validations.create),
-  MyPhotosController.create
+ Gallery.create
 );
 
 router.post(
   "/list",
   // verifyToken,
-  MyPhotosController.list
+  Gallery.list
 );
 
 // router.get(
@@ -27,26 +27,26 @@ router.post(
 router.get(
   "/detail/:_id",  
   // verifyToken,
-  MyPhotosController.detail
+  Gallery.detail
 );
 
 router.delete(
   "/delete/:_id",
   // verifyToken,
-  MyPhotosController.delete
+  Gallery.delete
 );
 
 router.post(
   "/update-status/:_id",
   // verifyToken,
-  MyPhotosController.UpdateStatus
+  Gallery.UpdateStatus
 );
 
 router.put(
   "/update/:_id",
   validate(validations.updatePhoto),
   // verifyToken,
-  MyPhotosController.update
+  Gallery.update
 );
 
 module.exports = router;

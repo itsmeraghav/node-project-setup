@@ -1,6 +1,6 @@
 
 const {
-    models: { User, Feedback },
+    models: { User, Availability },
   } = require("../../../../lib/models");
   var slug = require("slug");
   const multer = require("multer");
@@ -14,7 +14,7 @@ const {
     async create(req, res, next) {
       let { user_id} = req.body;
       try {
-        var newRecord = new Feedback(req.body);
+        var newRecord = new Availability(req.body);
         // newRecord.slug = slug(name, {
         //   replacement: "-",
         //   lower: true,
@@ -23,7 +23,7 @@ const {
         return newRecord
           .save()
           .then((results) => {
-            return res.success(results, req.__("Feedback_CREATE_SUCCESSFULLY"));
+            return res.success(results, req.__("Availability_CREATE_SUCCESSFULLY"));
           })
           .catch((err) => {
             return res.json({ data: err });
@@ -46,7 +46,7 @@ const {
       asyncParallel(
         {
           data: function(callback) {
-            Feedback.find(
+            Availability.find(
               conditions,
               {
                 // _id: 1,
@@ -57,9 +57,7 @@ const {
                 // updatedAt: 1,
               },
               { sort: { created_at: "desc" }, skip: skip, limit: limit })
-              .populate("to_id","_id full_name upload_profile role ")
-              .populate("from_id","_id full_name upload_profile role ")
-
+              .populate("weekly_speciality","_id name ")
               .exec(
                 (err, result) => {
                   callback(err, result);
@@ -67,13 +65,13 @@ const {
               ;
             },
           records_filtered: function(callback) {
-            Feedback.countDocuments(conditions, (err, result) => {
+            Availability.countDocuments(conditions, (err, result) => {
               /* send success response */
               callback(err, result);
             });
           },
           records_total: function(callback) {
-            Feedback.countDocuments({ is_deleted: 0 }, (err, result) => {
+            Availability.countDocuments({ is_deleted: 0 }, (err, result) => {
               /* send success response */
               callback(err, result);
             });
@@ -89,7 +87,7 @@ const {
             recordsTotal:
               results && results.records_total ? results.records_total : 0,
           };
-          return res.success(data, req.__("Feedback_LIST_GENREATED"));
+          return res.success(data, req.__("Availability_LIST_GENREATED"));
         }
       );
     }
@@ -99,12 +97,12 @@ const {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("Feedback_NOT_EXIST")
+          req.__("Availability_NOT_EXIST")
         );
       }
   
       try {
-        let data = await Feedback.findOne(
+        let data = await Availability.findOne(
           {
             _id: req.params._id,
           },
@@ -120,9 +118,9 @@ const {
             // modified_at: 1,
           }
         );
-        if (data == null) return res.notFound({}, req.__("Feedback_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Availability_NOT_EXIST"));
   
-        return res.success(data, req.__("Feedback_DETAIL_SUCCESSFULLY"));
+        return res.success(data, req.__("Availability_DETAIL_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -133,21 +131,21 @@ const {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("Feedback_NOT_EXIST")
+          req.__("Availability_NOT_EXIST")
         );
       }
   
       try {
-        let data = await Feedback.updateOne(
+        let data = await Availability.updateOne(
           {
             _id: req.params._id,
           },
           { is_deleted: 1 }
         );
   
-        if (data == null) return res.notFound({}, req.__("Feedback_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Availability_NOT_EXIST"));
   
-        return res.success(data, req.__("Feedback_DELETE_SUCCESSFULLY"));
+        return res.success(data, req.__("Availability_DELETE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -158,17 +156,17 @@ const {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("Feedback_NOT_EXIST")
+          req.__("Availability_NOT_EXIST")
         );
       }
   
       try {
-        let data = await Feedback.findOne({
+        let data = await Availability.findOne({
           _id: req.params._id,
         });
-        if (data == null) return res.notFound({}, req.__("Feedback_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Availability_NOT_EXIST"));
   
-        let updatedData = await Feedback.updateOne(
+        let updatedData = await Availability.updateOne(
           {
             _id: req.params._id,
           },
@@ -179,7 +177,7 @@ const {
           }
         );
   
-        return res.success(data, req.__("Feedback_STATUS_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("Availability_STATUS_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         console.log("asdas", err);
         return res.json({ data: err });
@@ -191,13 +189,13 @@ const {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
-          req.__("Feedback_NOT_EXIST")
+          req.__("Availability_NOT_EXIST")
         );
       }
       let data = req.body;
       let { user } = req;
       try {
-        user = await Feedback.findOne({
+        user = await Availability.findOne({
           _id: req.params._id,
           is_deleted: 0,
         });
@@ -218,11 +216,11 @@ const {
           );
         }
   
-        if (data == null) return res.notFound({}, req.__("Feedback_NOT_EXIST"));
+        if (data == null) return res.notFound({}, req.__("Availability_NOT_EXIST"));
   
-        await Feedback.findOneAndUpdate({ _id: req.params._id }, { ...data });
+        await Availability.findOneAndUpdate({ _id: req.params._id }, { ...data });
   
-        return res.success(data, req.__("Feedback_UPDATE_SUCCESSFULLY"));
+        return res.success(data, req.__("Availability_UPDATE_SUCCESSFULLY"));
       } catch (err) {
         return res.json({ data: err });
       }
@@ -235,7 +233,7 @@ const {
       asyncParallel(
         {
           data: function(callback) {
-            Feedback.find(
+            Availability.find(
               conditions,
               {
                 // _id: 1,
@@ -258,13 +256,13 @@ const {
           let data = {
             records: results && results.data ? results.data : [],
           };
-          return res.success(data, req.__("Feedback_LIST_DONE"));
+          return res.success(data, req.__("Availability_LIST_DONE"));
         }
       );
     }
   
 //   async getAdminSetting(req, res) {
-//     let adminSetting = await Feedback.findOne();
+//     let adminSetting = await Availability.findOne();
 //     const userJson = {};
 //     if (adminSetting) {
 //       userJson.distanceRadius = adminSetting.distanceRadius;

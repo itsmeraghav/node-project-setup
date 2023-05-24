@@ -6,6 +6,8 @@ const createservice = Joi.object().keys({
   // .required(),
   question: Joi.string().optional(),
   answer: Joi.string().optional(),
+  user_id: Joi.string().optional(),
+
 });
 
 const updateProfile = Joi.object().keys({

@@ -52,12 +52,14 @@ const {
                 createdAt: 1,
                 updatedAt: 1,
               },
-              { sort: { created_at: "desc" }, skip: skip, limit: limit },
-              (err, result) => {
-                callback(err, result);
-              }
-            );
-          },
+              { sort: { created_at: "desc" }, skip: skip, limit: limit }
+              )  .populate("user_id","_id full_name")
+              .exec(
+                (err, result) => {
+                  callback(err, result);
+                })
+              ;
+            },
           records_filtered: function(callback) {
             FAQ.countDocuments(conditions, (err, result) => {
               /* send success response */

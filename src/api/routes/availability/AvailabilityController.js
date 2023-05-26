@@ -57,7 +57,11 @@ const {
                 // updatedAt: 1,
               },
               { sort: { created_at: "desc" }, skip: skip, limit: limit })
-              .populate("weekly_speciality","_id name ")
+              .populate("weekly_speciality","_id name availability")
+              .populate("user_id","_id full_name ")
+ 
+
+
               .exec(
                 (err, result) => {
                   callback(err, result);

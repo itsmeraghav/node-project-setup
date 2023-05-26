@@ -17,6 +17,7 @@ const createAboutMe = Joi.object().keys({
         .required(),
         city: Joi.string()
         .required(),
+        dob:Joi.date().optional(),
         gender: Joi.string().required(),
         license_expiry_date:Joi.date().required(),
         about_me:Joi.string().required(),

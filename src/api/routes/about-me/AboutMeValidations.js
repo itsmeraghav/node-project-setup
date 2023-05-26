@@ -9,16 +9,16 @@ const createAboutMe = Joi.object().keys({
         .required(),
         zipcode: Joi.string()
         .required(),
-        address: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+        address: Joi.string()
         .required(),
-        country: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)  
+        country: Joi.string()
         .required(),
-        state: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+        state: Joi.string()
         .required(),
-        city: Joi.string().regex(/^[a-zA-Z][a-zA-Z ]*$/)
+        city: Joi.string()
         .required(),
         gender: Joi.string().required(),
-        dob:Joi.date().required(),
+        license_expiry_date:Joi.date().required(),
         about_me:Joi.string().required(),
         ethnicity:Joi.string().required(),
         language:Joi.string().required(),

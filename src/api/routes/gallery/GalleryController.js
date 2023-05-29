@@ -51,7 +51,13 @@
               {
                 
               },
-              { sort: { created_at: "desc" }, skip: skip, limit: limit })
+              { sort: { created_at: "desc" }, skip: skip, limit: limit }
+              ).populate("spice_level","_id name")
+              .populate("cuisine_type","_id name")
+              .populate("food_type","_id name")
+              .populate("sample_interval","_id name")
+              .populate("weekly_speciality","_id name")
+              .populate("discount_type","_id name")
               .populate("user_id","_id full_name")
               .exec(
                 (err, result) => {

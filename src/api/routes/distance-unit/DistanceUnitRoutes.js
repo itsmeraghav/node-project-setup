@@ -8,7 +8,7 @@ const { verifyToken } = require("../../util/auth");
 router.post(
   "/create",
   // verifyToken,
- validate(validations.create),
+ //validate(validations.create),
   DistanceUnitController.create
 );
 
@@ -17,6 +17,11 @@ router.put(
    validate(validations.updateDistanceUnit),
     // verifyToken,
     DistanceUnitController.update
+  );
+  router.post(
+    "/list",
+    // verifyToken,
+    DistanceUnitController.list
   );
 
   router.delete(

@@ -10,14 +10,14 @@ const DATATABLE_DEFAULT_SKIP = 0;
 
 class UserController {
   async create(req, res, next) {
-    let { set_distance_unit } = req.body;
+    let { distance_unit } = req.body;
     try {
       var newRecord = new DistanceUnit(req.body);
-      newRecord.slug = slug(set_distance_unit, {
-        replacement: "-",
-        lower: true,
-        charmap: slug.charmap,
-      });
+      // newRecord.slug = slug(set_distance_unit, {
+      //   replacement: "-",
+      //   lower: true,
+      //   charmap: slug.charmap,
+      // });
       return newRecord
         .save()
         .then((results) => {
@@ -30,6 +30,67 @@ class UserController {
       return next(err);
     }
   }
+  async list(req, res, next) {
+    /** Filteration value */
+    let limit = req.body.length
+      ? parseInt(req.body.length)
+      : DATATABLE_DEFAULT_LIMIT;
+    let skip = req.body.start
+      ? parseInt(req.body.start)
+      : DATATABLE_DEFAULT_SKIP;
+    skip = skip === 0 ? 0 : (skip - 1) * limit;
+    var conditions = { is_deleted: 0 };
+    asyncParallel(
+      {
+        data: function(callback) {
+          DistanceUnit.find(
+            conditions,
+            {
+              // _id: 1,
+              // search_dish: 1,
+              // status: 1,
+              // is_edit: 1,
+              // createdAt: 1,
+              // updatedAt: 1,
+            },
+            { sort: { created_at: "desc" }, skip: skip, limit: limit })
+            .populate("distance_unit","_id name ")
+            .populate("user_id","_id full_name ")
+
+            .exec(
+              (err, result) => {
+                callback(err, result);
+              })
+            ;
+          },
+        records_filtered: function(callback) {
+          DistanceUnit.countDocuments(conditions, (err, result) => {
+            /* send success response */
+            callback(err, result);
+          });
+        },
+        records_total: function(callback) {
+          DistanceUnit.countDocuments({ is_deleted: 0 }, (err, result) => {
+            /* send success response */
+            callback(err, result);
+          });
+        },
+      },
+      function(err, results) {
+        if (err) return res.json({ data: err });
+
+        let data = {
+          records: results && results.data ? results.data : [],
+          recordsFiltered:
+            results && results.records_filtered ? results.records_filtered : 0,
+          recordsTotal:
+            results && results.records_total ? results.records_total : 0,
+        };
+        return res.success(data, req.__("DistanceUnit_LIST_GENREATED"));
+      }
+    );
+  }
+
 
   
   async update(req, res, next) {

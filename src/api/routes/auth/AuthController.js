@@ -55,52 +55,9 @@ class AuthController {
           req.__("INCORRECT_PASSWORD")
         );
       }
-
-      // if (!user.isVerified) {
-      //   let otpAdded = await Otp.findOne({ email, otpType: 'SIGNUP' });
-      //   if ((otpAdded && !otpAdded.isVerified) || !otpAdded) {
-      //     let otpData;
-      //     if (otpAdded && !otpAdded.isVerified) {
-      //       otpData = otpAdded;
-      //     } else {
-      //       otpData = new Otp();
-      //     }
-
-      //     let otpCode = generateOtp();
-      //     otpData.otp = otpCode;
-      //     otpData.email = email;
-      //     otpData.otpType = "SIGNUP";
-      //     otpData.isVerified = false;
-      //     otpData.otpTokenIssuedAt = utcDateTime().valueOf();
-      //     await otpData.save();
-
-      //     mailer
-      //       .sendMail("email-verify", "Please Verify Your testing Account", email, {
-      //         name: user.fullName.charAt(0).toUpperCase() + user.fullName.slice(1),
-      //         verification_code: otpCode,
-      //       })
-      //       .catch((error) => { });
-      //   }
-
-      //   return res.warn(
-      //     { userId: user._id, emailVerified: user.isVerified },
-      //     req.__("EMAIL_SEND"), req.__("LOGIN_VERIFICATION_EMAIL_SENT")
-      //   );
-      // }
-
       user.authTokenIssuedAt = utcDateTime().valueOf();
       user.deviceToken = deviceToken;
-      if (user.isSuspended) {
-        return res.warn(
-          {
-            userId: user._id,
-            adminVerified: !user.isSuspended,
-            isSuspended: user.isSuspended,
-          },
-          req.__("YOUR_ACCOUNT_SUSPENDED"),
-          req.__("ACCOUNT_SUSPENDED")
-        );
-      }
+      
       if (user.isDeleted) {
         return res.warn(
           {

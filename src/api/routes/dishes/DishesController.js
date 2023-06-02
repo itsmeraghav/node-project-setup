@@ -121,7 +121,9 @@ const {
         let data = await Dishes.findOne(
           {
             _id: req.params._id,
-          },
+          }
+          ,
+      
           {
             // _id: 0,
             // dish_title:1,
@@ -137,7 +139,15 @@ const {
             // createdAt: 1,
             
           }
-        );
+       
+        ) .populate("spice_level","_id name")
+        .populate("cuisine_type","_id name")
+        .populate("food_type","_id name")
+        .populate("sample_interval","_id name")
+        .populate("weekly_speciality","_id name")
+        .populate("discount_type","_id name")
+        .populate("user_id","_id full_name")
+        .exec()
         if (data == null) return res.notFound({}, req.__("Dishes_NOT_EXIST"));
   
         return res.success(data, req.__("Dishes_DETAIL_SUCCESSFULLY"));
@@ -145,6 +155,7 @@ const {
         return res.json({ data: err });
       }
     }
+  
 
     async delete(req, res, next) {
       if (!req.params._id) {

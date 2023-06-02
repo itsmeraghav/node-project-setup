@@ -117,13 +117,7 @@ class UserController {
         );
       }
 
-      if (user.isSuspended) {
-        return res.notFound(
-          "",
-          req.__("YOUR_ACCOUNT_SUSPENDED"),
-          req.__("ACCOUNT_SUSPENDED")
-        );
-      }
+   
 
       if (data == null) return res.notFound({}, req.__("DistanceUnit_NOT_EXIST"));
 
@@ -139,6 +133,7 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
+        
         req.__("DistanceUnit_NOT_EXIST")
       );
     }

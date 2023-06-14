@@ -15,7 +15,7 @@ class UserController {
     try {
       var newRecord = new Orders(req.body);
       newRecord.order_id = randomNumericfororder(10);
-      newRecord.order_date = new Date();
+   
       return newRecord
         .save()
         .then((results) => {

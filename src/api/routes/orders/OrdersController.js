@@ -1,10 +1,11 @@
 const {
-  models: { User, PastCustomer },
+  models: { User, Orders },
 } = require("../../../../lib/models");
 var slug = require("slug");
 const multer = require("multer");
 const asyncParallel = require("async/parallel");
 var _ = require("lodash");
+const { randomNumeric,randomNumericfororder } = require("../../util/common");
 const DATATABLE_DEFAULT_LIMIT = 10;
 const DATATABLE_DEFAULT_SKIP = 0;
 
@@ -12,18 +13,15 @@ class UserController {
   async create(req, res, next) {
     let { user_id } = req.body;
     try {
-      var newRecord = new PastCustomer(req.body);
-      // newRecord.slug = slug(name, {
-      //   replacement: "-",
-      //   lower: true,
-      //   charmap: slug.charmap,
-      // });
+      var newRecord = new Orders(req.body);
+      newRecord.order_id = randomNumericfororder(10);
+      newRecord.order_date = new Date();
       return newRecord
         .save()
         .then((results) => {
           return res.success(
             results,
-            req.__("PastCustomer_CREATE_SUCCESSFULLY")
+            req.__("Order_CREATE_SUCCESSFULLY")
           );
         })
         .catch((err) => {
@@ -44,39 +42,44 @@ class UserController {
       : DATATABLE_DEFAULT_SKIP;
     skip = skip === 0 ? 0 : (skip - 1) * limit;
     var conditions = { is_deleted: 0 };
+  
+    let filterObj = req.body.filter ? req.body.filter : null;
+    if (filterObj) {
+      //apply filter
+      if (filterObj?.order_id) {
+        conditions["order_id"] = filterObj?.order_id;
+      }
+      if (filterObj?.cx_id) {
+        conditions["cx_id"] = filterObj?.cx_id;
+      }
+      if (filterObj?.created_by) {
+        conditions["created_by"] = filterObj?.created_by;
+      }
+    }
     asyncParallel(
       {
         data: function(callback) {
-          PastCustomer.find(
+          Orders.find(
             conditions,
             {
-              // _id: 1,
-              // name: 1,
-              // status: 1,
-              // is_edit: 1,
-              // createdAt: 1,
-              // updatedAt: 1,
+              
             },
             { sort: { created_at: "desc" }, skip: skip, limit: limit }
           )
-            .populate("user_id", "_id full_name upload_profile ")
-            .populate("about_me", "about_me ")
-            .populate("following", "_id full_name upload_profile ")
-            .populate("followers", "_id full_name upload_profile ")
-
-
+            .populate("created_by", "_id full_name upload_profile ")
+            .populate("cx_id", "_id full_name upload_profile ")
             .exec((err, result) => {
               callback(err, result);
             })  ;
         },
         records_filtered: function(callback) {
-          PastCustomer.countDocuments(conditions, (err, result) => {
+          Orders.countDocuments(conditions, (err, result) => {
             /* send success response */
             callback(err, result);
           });
         },
         records_total: function(callback) {
-          PastCustomer.countDocuments({ is_deleted: 0 }, (err, result) => {
+          Orders.countDocuments({ is_deleted: 0 }, (err, result) => {
             /* send success response */
             callback(err, result);
           });
@@ -92,7 +95,7 @@ class UserController {
           recordsTotal:
             results && results.records_total ? results.records_total : 0,
         };
-        return res.success(data, req.__("PastCustomer_LIST_GENREATED"));
+        return res.success(data, req.__("Orders_LIST_GENREATED"));
       }
     );
   }
@@ -102,31 +105,23 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("PastCustomer_NOT_EXIST")
+        req.__("Orders_NOT_EXIST")
       );
     }
 
     try {
-      let data = await PastCustomer.findOne(
+      let data = await Orders.findOne(
         {
           _id: req.params._id,
         },
         {
-          _id: 1,
-          name: 1,
-          designation: 1,
-          date: 1,
-          status: 1,
-          is_edit: 1,
-          updatedAt: 1,
-          createdAt: 1,
-          // modified_at: 1,
+          
         }
       );
       if (data == null)
-        return res.notFound({}, req.__("PastCustomer_NOT_EXIST"));
+        return res.notFound({}, req.__("Orders_NOT_EXIST"));
 
-      return res.success(data, req.__("PastCustomer_DETAIL_SUCCESSFULLY"));
+      return res.success(data, req.__("Orders_DETAIL_SUCCESSFULLY"));
     } catch (err) {
       return res.json({ data: err });
     }
@@ -137,12 +132,12 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("PastCustomer_NOT_EXIST")
+        req.__("Orders_NOT_EXIST")
       );
     }
 
     try {
-      let data = await PastCustomer.updateOne(
+      let data = await Orders.updateOne(
         {
           _id: req.params._id,
         },
@@ -150,9 +145,9 @@ class UserController {
       );
 
       if (data == null)
-        return res.notFound({}, req.__("PastCustomer_NOT_EXIST"));
+        return res.notFound({}, req.__("Orders_NOT_EXIST"));
 
-      return res.success(data, req.__("PastCustomer_DELETE_SUCCESSFULLY"));
+      return res.success(data, req.__("Orders_DELETE_SUCCESSFULLY"));
     } catch (err) {
       return res.json({ data: err });
     }
@@ -163,31 +158,28 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("PastCustomer_NOT_EXIST")
+        req.__("Orders_NOT_EXIST")
       );
     }
-
     try {
-      let data = await PastCustomer.findOne({
+      let data = await Orders.findOne({
         _id: req.params._id,
       });
       if (data == null)
-        return res.notFound({}, req.__("PastCustomer_NOT_EXIST"));
+        return res.notFound({}, req.__("Orders_NOT_EXIST"));
 
-      let updatedData = await PastCustomer.updateOne(
+      let updatedData = await Orders.updateOne(
         {
           _id: req.params._id,
         },
         {
-          $set: {
-            status: data.status == 1 ? 0 : 1,
-          },
+          order_status:req.body.order_status
         }
       );
 
       return res.success(
-        data,
-        req.__("PastCustomer_STATUS_UPDATE_SUCCESSFULLY")
+        updatedData,
+        req.__("Orders_STATUS_UPDATE_SUCCESSFULLY")
       );
     } catch (err) {
       console.log("asdas", err);
@@ -200,13 +192,13 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("PastCustomer_NOT_EXIST")
+        req.__("Orders_NOT_EXIST")
       );
     }
     let data = req.body;
     let { user } = req;
     try {
-      user = await PastCustomer.findOne({
+      user = await Orders.findOne({
         _id: req.params._id,
         is_deleted: 0,
       });
@@ -228,11 +220,11 @@ class UserController {
       }
 
       if (data == null)
-        return res.notFound({}, req.__("PastCustomer_NOT_EXIST"));
+        return res.notFound({}, req.__("Orders_NOT_EXIST"));
 
-      await PastCustomer.findOneAndUpdate({ _id: req.params._id }, { ...data });
+      await Orders.findOneAndUpdate({ _id: req.params._id }, { ...data });
 
-      return res.success(data, req.__("PastCustomer_UPDATE_SUCCESSFULLY"));
+      return res.success(data, req.__("Orders_UPDATE_SUCCESSFULLY"));
     } catch (err) {
       return res.json({ data: err });
     }
@@ -241,19 +233,14 @@ class UserController {
   async dropdown(req, res, next) {
     /** Filteration value */
 
-    var conditions = { is_deleted: 0, status: 1 };
+    var conditions = { is_deleted: 0,  };
     asyncParallel(
       {
         data: function(callback) {
-          PastCustomer.find(
+          Orders.find(
             conditions,
             {
-              // _id: 1,
-              // username: 1,
-              // status: 1,
-              // is_edit: 1,
-              //  created_at: 1,
-              //  modified_at: 1,
+             
             },
             { sort: { created_at: "desc" } },
             (err, result) => {
@@ -268,21 +255,12 @@ class UserController {
         let data = {
           records: results && results.data ? results.data : [],
         };
-        return res.success(data, req.__("PastCustomer_LIST_DONE"));
+        return res.success(data, req.__("Orders_LIST_DONE"));
       }
     );
   }
 
-  //   async getAdminSetting(req, res) {
-  //     let adminSetting = await PastCustomer.findOne();
-  //     const userJson = {};
-  //     if (adminSetting) {
-  //       userJson.distanceRadius = adminSetting.distanceRadius;
-  //       userJson.maximum = adminSetting.maximum;
-  //       userJson.minimum = adminSetting.minimum;
-  //     }
-  //     return res.success(userJson, req.__("SETTING_INFORMATION"));
-  //   }
+  
 }
 
 module.exports = new UserController();

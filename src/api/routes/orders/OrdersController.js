@@ -52,8 +52,8 @@ class UserController {
       if (filterObj?.cx_id) {
         conditions["cx_id"] = filterObj?.cx_id;
       }
-      if (filterObj?.created_by) {
-        conditions["created_by"] = filterObj?.created_by;
+      if (filterObj?.marchent_id) {
+        conditions["marchent_id"] = filterObj?.marchent_id;
       }
     }
     asyncParallel(
@@ -66,7 +66,7 @@ class UserController {
             },
             { sort: { created_at: "desc" }, skip: skip, limit: limit }
           )
-            .populate("created_by", "_id full_name upload_profile ")
+            .populate("marchent_id", "_id full_name upload_profile ")
             .populate("cx_id", "_id full_name upload_profile ")
             .exec((err, result) => {
               callback(err, result);

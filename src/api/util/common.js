@@ -18,6 +18,18 @@ const randomNumeric = (length) => {
     charset: "numeric",
   });
 };
+
+const randomNumericfororder = (length) => {
+  const randnum =randomstring.generate({
+    length:length,
+    charset: "numeric",
+  });
+  const od = "OD"
+  const numran =randnum
+   const record = od.concat("",numran)
+  return record
+};
+
 const randomuniqe = (length) => {
   return randomstring.generate({
     length: length,
@@ -32,4 +44,5 @@ module.exports = {
   randomAlphabetic,
   randomNumeric,
   randomuniqe,
+  randomNumericfororder,
 };

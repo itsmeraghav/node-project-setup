@@ -68,6 +68,8 @@ class UserController {
           )
             .populate("marchent_id", "_id full_name upload_profile ")
             .populate("cx_id", "_id full_name upload_profile ")
+            .populate("order_dish")
+            .populate("order_grocery")
             .exec((err, result) => {
               callback(err, result);
             })  ;
@@ -117,7 +119,11 @@ class UserController {
         {
           
         }
-      );
+      ) .populate("marchent_id", "_id full_name upload_profile ")
+      .populate("cx_id", "_id full_name upload_profile ")
+      .populate("order_dish")
+      .populate("order_grocery")
+      .exec()
       if (data == null)
         return res.notFound({}, req.__("Orders_NOT_EXIST"));
 

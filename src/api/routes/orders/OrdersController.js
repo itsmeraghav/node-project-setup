@@ -49,6 +49,9 @@ class UserController {
       if (filterObj?.order_id) {
         conditions["order_id"] = filterObj?.order_id;
       }
+      if (filterObj?.order_status) {
+        conditions["order_status"] = filterObj?.order_status;
+      }
       if (filterObj?.cx_id) {
         conditions["cx_id"] = filterObj?.cx_id;
       }

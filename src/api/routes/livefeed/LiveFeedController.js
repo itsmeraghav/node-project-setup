@@ -49,8 +49,8 @@
               },
               { sort: { created_at: "desc" }, skip: skip, limit: limit }
               )
-              .populate("chef_id","_id full_name")
-              .populate("user_id","_id full_name")
+              .populate("chef_id","_id full_name upload_profile")
+              .populate("user_id","_id full_name upload_profile")
             
               .exec(
                 (err, result) => {

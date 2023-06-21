@@ -428,12 +428,12 @@ class AuthController {
         ); //As per Document if email not found also send same response
       }
 
-      console.log("step 1");
+     
       const resetPasswordToken = randomAlphabetic(18);
       user.resetPasswordToken= resetPasswordToken
       await user.save();
       //create a forgot password link
-      let linkGenerate = "http://localhost:3000/resetpassword/?token="+resetPasswordToken+"?email="+email
+      let linkGenerate = "http://localhost:3000/resetpassword/?token="+resetPasswordToken+"/?email="+email
       mailer
         .sendMail(
           "forget-password",

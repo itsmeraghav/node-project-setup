@@ -428,32 +428,25 @@ class AuthController {
         ); //As per Document if email not found also send same response
       }
 
-      let otpAdded = await Otp.findOne({ email, otpType: "FORGOT" });
-      let otpData;
-      if (otpAdded) {
-        otpData = otpAdded;
-      } else {
-        otpData = new Otp();
-      }
-      let otpCode = generateOtp();
-      otpData.otp = otpCode;
-      otpData.email = email;
-      otpData.otpType = "FORGOT";
-      otpData.isVerified = false;
-      otpData.otpTokenIssuedAt = utcDateTime().valueOf();
-      await otpData.save();
+      console.log("step 1");
+      const resetPasswordToken = randomAlphabetic(18);
+      user.resetPasswordToken= resetPasswordToken
+      await user.save();
+      //create a forgot password link
+      let linkGenerate = "https://electroitsolutions.com/?token="+resetPasswordToken
       mailer
         .sendMail(
-          "api-forgot-password",
-          "Update Your testing Password",
+          "forget-password",
+          "Update Your Password",
           email,
           {
             name:
               user.full_name.charAt(0).toUpperCase() + user.full_name.slice(1),
-            verification_code: otpCode,
+            link: linkGenerate,
           }
         )
-        .catch((error) => {});
+        .catch((error) => {console.log("error",error)});
+        console.log("step 2")
       return res.success(
         {},
         req.__("EMAIL_SEND"),
@@ -468,7 +461,7 @@ class AuthController {
   async resetPassword(req, res) {
     const { email, password, token, otpType } = req.body;
     let user = await User.findOne({
-          email: email,
+      email: email,
       resetPasswordToken: token,
       isDeleted: false,
     });

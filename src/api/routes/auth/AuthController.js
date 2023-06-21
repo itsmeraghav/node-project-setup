@@ -433,7 +433,7 @@ class AuthController {
       user.resetPasswordToken= resetPasswordToken
       await user.save();
       //create a forgot password link
-      let linkGenerate = "http://localhost:3000/resetpassword/?token="+resetPasswordToken
+      let linkGenerate = "http://localhost:3000/resetpassword/?token="+resetPasswordToken+"?email="+email
       mailer
         .sendMail(
           "forget-password",
@@ -446,7 +446,7 @@ class AuthController {
           }
         )
         .catch((error) => {console.log("error",error)});
-        console.log("step 2")
+    
       return res.success(
         {},
         req.__("EMAIL_SEND"),

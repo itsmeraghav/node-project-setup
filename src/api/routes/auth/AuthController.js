@@ -472,6 +472,15 @@ class AuthController {
         req.__("USER_NOT_EXIST")
       );
     }
+    if (resetPasswordToken=null) {
+      return res.badRequest(
+        {},
+        req.__("USER_NOT_EXISTS"),
+        req.__("USER_NOT_EXIST")
+      );
+    }
+    
+
     //const resetPasswordToken = randomAlphabetic(18);
     user.resetPasswordToken = "";
     user.password = password;
@@ -481,6 +490,23 @@ class AuthController {
     if (!userSave) return res.badRequest({}, req.__("PASSWORD_NOT_SAVED"), "");
 
     res.success({}, req.__("PASSWORD_RESET"), req.__("PASSWORD_UPDATED"));
+  }
+
+  async tokenexpcheck(req, res) {
+    const { email,  token } = req.body;
+    let user = await User.findOne({
+      email: email,
+      resetPasswordToken: token,
+      isDeleted: false,
+    });
+    if (!user) {
+      return res.badRequest(
+        {},
+        req.__("USER_NOT_EXISTS"),
+        req.__("USER_NOT_EXIST")
+      );
+    }
+    res.success({}, req.__("TOKEN_FOUND_SUCCESS"), req.__("TOKEN_FOUND_SUCCESS"));
   }
 
   async changePassword(req, res) {

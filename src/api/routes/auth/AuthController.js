@@ -472,13 +472,7 @@ class AuthController {
         req.__("USER_NOT_EXIST")
       );
     }
-    if (resetPasswordToken=null) {
-      return res.badRequest(
-        {},
-        req.__("USER_NOT_EXISTS"),
-        req.__("USER_NOT_EXIST")
-      );
-    }
+   
     
 
     //const resetPasswordToken = randomAlphabetic(18);

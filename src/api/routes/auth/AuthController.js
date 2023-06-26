@@ -473,8 +473,6 @@ class AuthController {
       );
     }
    
-    
-
     //const resetPasswordToken = randomAlphabetic(18);
     user.resetPasswordToken = "";
     user.password = password;
@@ -493,6 +491,11 @@ class AuthController {
       resetPasswordToken: token,
       isDeleted: false,
     });
+
+
+
+
+
     if (!user) {
       return res.badRequest(
         {},

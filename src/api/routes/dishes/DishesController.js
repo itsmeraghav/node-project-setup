@@ -56,6 +56,18 @@ const {
         if (filterObj?. cuisine_type) {
           conditions["cuisine_type"] = filterObj?. cuisine_type;
         }
+        if (filterObj?.cost) {
+          conditions["cost"] = filterObj?.cost;
+        }
+        if (filterObj?.user_id) {
+          conditions["user_id"] = filterObj?.user_id;
+        }
+        if (filterObj?.today_speciality) {
+          conditions["today_speciality"] = filterObj?.today_speciality;
+        }
+        if (filterObj?.weekly_speciality) {
+          conditions["weekly_speciality"] = filterObj?.weekly_speciality;
+        }
       }
 
       asyncParallel(

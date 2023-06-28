@@ -59,7 +59,7 @@ const {
               { sort: { created_at: "desc" }, skip: skip, limit: limit })
               .populate("to_id","_id full_name upload_profile role ")
               .populate("from_id","_id full_name upload_profile role ")
-
+              .populate("dish_id",)
 
               .exec(
                 (err, result) => {
@@ -110,16 +110,7 @@ const {
             _id: req.params._id,
           },
           {
-            _id: 1,
-            name:1,
-            designation:1,
-            date:1,
-            status: 1,
-            is_edit: 1,
-            updatedAt: 1,
-            createdAt:1,
-            // modified_at: 1,
-          }
+                      }
         );
         if (data == null) return res.notFound({}, req.__("Feedback_NOT_EXIST"));
   

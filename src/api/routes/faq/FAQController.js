@@ -53,7 +53,8 @@ const {
                 updatedAt: 1,
               },
               { sort: { created_at: "desc" }, skip: skip, limit: limit }
-              )  .populate("user_id","_id full_name")
+              )  .populate("user_id",)
+              .populate("dish_id",)
               .exec(
                 (err, result) => {
                   callback(err, result);

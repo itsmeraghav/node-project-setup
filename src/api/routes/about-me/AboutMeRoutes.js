@@ -25,7 +25,7 @@ router.get(
 );
 
 router.get(
-  "/detail/:_id",  
+  "/detail/:user_id",  
   // verifyToken,
   AboutMeController.detail
 );

@@ -40,6 +40,15 @@ const {
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
       var conditions = { is_deleted: 0 };
+      let filterObj = req.body.filter ? req.body.filter : null;
+      if (filterObj) {
+        //apply filter 
+       
+        if (filterObj?.user_id) {
+          conditions["user_id"] = filterObj?.user_id;
+        }
+        
+      }
       asyncParallel(
         {
           data: function(callback) {
@@ -53,6 +62,7 @@ const {
               .populate("language","_id name")
               .populate("select_cuisines_detail","_id name")
               .populate("other_service_offered","_id name")
+              .populate("user_id",)
               .exec(
                 (err, result) => {
                   callback(err, result);

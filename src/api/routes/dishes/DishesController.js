@@ -85,7 +85,7 @@ const {
               .populate("sample_interval","_id name")
               .populate("weekly_speciality","_id name")
               .populate("discount_type","_id name")
-              .populate("user_id","_id full_name")
+              .populate("user_id",)
               .exec(
                 (err, result) => {
                   callback(err, result);

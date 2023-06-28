@@ -158,7 +158,7 @@ const {
         .populate("sample_interval","_id name")
         .populate("weekly_speciality","_id name")
         .populate("discount_type","_id name")
-        .populate("user_id","_id full_name")
+        .populate("user_id",)
         .exec()
         if (data == null) return res.notFound({}, req.__("Dishes_NOT_EXIST"));
   

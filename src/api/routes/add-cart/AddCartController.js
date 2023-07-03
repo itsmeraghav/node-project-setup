@@ -141,28 +141,32 @@ const mongoose = require("mongoose");
     }
   
     async delete(req, res, next) {
-      if (!req.params._id) {
+      if (!req.body?.user_id || !req.body?.dish_id) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
           req.__("AddCart_NOT_EXIST")
         );
       }
+//update query array object
+      let cartResult = await AddCart.findOne({user_id: req.body.user_id,"cart_item": {$elemMatch:{dish_id:mongoose.Types.ObjectId(req.body.dish_id) }}});
+
   
-      try {
-        let data = await AddCart.updateOne(
-          {
-            _id: req.params._id,
-          },
-          { is_deleted: 1 }
+      //if no card data exist send error response
+      if (!cartResult) {
+        return res.notFound(
+          {},
+          req.__("INVALID_REQUEST"),
+          req.__("CART_NOT_EXIST")
         );
+      };
   
-        if (data == null) return res.notFound({}, req.__("AddCart_NOT_EXIST"));
+      //array object remove method
   
-        return res.success(data, req.__("AddCart_DELETE_SUCCESSFULLY"));
-      } catch (err) {
-        return res.json({ data: err });
-      }
+      let updatecart = await AddCart.updateOne({user_id: req.body.user_id}, {$pull: {cart_item: {dish_id:mongoose.Types.ObjectId(req.body.dish_id)}}})
+  
+        return res.success( req.__("AddCart_DELETE_SUCCESSFULLY"));
+    
     }
   
     async UpdateStatus(req, res, next) {

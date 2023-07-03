@@ -163,7 +163,8 @@ const mongoose = require("mongoose");
   
       //array object remove method
   
-      let updatecart = await AddCart.updateOne({user_id: req.body.user_id}, {$pull: {cart_item: {dish_id:mongoose.Types.ObjectId(req.body.dish_id)}}})
+      let updatecart = await AddCart.updateOne({user_id: req.body.user_id}, {$pull: {cart_item: {dish_id:mongoose.Types.ObjectId(req.body.dish_id)}}});
+      // console.log(updatecart)
   
         return res.success( req.__("AddCart_DELETE_SUCCESSFULLY"));
     

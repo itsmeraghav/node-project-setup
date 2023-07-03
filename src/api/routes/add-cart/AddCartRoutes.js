@@ -31,7 +31,7 @@ router.get(
 );
 
 router.delete(
-  "/delete/:_id",
+  "/delete",
   // verifyToken,
   AddCartController.delete
 );

@@ -12,7 +12,10 @@ const mongoose = require("mongoose");
     async create(req, res, next) {
       let { email} = req.body;
       try {
-        var newRecord = new AddCart(req.body);
+        // check if user already have carts
+        let result = await AddCart.findOne({user_id:req.body.user_id});
+        if(!result){
+          var newRecord = new AddCart(req.body);
        
         return newRecord
           .save()
@@ -22,6 +25,12 @@ const mongoose = require("mongoose");
           .catch((err) => {
             return res.json({ data: err });
           });
+        }else{
+          await AddCart.updateOne({user_id:req.body.user_id},{$push:{cart_item:req.body.cart_item}});
+          return res.success({}, req.__("AddCart_CREATE_SUCCESSFULLY"));
+        }
+
+        
       } catch (err) {
         return next(err);
       }

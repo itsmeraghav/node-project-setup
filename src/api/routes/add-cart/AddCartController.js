@@ -4,6 +4,7 @@ const {
   // var slug = require("slug");
   const asyncParallel = require("async/parallel");
   var _ = require("lodash");
+const mongoose = require("mongoose");
   const DATATABLE_DEFAULT_LIMIT = 10;
   const DATATABLE_DEFAULT_SKIP = 0;
   
@@ -198,45 +199,30 @@ const {
     }
   
     async update(req, res, next) {
-      if (!req.params._id) {
+
+      if (!req.body?.user_id || !req.body?.dish_id || !req.body?.quantity) {
         return res.notFound(
           {},
           req.__("INVALID_REQUEST"),
           req.__("AddCart_NOT_EXIST")
         );
       }
-      let data = req.body;
-      let { user } = req;
-      try {
-        user = await AddCart.findOne({
-          _id: req.params._id,
-          is_deleted: 0,
-        });
+//update query array object
+      let cartResult = await AddCart.findOne({user_id: req.body.user_id,"cart_item": {$elemMatch:{dish_id:mongoose.Types.ObjectId(req.body.dish_id) }}});
+
   
-        if (!user) {
-          return res.notFound(
-            {},
-            req.__("INVALID_REQUEST"),
-            req.__("USER_NOT_EXIST")
-          );
-        }
-  
-        if (user.isSuspended) {
-          return res.notFound(
-            "",
-            req.__("YOUR_ACCOUNT_SUSPENDED"),
-            req.__("ACCOUNT_SUSPENDED")
-          );
-        }
-  
-        if (data == null) return res.notFound({}, req.__("AddCart_NOT_EXIST"));
-  
-        await AddCart.findOneAndUpdate({ _id: req.params._id }, { ...data });
-  
-        return res.success(data, req.__("AddCart_UPDATE_SUCCESSFULLY"));
-      } catch (err) {
-        return res.json({ data: err });
-      }
+      //if no card data exist send error response
+      if (!cartResult) {
+        return res.notFound(
+          {},
+          req.__("INVALID_REQUEST"),
+          req.__("CART_NOT_EXIST")
+        );
+      };
+//
+      // Now update the Quantity;
+      let updatecart = await AddCart.updateOne({user_id: req.body.user_id,"cart_item":{$elemMatch:{dish_id:mongoose.Types.ObjectId(req.body.dish_id) }}},{ $set: { "cart_item.$.quantity": req.body.quantity } });
+      return res.success(updatecart, req.__("AddCart_UPDATE_SUCCESSFULLY"));
     }
   
     async dropdown(req, res, next) {

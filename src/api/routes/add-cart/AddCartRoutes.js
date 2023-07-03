@@ -43,7 +43,7 @@ router.post(
 );
 
 router.put(
-  "/update/:dish_id",
+  "/update",
  // validate(validations.updateAddCart),
   // verifyToken,
   AddCartController.update

@@ -66,6 +66,13 @@ const mongoose = require("mongoose");
               { sort: { created_at: "desc" }, skip: skip, limit: limit }
               ).populate("cart_item.dish_id",)
               .populate("user_id",)
+              // .populate("cart_item.dish_id.user_id",)
+              .populate({
+                path : 'cart_item.dish_id',
+                populate : {
+                  path : 'user_id'
+                }
+              })
               .exec(
                 (err, result) => {
                   callback(err, result);

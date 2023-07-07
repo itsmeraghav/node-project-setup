@@ -74,8 +74,7 @@ class UserController {
                   })
                 },
               ],
-            }).populate("country_id", "_id name")
-            .populate("state_id", "_id name")
+            })
             .exec((err, result) => {
               callback(err, result);
             });
@@ -139,8 +138,7 @@ class UserController {
             })
           },
         ],
-      }).populate("country_id", "_id name")
-      .populate("state_id", "_id name")
+      })
         .exec();
       if (data == null)
         return res.notFound({}, req.__("CartCheckout_NOT_EXIST"));

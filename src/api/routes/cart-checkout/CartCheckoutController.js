@@ -5,12 +5,13 @@ var slug = require("slug");
 const multer = require("multer");
 const asyncParallel = require("async/parallel");
 var _ = require("lodash");
+const { Dishes } = require("../../../../lib/models/models");
 const DATATABLE_DEFAULT_LIMIT = 10;
 const DATATABLE_DEFAULT_SKIP = 0;
 
 class UserController {
   async create(req, res, next) {
-    let {  } = req.body;
+    let {} = req.body;
     try {
       var newRecord = new CartCheckout(req.body);
       return newRecord
@@ -39,34 +40,45 @@ class UserController {
       : DATATABLE_DEFAULT_SKIP;
     skip = skip === 0 ? 0 : (skip - 1) * limit;
     var conditions = { is_deleted: 0 };
-  
-    let filterObj = req.body.filter ? req.body.filter : null;
-    if (filterObj) {
-      //apply filter
-   
-      if (filterObj?.cx_id) {
-        conditions["cx_id"] = filterObj?.cx_id;
-      }
-     
-    }
+
+    // let filterObj = req.body.filter ? req.body.filter : null;
+    // if (filterObj) {
+    //   //apply filter
+
+    //   if (filterObj?.cx_id) {
+    //     conditions["cx_id"] = filterObj?.cx_id;
+    //   }
+
+    // }
+
     asyncParallel(
       {
         data: function(callback) {
           CartCheckout.find(
             conditions,
-            {
-              
-            },
+            {},
             { sort: { created_at: "desc" }, skip: skip, limit: limit }
-          )
-            .populate("chef_id",)
-            .populate("cx_id",)
-            .populate("dish_id",)
-            .populate("country_id",)
-            .populate("state_id",)
+          )  .populate({
+              path: "cart_id",
+              populate: [
+                {
+                  path: "user_id",
+                  select: "_id full_name",
+                },
+                {
+                  path: "cart_item.dish_id",
+                  select: "_id title cost discount_amount dish_photo",
+                  populate:({
+                    path:'user_id',
+                    select: "_id full_name",
+                  })
+                },
+              ],
+            }).populate("country_id", "_id name")
+            .populate("state_id", "_id name")
             .exec((err, result) => {
               callback(err, result);
-            })  ;
+            });
         },
         records_filtered: function(callback) {
           CartCheckout.countDocuments(conditions, (err, result) => {
@@ -110,12 +122,26 @@ class UserController {
         {
           _id: req.params._id,
         },
-        {
-          
-        }
-      ) 
-    
-      .exec()
+        {}
+      ) .populate({
+        path: "cart_id",
+        populate: [
+          {
+            path: "user_id",
+            select: "_id full_name",
+          },
+          {
+            path: "cart_item.dish_id",
+            select: "_id title cost discount_amount dish_photo",
+            populate:({
+              path:'user_id',
+              select: "_id full_name",
+            })
+          },
+        ],
+      }).populate("country_id", "_id name")
+      .populate("state_id", "_id name")
+        .exec();
       if (data == null)
         return res.notFound({}, req.__("CartCheckout_NOT_EXIST"));
 
@@ -180,7 +206,6 @@ class UserController {
         req.__("CartCheckout_STATUS_UPDATE_SUCCESSFULLY")
       );
     } catch (err) {
-   
       return res.json({ data: err });
     }
   }
@@ -231,15 +256,13 @@ class UserController {
   async dropdown(req, res, next) {
     /** Filteration value */
 
-    var conditions = { is_deleted: 0,  };
+    var conditions = { is_deleted: 0 };
     asyncParallel(
       {
         data: function(callback) {
           CartCheckout.find(
             conditions,
-            {
-             
-            },
+            {},
             { sort: { created_at: "desc" } },
             (err, result) => {
               callback(err, result);
@@ -257,8 +280,6 @@ class UserController {
       }
     );
   }
-
-  
 }
 
 module.exports = new UserController();

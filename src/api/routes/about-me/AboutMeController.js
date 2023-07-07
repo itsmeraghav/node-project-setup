@@ -113,26 +113,7 @@ const {
             user_id: req.params.user_id,
           },
           {
-            // _id: 1,
-            // username: 1,
-            // email:1,
-            // contact_number:1,
-            // gender:1,
-            // zipcode:1,
-            // country: 1,
-            // state:1,
-            // city:1,
-            // address:1,
-            // about_me:1,
-            // ethnicity:1,
-            // language:1,
-            // select_cuisines_detail:1,
-            // other_service_offered:1,
-            // status: 1,
-            // is_edit: 1,
-            // updatedAt: 1,
-            // createdAt:1,
-            // modified_at: 1,
+            
           }
           
         );

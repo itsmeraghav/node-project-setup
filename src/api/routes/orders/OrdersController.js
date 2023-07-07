@@ -182,7 +182,8 @@ class UserController {
           _id: req.params._id,
         },
         {
-          order_status:req.body.order_status
+          order_status:req.body.order_status,
+          driver_status:req.body.driver_status
         }
       );
 
@@ -191,7 +192,7 @@ class UserController {
         req.__("Orders_STATUS_UPDATE_SUCCESSFULLY")
       );
     } catch (err) {
-      console.log("asdas", err);
+   
       return res.json({ data: err });
     }
   }
@@ -220,14 +221,7 @@ class UserController {
         );
       }
 
-      if (user.isSuspended) {
-        return res.notFound(
-          "",
-          req.__("YOUR_ACCOUNT_SUSPENDED"),
-          req.__("ACCOUNT_SUSPENDED")
-        );
-      }
-
+    
       if (data == null)
         return res.notFound({}, req.__("Orders_NOT_EXIST"));
 

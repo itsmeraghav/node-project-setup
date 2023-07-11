@@ -46,6 +46,9 @@ class UserController {
     let filterObj = req.body.filter ? req.body.filter : null;
     if (filterObj) {
       //apply filter
+      if (filterObj?.order_type) {
+        conditions["order_type"] = filterObj?.order_type;
+      }
       if (filterObj?.order_id) {
         conditions["order_id"] = filterObj?.order_id;
       }
@@ -68,12 +71,14 @@ class UserController {
           Orders.find(
             conditions,
             {
+              order_dish:0
               
             },
             { sort: { created_at: "desc" }, skip: skip, limit: limit }
           )
-            .populate("marchent_id", "_id full_name upload_profile ")
-            .populate("cx_id", "_id full_name upload_profile ")
+            .populate("marchent_id", "_id full_name upload_profile")
+            .populate("cx_id", "_id full_name upload_profile")
+            .populate("driver_id", "_id full_name upload_profile")
             .populate("order_dish")
             .populate("order_grocery")
             .exec((err, result) => {
@@ -127,6 +132,7 @@ class UserController {
         }
       ) .populate("marchent_id", "_id full_name upload_profile ")
       .populate("cx_id", "_id full_name upload_profile ")
+      .populate("driver_id", "_id full_name upload_profile")
       .populate("order_dish")
       .populate("order_grocery")
       .exec()

@@ -58,6 +58,9 @@ class UserController {
       if (filterObj?.marchent_id) {
         conditions["marchent_id"] = filterObj?.marchent_id;
       }
+      if (filterObj?.driver_status) {
+        conditions["driver_status"] = filterObj?.driver_status;
+      }
     }
     asyncParallel(
       {

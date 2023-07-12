@@ -5,7 +5,7 @@ var slug = require("slug");
 const multer = require("multer");
 const asyncParallel = require("async/parallel");
 var _ = require("lodash");
-const { randomNumeric,randomNumericfororder } = require("../../util/common");
+const { randomNumeric, randomNumericfororder } = require("../../util/common");
 const DATATABLE_DEFAULT_LIMIT = 10;
 const DATATABLE_DEFAULT_SKIP = 0;
 
@@ -15,14 +15,11 @@ class UserController {
     try {
       var newRecord = new Orders(req.body);
       newRecord.order_id = randomNumericfororder(10);
-   
+
       return newRecord
         .save()
         .then((results) => {
-          return res.success(
-            results,
-            req.__("Order_CREATE_SUCCESSFULLY")
-          );
+          return res.success(results, req.__("Order_CREATE_SUCCESSFULLY"));
         })
         .catch((err) => {
           return res.json({ data: err });
@@ -42,13 +39,11 @@ class UserController {
       : DATATABLE_DEFAULT_SKIP;
     skip = skip === 0 ? 0 : (skip - 1) * limit;
     var conditions = { is_deleted: 0 };
-  
+
     let filterObj = req.body.filter ? req.body.filter : null;
     if (filterObj) {
       //apply filter
-      if (filterObj?.order_type) {
-        conditions["order_type"] = filterObj?.order_type;
-      }
+
       if (filterObj?.order_id) {
         conditions["order_id"] = filterObj?.order_id;
       }
@@ -58,9 +53,7 @@ class UserController {
       if (filterObj?.cx_id) {
         conditions["cx_id"] = filterObj?.cx_id;
       }
-      if (filterObj?.marchent_id) {
-        conditions["marchent_id"] = filterObj?.marchent_id;
-      }
+
       if (filterObj?.driver_status) {
         conditions["driver_status"] = filterObj?.driver_status;
       }
@@ -71,19 +64,43 @@ class UserController {
           Orders.find(
             conditions,
             {
-              order_dish:0
-              
+              order_dish: 0,
             },
             { sort: { created_at: "desc" }, skip: skip, limit: limit }
           )
-            .populate("marchent_id", "_id full_name upload_profile")
-            .populate("cx_id", "_id full_name upload_profile")
+
+            // .populate("cartcheckout_id")
+            .populate({
+              path: "cartcheckout_id",
+              populate: [
+                {
+                  path: "cart_id",
+                  populate: {
+                    path: "user_id",
+                    select: "_id full_name",
+                  },
+                },
+                {
+                  path: "cart_id",
+                  populate: {
+                    path: "cart_item.dish_id",
+                    select: "_id title cost discount_amount dish_photo",
+                    populate: {
+                      path: "user_id",
+                      select: "_id full_name",
+                    },
+                  },
+                },
+              ],
+            })
+
+            // .populate("cx_id", "_id full_name upload_profile")
             .populate("driver_id", "_id full_name upload_profile")
             .populate("order_dish")
             .populate("order_grocery")
             .exec((err, result) => {
               callback(err, result);
-            })  ;
+            });
         },
         records_filtered: function(callback) {
           Orders.countDocuments(conditions, (err, result) => {
@@ -127,17 +144,36 @@ class UserController {
         {
           _id: req.params._id,
         },
-        {
-          
-        }
-      ) .populate("marchent_id", "_id full_name upload_profile ")
-      .populate("cx_id", "_id full_name upload_profile ")
-      .populate("driver_id", "_id full_name upload_profile")
-      .populate("order_dish")
-      .populate("order_grocery")
-      .exec()
-      if (data == null)
-        return res.notFound({}, req.__("Orders_NOT_EXIST"));
+        {}
+      )
+        .populate({
+          path: "cartcheckout_id",
+          populate: [
+            {
+              path: "cart_id",
+              populate: {
+                path: "user_id",
+                select: "_id full_name",
+              },
+            },
+            {
+              path: "cart_id",
+              populate: {
+                path: "cart_item.dish_id",
+                select: "_id title cost discount_amount dish_photo",
+                populate: {
+                  path: "user_id",
+                  select: "_id full_name",
+                },
+              },
+            },
+          ],
+        })
+        .populate("cx_id")
+        .populate("driver_id", "_id full_name upload_profile")
+
+        .exec();
+      if (data == null) return res.notFound({}, req.__("Orders_NOT_EXIST"));
 
       return res.success(data, req.__("Orders_DETAIL_SUCCESSFULLY"));
     } catch (err) {
@@ -162,8 +198,7 @@ class UserController {
         { is_deleted: 1 }
       );
 
-      if (data == null)
-        return res.notFound({}, req.__("Orders_NOT_EXIST"));
+      if (data == null) return res.notFound({}, req.__("Orders_NOT_EXIST"));
 
       return res.success(data, req.__("Orders_DELETE_SUCCESSFULLY"));
     } catch (err) {
@@ -183,16 +218,15 @@ class UserController {
       let data = await Orders.findOne({
         _id: req.params._id,
       });
-      if (data == null)
-        return res.notFound({}, req.__("Orders_NOT_EXIST"));
+      if (data == null) return res.notFound({}, req.__("Orders_NOT_EXIST"));
 
       let updatedData = await Orders.updateOne(
         {
           _id: req.params._id,
         },
         {
-          order_status:req.body.order_status,
-          driver_status:req.body.driver_status
+          order_status: req.body.order_status,
+          driver_status: req.body.driver_status,
         }
       );
 
@@ -201,7 +235,6 @@ class UserController {
         req.__("Orders_STATUS_UPDATE_SUCCESSFULLY")
       );
     } catch (err) {
-   
       return res.json({ data: err });
     }
   }
@@ -230,9 +263,7 @@ class UserController {
         );
       }
 
-    
-      if (data == null)
-        return res.notFound({}, req.__("Orders_NOT_EXIST"));
+      if (data == null) return res.notFound({}, req.__("Orders_NOT_EXIST"));
 
       await Orders.findOneAndUpdate({ _id: req.params._id }, { ...data });
 
@@ -245,15 +276,13 @@ class UserController {
   async dropdown(req, res, next) {
     /** Filteration value */
 
-    var conditions = { is_deleted: 0,  };
+    var conditions = { is_deleted: 0 };
     asyncParallel(
       {
         data: function(callback) {
           Orders.find(
             conditions,
-            {
-             
-            },
+            {},
             { sort: { created_at: "desc" } },
             (err, result) => {
               callback(err, result);
@@ -271,8 +300,6 @@ class UserController {
       }
     );
   }
-
-  
 }
 
 module.exports = new UserController();

@@ -10,5 +10,10 @@ router.post(
   //validate(validations.uploadFile),
   UtilController.uploadFile
 );
+router.post(
+  "/create-intent",
+  //validate(validations.uploadFile),
+  UtilController.createStripeIntent
+);
 
 module.exports = router;

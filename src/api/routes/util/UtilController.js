@@ -1,3 +1,5 @@
+const stripe = require("stripe")("sk_test_9eW03yCMgQdeI1Oyx8RYwPJD");
+
 class UtilController {
   async uploadedFileUrl(req, res) {
     console.log("req.files", req.files);
@@ -35,6 +37,16 @@ class UtilController {
     } else {
       return res.warn("", req.__("No_Documents_Provided"));
     }
+  }
+
+  async createStripeIntent(req, res) {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: req.body.amount,
+      currency: "usd",
+      payment_method_types: ["card"],
+    });
+
+    return res.json({ clientSecrete: paymentIntent });
   }
 }
 

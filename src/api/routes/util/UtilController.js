@@ -43,7 +43,10 @@ class UtilController {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: req.body.amount,
       currency: "usd",
-      payment_method_types: ["card"],
+      // payment_method_types: ["card"],
+      automatic_payment_methods: {
+        enabled: true,
+      },
     });
 
     return res.json({ clientSecrete: paymentIntent });

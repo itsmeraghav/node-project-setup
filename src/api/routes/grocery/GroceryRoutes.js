@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const GroceryController = require("./GroceryController");
 const { validate } = require("../../util/validations");
-const validations = require("./GroceryValidations");
+// const validations = require("./GroceryValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
- validate(validations.createtype),
+  //  validate(validations.createtype),
   GroceryController.create
 );
 
@@ -45,7 +45,7 @@ router.post(
 router.put(
   "/update/:_id",
   // verifyToken,
-   validate(validations.updateProfile),
+  // validate(validations.updateProfile),
   GroceryController.update
 );
 

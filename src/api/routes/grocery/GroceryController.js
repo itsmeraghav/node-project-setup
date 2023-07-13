@@ -12,11 +12,6 @@ class UserController {
     let { list_title } = req.body;
     try {
       var newRecord = new Grocery(req.body);
-      newRecord.slug = slug(list_title, {
-        replacement: "-",
-        lower: true,
-        charmap: slug.charmap,
-      });
       return newRecord
         .save()
         .then((results) => {
@@ -45,28 +40,19 @@ class UserController {
         data: function(callback) {
           Grocery.find(
             conditions,
-            {
-              // _id: 1,
-              // list_title: 1,
-              //  description: 1,
-              //  item: 1,
-              //  minimum_quantity: 1,
-              //  unit: 1,
-              //  quantity: 1,
-              //  total: 1,
-              // is_edit: 1,
-              // status: 1,
-              // createdAt: 1,
-              // updatedAt: 1,
-            },
+            {},
             { sort: { created_at: "desc" }, skip: skip, limit: limit }
-            ) .populate("user_id","_id full_name")
-            .exec(
-              (err, result) => {
-                callback(err, result);
-              })
-            ;
-          },
+          )
+            .populate("category", "_id name")
+            .populate("brand", "_id name")
+            .populate("unit", "_id name")
+            .populate("discount", "_id name")
+            .populate("marchent_id", "_id full_name")
+
+            .exec((err, result) => {
+              callback(err, result);
+            });
+        },
         records_filtered: function(callback) {
           Grocery.countDocuments(conditions, (err, result) => {
             /* send success response */
@@ -109,20 +95,14 @@ class UserController {
         {
           _id: req.params._id,
         },
-        {
-          //  _id: 0,
-          //  list_title:1,
-          // description: 1,
-          // minimum_quantity:1,
-          // unit:1,
-          // quantity:1,
-          // total:1,
-          // item_photo:1,
-          // status: 1,
-          // is_edit: 1,
-          // createdAt: 1,
-        }
-      );
+        {}
+      )
+        .populate("category", "_id name")
+        .populate("brand", "_id name")
+        .populate("unit", "_id name")
+        .populate("discount", "_id name")
+        .populate("marchent_id", "_id full_name")
+        .exec();
       if (data == null) return res.notFound({}, req.__("Grocery_NOT_EXIST"));
 
       return res.success(data, req.__("Grocery_DETAIL_SUCCESSFULLY"));
@@ -213,14 +193,6 @@ class UserController {
         );
       }
 
-      if (user.isSuspended) {
-        return res.notFound(
-          "",
-          req.__("YOUR_ACCOUNT_SUSPENDED"),
-          req.__("ACCOUNT_SUSPENDED")
-        );
-      }
-
       if (data == null) return res.notFound({}, req.__("Grocery_NOT_EXIST"));
 
       await Grocery.findOneAndUpdate({ _id: req.params._id }, { ...data });
@@ -271,17 +243,6 @@ class UserController {
       }
     );
   }
-
-  // async getAdminSetting(req, res) {
-  //   let adminSetting = await Grocery.findOne();
-  //   const userJson = {};
-  //   if (adminSetting) {
-  //     userJson.distanceRadius = adminSetting.distanceRadius;
-  //     userJson.maximum = adminSetting.maximum;
-  //     userJson.minimum = adminSetting.minimum;
-  //   }
-  //   return res.success(userJson, req.__("SETTING_INFORMATION"));
-  // }
 }
 
 module.exports = new UserController();

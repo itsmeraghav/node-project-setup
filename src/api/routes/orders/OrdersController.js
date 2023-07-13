@@ -15,7 +15,6 @@ class UserController {
     try {
       var newRecord = new Orders(req.body);
       newRecord.order_id = randomNumericfororder(10);
-
       return newRecord
         .save()
         .then((results) => {
@@ -50,10 +49,6 @@ class UserController {
       if (filterObj?.order_status) {
         conditions["order_status"] = filterObj?.order_status;
       }
-      if (filterObj?.cx_id) {
-        conditions["cx_id"] = filterObj?.cx_id;
-      }
-
       if (filterObj?.driver_status) {
         conditions["driver_status"] = filterObj?.driver_status;
       }

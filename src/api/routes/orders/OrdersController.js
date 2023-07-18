@@ -64,7 +64,6 @@ class UserController {
             { sort: { created_at: "desc" }, skip: skip, limit: limit }
           )
 
-            // .populate("cartcheckout_id")
             .populate({
               path: "cartcheckout_id",
               populate: [
@@ -86,10 +85,18 @@ class UserController {
                     },
                   },
                 },
+                {
+                  path: "cart_id",
+                  populate: {
+                    path: "cart_item.grocery_id",
+                    populate: {
+                      path: "marchent_id",
+                      select: "_id full_name",
+                    },
+                  },
+                },
               ],
             })
-
-            // .populate("cx_id", "_id full_name upload_profile")
             .populate("driver_id", "_id full_name upload_profile")
             .populate("order_dish")
             .populate("order_grocery")
@@ -162,10 +169,21 @@ class UserController {
                 },
               },
             },
+            {
+              path: "cart_id",
+              populate: {
+                path: "cart_item.grocery_id",
+                populate: {
+                  path: "marchent_id",
+                  select: "_id full_name",
+                },
+              },
+            },
           ],
         })
-        .populate("cx_id")
         .populate("driver_id", "_id full_name upload_profile")
+        .populate("order_dish")
+        .populate("order_grocery")
 
         .exec();
       if (data == null) return res.notFound({}, req.__("Orders_NOT_EXIST"));

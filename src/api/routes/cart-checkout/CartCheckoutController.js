@@ -58,7 +58,8 @@ class UserController {
             conditions,
             {},
             { sort: { created_at: "desc" }, skip: skip, limit: limit }
-          )  .populate({
+          )
+            .populate({
               path: "cart_id",
               populate: [
                 {
@@ -68,10 +69,18 @@ class UserController {
                 {
                   path: "cart_item.dish_id",
                   select: "_id title cost discount_amount dish_photo",
-                  populate:({
-                    path:'user_id',
+                  populate: {
+                    path: "user_id",
                     select: "_id full_name",
-                  })
+                  },
+                },
+                {
+                  path: "cart_item.grocery_id",
+                  // select: "_id title cost discount_amount dish_photo",
+                  populate: {
+                    path: "marchent_id",
+                    select: "_id full_name",
+                  },
                 },
               ],
             })
@@ -122,23 +131,31 @@ class UserController {
           _id: req.params._id,
         },
         {}
-      ) .populate({
-        path: "cart_id",
-        populate: [
-          {
-            path: "user_id",
-            select: "_id full_name",
-          },
-          {
-            path: "cart_item.dish_id",
-            select: "_id title cost discount_amount dish_photo",
-            populate:({
-              path:'user_id',
+      )
+        .populate({
+          path: "cart_id",
+          populate: [
+            {
+              path: "user_id",
               select: "_id full_name",
-            })
-          },
-        ],
-      })
+            },
+            {
+              path: "cart_item.dish_id",
+              select: "_id title cost discount_amount dish_photo",
+              populate: {
+                path: "user_id",
+                select: "_id full_name",
+              },
+            },
+            {
+              path: "cart_item.grocery_id",
+              populate: {
+                path: "marchent_id",
+                select: "_id full_name",
+              },
+            },
+          ],
+        })
         .exec();
       if (data == null)
         return res.notFound({}, req.__("CartCheckout_NOT_EXIST"));

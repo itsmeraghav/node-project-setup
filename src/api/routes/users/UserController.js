@@ -15,9 +15,7 @@ var apiEnv = process.env.NODE_ENV;
 console.log("this is env:", apiEnv);
 // var moment = require("moment");
 
-
-class UserController {       
-            
+class UserController {
   async updatePassword(req, res) {
     const { user } = req;
     const { currentPassword, newPassword } = req.body;
@@ -52,10 +50,9 @@ class UserController {
     return res.success({}, "", req.__("PASSWORD_UPDATED"));
   }
 
-  async  create (req, res, next) {
-    
-    let { upload_profile,email,username} = req.body;
-      
+  async create(req, res, next) {
+    let { upload_profile, email, username } = req.body;
+
     try {
       let x = await User.findOne({ email, isDeleted: false });
 
@@ -74,11 +71,11 @@ class UserController {
           req.__("USERNAME_EXISTS"),
           req.__("USERNAME_ALREADY_REGISTERED")
         );
-       }
+      }
 
       var newRecord = new User(req.body);
       User.email = req.body.email;
-      User.username =req.body.username;
+      User.username = req.body.username;
       User.upload_profile = req.body.upload_profile;
       return newRecord
         .save()
@@ -229,7 +226,7 @@ class UserController {
 
     let filterObj = req.body.filter ? req.body.filter : null;
     if (filterObj) {
-      //apply filter      
+      //apply filter
       if (filterObj?.email) {
         conditions["email"] = filterObj?.email;
       }
@@ -238,14 +235,13 @@ class UserController {
       }
       if (filterObj?.role) {
         conditions["role"] = filterObj?.role;
-      } 
+      }
       if (filterObj?.isActive) {
         conditions["isActive"] = filterObj?.isActive;
       }
       if (filterObj?.membership) {
         conditions["membership"] = filterObj?.membership;
       }
-    
     }
     asyncParallel(
       {
@@ -255,11 +251,12 @@ class UserController {
             {
               _id: 1,
               full_name: 1,
+              is_checked: 1,
               email: 1,
               username: 1,
               contact_number: 1,
               dob: 1,
-              role:1,
+              role: 1,
               country: 1,
               state: 1,
               city: 1,
@@ -269,14 +266,14 @@ class UserController {
               zipcode_2: 1,
               fare_amount: 1,
               address: 1,
-              licence_expiration:1,
+              licence_expiration: 1,
               company_name: 1,
               qualification: 1,
               gender: 1,
-              membership:1,
-              food_licence:1,
+              membership: 1,
+              food_licence: 1,
               isSuspended: 1,
-              isActive:1,
+              isActive: 1,
               created: 1,
               updatedAt: 1,
             },
@@ -384,13 +381,14 @@ class UserController {
         },
         {
           _id: 1,
-          upload_profile:1,
+          upload_profile: 1,
           full_name: 1,
           email: 1,
           username: 1,
           contact_number: 1,
           dob: 1,
           country: 1,
+          is_checked: 1,
           state: 1,
           city: 1,
           password: 1,
@@ -398,13 +396,13 @@ class UserController {
           zipcode: 1,
           zipcode_2: 1,
           fare_amount: 1,
-          licence_expiration:1,
+          licence_expiration: 1,
           address: 1,
           company_name: 1,
           qualification: 1,
           gender: 1,
-          food_licence:1,
-          membership:1,
+          food_licence: 1,
+          membership: 1,
           isSuspended: 1,
           created: 1,
           updatedAt: 1,
@@ -560,7 +558,7 @@ class UserController {
               full_name: 1,
               email: 1,
               company_name: 1,
-              role:1,
+              role: 1,
             },
             { sort: { created_at: "desc" } },
             (err, result) => {
@@ -984,7 +982,7 @@ class UserController {
   //     return next(err);
   //   }
   // }
-  
+
   async UpdateStatus(req, res, next) {
     if (!req.params._id) {
       return res.notFound(

@@ -16,8 +16,11 @@ router.post(
   AuthController.logIn
 );
 
-router.post("/signup", 
-validate(validations.signup), AuthController.signup);
+router.post(
+  "/signup",
+  // validate(validations.signup),
+  AuthController.signup
+);
 
 router.get("/logout", verifyToken, AuthController.logOut);
 
@@ -41,16 +44,12 @@ router.post(
   AuthController.resetPassword
 );
 
-router.post(
-  "/token-check",
-  AuthController.tokenexpcheck
-);
+router.post("/token-check", AuthController.tokenexpcheck);
 router.post(
   "/change-password",
   validate(validations.changePassword),
   AuthController.changePassword
 );
-
 
 router.post(
   "/verify-otp",

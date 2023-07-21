@@ -193,7 +193,7 @@ class UserController {
     try {
       user = await EventOrders.findOne({
         _id: req.params._id,
-        // is_deleted: 0,
+        is_deleted: 0,
       });
 
       if (!user) {
@@ -207,10 +207,7 @@ class UserController {
       if (data == null)
         return res.notFound({}, req.__("EventOrders_NOT_EXIST"));
 
-      await EventOrders.findOneAndUpdate(
-        { slug: req.params.slug },
-        { ...data }
-      );
+      await EventOrders.findOneAndUpdate({ ...data });
 
       return res.success(data, req.__("EventOrders_UPDATE_SUCCESSFULLY"));
     } catch (err) {

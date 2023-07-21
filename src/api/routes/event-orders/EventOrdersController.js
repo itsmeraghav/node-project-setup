@@ -39,6 +39,7 @@ class UserController {
       : DATATABLE_DEFAULT_SKIP;
     skip = skip === 0 ? 0 : (skip - 1) * limit;
     var conditions = { is_deleted: 0 };
+
     asyncParallel(
       {
         data: function(callback) {
@@ -49,7 +50,12 @@ class UserController {
             (err, result) => {
               callback(err, result);
             }
-          );
+          )
+            .populate("chef_hire.chef_id")
+            .populate("cuisine_types", "_id name")
+            .populate("beverages.type", "_id name")
+            .populate("food_time.type", "_id name")
+            .exec();
         },
         records_filtered: function(callback) {
           EventOrders.countDocuments(conditions, (err, result) => {
@@ -94,7 +100,12 @@ class UserController {
           _id: req.params._id,
         },
         {}
-      );
+      )
+        .populate("chef_hire.chef_id")
+        .populate("cuisine_types", "_id name")
+        .populate("beverages.type", "_id name")
+        .populate("food_time.type", "_id name")
+        .exec();
       if (data == null)
         return res.notFound({}, req.__("EventOrders_NOT_EXIST"));
 

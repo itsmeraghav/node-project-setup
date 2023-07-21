@@ -38,13 +38,15 @@ class UserController {
       ? parseInt(req.body.start)
       : DATATABLE_DEFAULT_SKIP;
     skip = skip === 0 ? 0 : (skip - 1) * limit;
-    var conditions = { is_deleted: 0 };
-
+    var conditions = {
+      is_deleted: 0,
+    };
     asyncParallel(
       {
         data: function(callback) {
           EventOrders.find(
             conditions,
+
             {},
             { sort: { created_at: "desc" }, skip: skip, limit: limit },
             (err, result) => {

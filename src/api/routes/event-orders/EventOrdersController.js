@@ -207,7 +207,7 @@ class UserController {
       if (data == null)
         return res.notFound({}, req.__("EventOrders_NOT_EXIST"));
 
-      await EventOrders.findOneAndUpdate({ ...data });
+      await EventOrders.findOneAndUpdate({ _id: req.params._id }, { ...data });
 
       return res.success(data, req.__("EventOrders_UPDATE_SUCCESSFULLY"));
     } catch (err) {

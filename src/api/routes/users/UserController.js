@@ -250,6 +250,7 @@ class UserController {
             conditions,
             {
               _id: 1,
+              upload_profile: 1,
               full_name: 1,
               is_checked: 1,
               email: 1,
@@ -555,6 +556,7 @@ class UserController {
             conditions,
             {
               _id: 1,
+              upload_profile: 1,
               full_name: 1,
               email: 1,
               company_name: 1,

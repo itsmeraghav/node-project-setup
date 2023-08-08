@@ -236,6 +236,10 @@ class UserController {
       if (filterObj?.role) {
         conditions["role"] = filterObj?.role;
       }
+
+      if (filterObj?.gender) {
+        conditions["gender"] = filterObj?.gender;
+      }
       if (filterObj?.isActive) {
         conditions["isActive"] = filterObj?.isActive;
       }
@@ -1005,7 +1009,7 @@ class UserController {
           _id: req.params._id,
         },
         {
-          is_featured: 1,
+          is_featured: 0,
         }
       );
 

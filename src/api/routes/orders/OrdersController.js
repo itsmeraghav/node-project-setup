@@ -71,7 +71,7 @@ class UserController {
                   path: "cart_id",
                   populate: {
                     path: "user_id",
-                    select: "_id full_name",
+                    select: "_id full_name upload_profile",
                   },
                 },
                 {
@@ -81,7 +81,7 @@ class UserController {
                     select: "_id title cost discount_amount dish_photo",
                     populate: {
                       path: "user_id",
-                      select: "_id full_name",
+                      select: "_id full_name upload_profile",
                     },
                   },
                 },
@@ -165,7 +165,7 @@ class UserController {
                 select: "_id title cost discount_amount dish_photo",
                 populate: {
                   path: "user_id",
-                  select: "_id full_name",
+                  select: "_id full_name upload_profile",
                 },
               },
             },
@@ -175,7 +175,7 @@ class UserController {
                 path: "cart_item.grocery_id",
                 populate: {
                   path: "marchent_id",
-                  select: "_id full_name",
+                  select: "_id full_name upload_profile",
                 },
               },
             },

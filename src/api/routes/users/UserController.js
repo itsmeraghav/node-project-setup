@@ -1005,7 +1005,7 @@ class UserController {
           _id: req.params._id,
         },
         {
-          is_featured: 0,
+          is_featured: 1,
         }
       );
 

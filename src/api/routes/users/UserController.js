@@ -257,6 +257,7 @@ class UserController {
               username: 1,
               contact_number: 1,
               dob: 1,
+              is_featured: 1,
               role: 1,
               country: 1,
               state: 1,
@@ -389,6 +390,7 @@ class UserController {
           contact_number: 1,
           dob: 1,
           country: 1,
+          is_featured: 1,
           is_checked: 1,
           state: 1,
           city: 1,
@@ -984,6 +986,36 @@ class UserController {
   //     return next(err);
   //   }
   // }
+
+  async featuredStatuschange(req, res, next) {
+    if (!req.params._id) {
+      return res.notFound(
+        {},
+        req.__("INVALID_REQUEST"),
+        req.__("User_NOT_EXIST")
+      );
+    }
+
+    try {
+      let data = await User.findOne({
+        _id: req.params._id,
+      });
+      if (data == null) return res.notFound({}, req.__("User_NOT_EXIST"));
+
+      let updatedData = await User.updateOne(
+        {
+          _id: req.params._id,
+        },
+        {
+          is_featured: 1,
+        }
+      );
+
+      return res.success(data, req.__("FEATURED_STATUS_UPDATE_SUCCESSFULLY"));
+    } catch (err) {
+      return res.json({ data: err });
+    }
+  }
 
   async UpdateStatus(req, res, next) {
     if (!req.params._id) {

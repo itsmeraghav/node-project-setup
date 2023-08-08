@@ -13,13 +13,13 @@ router.post(
 );
 router.post(
   "/create",
- // verifyToken,
+  // verifyToken,
   validate(validations.create),
   UserController.create
 );
 router.put(
   "/update/:_id",
- // verifyToken,
+  // verifyToken,
   validate(validations.update),
   UserController.update
 );
@@ -79,6 +79,13 @@ router.post(
   //verifyToken,
   // validate(validations.updateProfile),
   UserController.UpdateStatus
+);
+
+router.post(
+  "/featured-update/:_id",
+  //verifyToken,
+  // validate(validations.updateProfile),
+  UserController.featuredStatuschange
 );
 
 router.post(

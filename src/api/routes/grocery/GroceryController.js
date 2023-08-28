@@ -35,6 +35,26 @@ class UserController {
       : DATATABLE_DEFAULT_SKIP;
     skip = skip === 0 ? 0 : (skip - 1) * limit;
     var conditions = { is_deleted: false };
+    let filterObj = req.body.filter ? req.body.filter : null;
+    if (filterObj) {
+      //apply filter
+      if (filterObj?.category) {
+        conditions["category"] = filterObj?.category;
+      }
+      if (filterObj?.brand) {
+        conditions["brand"] = filterObj?.brand;
+      }
+      if (filterObj?.unit) {
+        conditions["unit"] = filterObj?.unit;
+      }
+
+      if (filterObj?.total_amount) {
+        conditions["total_amount"] = filterObj?.total_amount;
+      }
+      if (filterObj?.title) {
+        conditions["title"] = filterObj?.title;
+      }
+    }
     asyncParallel(
       {
         data: function(callback) {
@@ -164,7 +184,6 @@ class UserController {
 
       return res.success(data, req.__("Grocery_STATUS_UPDATE_SUCCESSFULLY"));
     } catch (err) {
-      console.log("asdas", err);
       return res.json({ data: err });
     }
   }

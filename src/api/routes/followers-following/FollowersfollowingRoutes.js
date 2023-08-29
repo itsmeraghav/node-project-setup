@@ -25,4 +25,11 @@ router.post(
   // validate(validations.create),
   FollowersfollowingController.list
 );
+
+router.post(
+  "/approved_status/:_id",
+  //  validate(validations.updateFollowersfollowing),
+  // verifyToken,
+  FollowersfollowingController.approvedstatus
+);
 module.exports = router;

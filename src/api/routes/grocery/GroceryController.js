@@ -47,6 +47,9 @@ class UserController {
       if (filterObj?.unit) {
         conditions["unit"] = filterObj?.unit;
       }
+      if (filterObj?.wishlist_product) {
+        conditions["wishlist_product"] = filterObj?.wishlist_product;
+      }
 
       if (filterObj?.total_amount) {
         conditions["total_amount"] = filterObj?.total_amount;
@@ -183,6 +186,41 @@ class UserController {
       );
 
       return res.success(data, req.__("Grocery_STATUS_UPDATE_SUCCESSFULLY"));
+    } catch (err) {
+      return res.json({ data: err });
+    }
+  }
+
+  async WishlistStatus(req, res, next) {
+    if (!req.params._id) {
+      return res.notFound(
+        {},
+        req.__("INVALID_REQUEST"),
+        req.__("Grocery_NOT_EXIST")
+      );
+    }
+
+    try {
+      let data = await Grocery.findOne({
+        _id: req.params._id,
+      });
+      if (data == null) return res.notFound({}, req.__("Grocery_NOT_EXIST"));
+
+      let updatedData = await Grocery.updateOne(
+        {
+          _id: req.params._id,
+        },
+        {
+          $set: {
+            wishlist_product: data.wishlist_product == 1 ? 0 : 1,
+          },
+        }
+      );
+
+      return res.success(
+        data,
+        req.__("Grocery_WISH_ITEM STATUS_UPDATE_SUCCESSFULLY")
+      );
     } catch (err) {
       return res.json({ data: err });
     }

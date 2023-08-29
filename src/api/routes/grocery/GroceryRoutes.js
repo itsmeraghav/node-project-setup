@@ -42,6 +42,12 @@ router.post(
   GroceryController.UpdateStatus
 );
 
+router.post(
+  "/wishlist-status/:_id",
+  // verifyToken,
+  GroceryController.WishlistStatus
+);
+
 router.put(
   "/update/:_id",
   // verifyToken,

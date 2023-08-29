@@ -179,5 +179,39 @@ class UserController {
       return res.json({ data: err });
     }
   }
+
+  async approvedstatus(req, res, next) {
+    if (!req.params._id) {
+      return res.notFound(
+        {},
+        req.__("INVALID_REQUEST"),
+        req.__("Followersfollowing_NOT_EXIST")
+      );
+    }
+
+    try {
+      let data = await Followersfollowing.findOne({
+        _id: req.params._id,
+      });
+      if (data == null)
+        return res.notFound({}, req.__("Followersfollowing_NOT_EXIST"));
+
+      let updatedData = await Followersfollowing.updateOne(
+        {
+          _id: req.params._id,
+        },
+        {
+          approved_status: 1,
+        }
+      );
+
+      return res.success(
+        data,
+        req.__("Followersfollowing_Approved_STATUS_UPDATE_SUCCESSFULLY")
+      );
+    } catch (err) {
+      return res.json({ data: err });
+    }
+  }
 }
 module.exports = new UserController();

@@ -1,5 +1,5 @@
 const {
-  models: { User, Feedback },
+  models: { User, ExtraServices },
 } = require("../../../../lib/models");
 var slug = require("slug");
 const multer = require("multer");
@@ -10,18 +10,16 @@ const DATATABLE_DEFAULT_SKIP = 0;
 
 class UserController {
   async create(req, res, next) {
-    let { user_id } = req.body;
+    let {} = req.body;
     try {
-      var newRecord = new Feedback(req.body);
-      // newRecord.slug = slug(name, {
-      //   replacement: "-",
-      //   lower: true,
-      //   charmap: slug.charmap,
-      // });
+      var newRecord = new ExtraServices(req.body);
       return newRecord
         .save()
         .then((results) => {
-          return res.success(results, req.__("Feedback_CREATE_SUCCESSFULLY"));
+          return res.success(
+            results,
+            req.__("ExtraServices_CREATE_SUCCESSFULLY")
+          );
         })
         .catch((err) => {
           return res.json({ data: err });
@@ -40,49 +38,30 @@ class UserController {
       ? parseInt(req.body.start)
       : DATATABLE_DEFAULT_SKIP;
     skip = skip === 0 ? 0 : (skip - 1) * limit;
-    var conditions = { is_deleted: 0 };
-    let filterObj = req.body.filter ? req.body.filter : null;
-    if (filterObj) {
-      //apply filter
-
-      if (filterObj?.from_id) {
-        conditions["from_id"] = filterObj?.from_id;
-      }
-      if (filterObj?.to_id) {
-        conditions["to_id"] = filterObj?.to_id;
-      }
-    }
+    var conditions = { is_deleted: 0, payment_status: req.body.payment_status };
     asyncParallel(
       {
         data: function(callback) {
-          Feedback.find(
+          ExtraServices.find(
             conditions,
-            {
-              // _id: 1,
-              // name: 1,
-              // status: 1,
-              // is_edit: 1,
-              // createdAt: 1,
-              // updatedAt: 1,
-            },
-            { sort: { created_at: "desc" }, skip: skip, limit: limit }
-          )
-            .populate("to_id", "_id full_name upload_profile role ")
-            .populate("from_id", "_id full_name upload_profile role ")
-            .populate("dish_id")
-
-            .exec((err, result) => {
+            {},
+            { sort: { created_at: "desc" }, skip: skip, limit: limit },
+            (err, result) => {
               callback(err, result);
-            });
+            }
+          )
+            .populate("plan_creater_id", "full_name_id")
+            .populate("user_id", "full_name _id")
+            .exec();
         },
         records_filtered: function(callback) {
-          Feedback.countDocuments(conditions, (err, result) => {
+          ExtraServices.countDocuments(conditions, (err, result) => {
             /* send success response */
             callback(err, result);
           });
         },
         records_total: function(callback) {
-          Feedback.countDocuments({ is_deleted: 0 }, (err, result) => {
+          ExtraServices.countDocuments({ is_deleted: 0 }, (err, result) => {
             /* send success response */
             callback(err, result);
           });
@@ -98,7 +77,7 @@ class UserController {
           recordsTotal:
             results && results.records_total ? results.records_total : 0,
         };
-        return res.success(data, req.__("Feedback_LIST_GENREATED"));
+        return res.success(data, req.__("ExtraServices_LIST_GENREATED"));
       }
     );
   }
@@ -108,20 +87,21 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("Feedback_NOT_EXIST")
+        req.__("ExtraServices_NOT_EXIST")
       );
     }
 
     try {
-      let data = await Feedback.findOne(
+      let data = await ExtraServices.findOne(
         {
           _id: req.params._id,
         },
         {}
       );
-      if (data == null) return res.notFound({}, req.__("Feedback_NOT_EXIST"));
+      if (data == null)
+        return res.notFound({}, req.__("ExtraServices_NOT_EXIST"));
 
-      return res.success(data, req.__("Feedback_DETAIL_SUCCESSFULLY"));
+      return res.success(data, req.__("ExtraServices_DETAIL_SUCCESSFULLY"));
     } catch (err) {
       return res.json({ data: err });
     }
@@ -132,21 +112,22 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("Feedback_NOT_EXIST")
+        req.__("ExtraServices_NOT_EXIST")
       );
     }
 
     try {
-      let data = await Feedback.updateOne(
+      let data = await ExtraServices.updateOne(
         {
           _id: req.params._id,
         },
         { is_deleted: 1 }
       );
 
-      if (data == null) return res.notFound({}, req.__("Feedback_NOT_EXIST"));
+      if (data == null)
+        return res.notFound({}, req.__("ExtraServices_NOT_EXIST"));
 
-      return res.success(data, req.__("Feedback_DELETE_SUCCESSFULLY"));
+      return res.success(data, req.__("ExtraServices_DELETE_SUCCESSFULLY"));
     } catch (err) {
       return res.json({ data: err });
     }
@@ -157,17 +138,18 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("Feedback_NOT_EXIST")
+        req.__("ExtraServices_NOT_EXIST")
       );
     }
 
     try {
-      let data = await Feedback.findOne({
+      let data = await ExtraServices.findOne({
         _id: req.params._id,
       });
-      if (data == null) return res.notFound({}, req.__("Feedback_NOT_EXIST"));
+      if (data == null)
+        return res.notFound({}, req.__("ExtraServices_NOT_EXIST"));
 
-      let updatedData = await Feedback.updateOne(
+      let updatedData = await ExtraServices.updateOne(
         {
           _id: req.params._id,
         },
@@ -178,7 +160,10 @@ class UserController {
         }
       );
 
-      return res.success(data, req.__("Feedback_STATUS_UPDATE_SUCCESSFULLY"));
+      return res.success(
+        data,
+        req.__("ExtraServices_STATUS_UPDATE_SUCCESSFULLY")
+      );
     } catch (err) {
       console.log("asdas", err);
       return res.json({ data: err });
@@ -190,13 +175,13 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("Feedback_NOT_EXIST")
+        req.__("ExtraServices_NOT_EXIST")
       );
     }
     let data = req.body;
     let { user } = req;
     try {
-      user = await Feedback.findOne({
+      user = await ExtraServices.findOne({
         _id: req.params._id,
         is_deleted: 0,
       });
@@ -217,11 +202,15 @@ class UserController {
         );
       }
 
-      if (data == null) return res.notFound({}, req.__("Feedback_NOT_EXIST"));
+      if (data == null)
+        return res.notFound({}, req.__("ExtraServices_NOT_EXIST"));
 
-      await Feedback.findOneAndUpdate({ _id: req.params._id }, { ...data });
+      await ExtraServices.findOneAndUpdate(
+        { _id: req.params._id },
+        { ...data }
+      );
 
-      return res.success(data, req.__("Feedback_UPDATE_SUCCESSFULLY"));
+      return res.success(data, req.__("ExtraServices_UPDATE_SUCCESSFULLY"));
     } catch (err) {
       return res.json({ data: err });
     }
@@ -234,7 +223,7 @@ class UserController {
     asyncParallel(
       {
         data: function(callback) {
-          Feedback.find(
+          ExtraServices.find(
             conditions,
             {
               // _id: 1,
@@ -257,13 +246,13 @@ class UserController {
         let data = {
           records: results && results.data ? results.data : [],
         };
-        return res.success(data, req.__("Feedback_LIST_DONE"));
+        return res.success(data, req.__("ExtraServices_LIST_DONE"));
       }
     );
   }
 
   //   async getAdminSetting(req, res) {
-  //     let adminSetting = await Feedback.findOne();
+  //     let adminSetting = await ExtraServices.findOne();
   //     const userJson = {};
   //     if (adminSetting) {
   //       userJson.distanceRadius = adminSetting.distanceRadius;

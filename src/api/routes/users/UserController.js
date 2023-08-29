@@ -227,6 +227,10 @@ class UserController {
     let filterObj = req.body.filter ? req.body.filter : null;
     if (filterObj) {
       //apply filter
+
+      if (filterObj?.full_name) {
+        conditions["full_name"] = new RegExp(filterObj?.full_name, "i");
+      }
       if (filterObj?.email) {
         conditions["email"] = filterObj?.email;
       }

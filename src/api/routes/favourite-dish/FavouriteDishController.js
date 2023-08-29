@@ -164,5 +164,38 @@ class UserController {
       return res.json({ data: err });
     }
   }
+  async UpdateApproveStatus(req, res, next) {
+    if (!req.params._id) {
+      return res.notFound(
+        {},
+        req.__("INVALID_REQUEST"),
+        req.__("FavouriteDish_NOT_EXIST")
+      );
+    }
+
+    try {
+      let data = await FavouriteDish.findOne({
+        _id: req.params._id,
+      });
+      if (data == null)
+        return res.notFound({}, req.__("FavouriteDish_NOT_EXIST"));
+
+      let updatedData = await FavouriteDish.updateOne(
+        {
+          _id: req.params._id,
+        },
+        {
+          request_approve: 1,
+        }
+      );
+
+      return res.success(
+        data,
+        req.__("FavouriteDish_STATUS_UPDATE_SUCCESSFULLY")
+      );
+    } catch (err) {
+      return res.json({ data: err });
+    }
+  }
 }
 module.exports = new UserController();

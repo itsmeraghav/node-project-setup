@@ -25,4 +25,11 @@ router.post(
   // validate(validations.create),
   FavouriteDishController.list
 );
+
+router.post(
+  "/request-approve/:_id",
+  // verifyToken,
+  // validate(validations.create),
+  FavouriteDishController.UpdateApproveStatus
+);
 module.exports = router;

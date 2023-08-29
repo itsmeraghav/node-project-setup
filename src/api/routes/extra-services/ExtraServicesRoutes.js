@@ -1,56 +1,52 @@
 const express = require("express");
 const router = express.Router();
-const LiveFeed = require("./LiveFeedController");
+const ExtraServicesController = require("./ExtraServicesController");
 const { validate } = require("../../util/validations");
-// const validations = require("./LiveFeedValidations");
+const validations = require("./ExtraServicesValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
-  LiveFeed.create
+  // validate(validations.create),
+  ExtraServicesController.create
 );
 
 router.post(
   "/list",
   // verifyToken,
-  LiveFeed.list
+  ExtraServicesController.list
 );
 
 router.get(
   "/dropdown",
   // verifyToken,
-  LiveFeed.dropdown
-);
-
-router.post(
-  "/list/userlike",
-  // verifyToken,
-  LiveFeed.useractivitylist
+  ExtraServicesController.dropdown
 );
 
 router.get(
   "/detail/:_id",
   // verifyToken,
-  LiveFeed.detail
+  ExtraServicesController.detail
 );
 
 router.delete(
   "/delete/:_id",
   // verifyToken,
-  LiveFeed.delete
+  ExtraServicesController.delete
 );
 
 router.post(
   "/update-status/:_id",
   // verifyToken,
-  LiveFeed.UpdateStatus
+  ExtraServicesController.UpdateStatus
 );
 
 router.put(
   "/update/:_id",
+  //validate(validations.updateExtraServices),
   // verifyToken,
-  LiveFeed.update
+  ExtraServicesController.update
 );
 
 module.exports = router;

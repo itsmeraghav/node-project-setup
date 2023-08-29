@@ -1,28 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const FavouriteDishController = require("./FavouriteDishController");
+const FollowersfollowingController = require("./FollowersfollowingController");
 const { validate } = require("../../util/validations");
-// const validations = require("./FavouriteDishValidations");
+// const validations = require("./FollowersfollowingValidations");
 const { verifyToken } = require("../../util/auth");
 
 router.post(
   "/create",
   // verifyToken,
   // validate(validations.create),
-  FavouriteDishController.create
+  FollowersfollowingController.create
 );
 
 router.post(
   "/delete/:_id",
-  //  validate(validations.updateFavouriteDish),
+  //  validate(validations.updateFollowersfollowing),
   // verifyToken,
-  FavouriteDishController.delete
+  FollowersfollowingController.delete
 );
 
 router.post(
   "/list",
   // verifyToken,
   // validate(validations.create),
-  FavouriteDishController.list
+  FollowersfollowingController.list
 );
 module.exports = router;

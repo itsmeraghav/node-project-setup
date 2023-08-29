@@ -6,12 +6,12 @@ const { languages } = require("../../../../lib/i18n");
 
 // });
 
-// const updateFavouriteDish = Joi.object().keys({
+// const updateFollowersfollowing = Joi.object().keys({
 //   image: Joi.string().optional(),
 
 // });
 
 module.exports = {
   create,
-  updateFavouriteDish,
+  updateFollowersfollowing,
 };

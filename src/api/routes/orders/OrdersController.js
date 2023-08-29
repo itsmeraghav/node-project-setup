@@ -1,8 +1,7 @@
 const {
   models: { User, Orders },
 } = require("../../../../lib/models");
-var slug = require("slug");
-const multer = require("multer");
+
 const asyncParallel = require("async/parallel");
 var _ = require("lodash");
 const { randomNumeric, randomNumericfororder } = require("../../util/common");
@@ -58,9 +57,7 @@ class UserController {
         data: function(callback) {
           Orders.find(
             conditions,
-            {
-              order_dish: 0,
-            },
+            {},
             { sort: { created_at: "desc" }, skip: skip, limit: limit }
           )
 

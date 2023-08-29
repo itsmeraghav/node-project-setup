@@ -1,5 +1,5 @@
 const {
-  models: { User, FavouriteDish },
+  models: { User, Followersfollowing },
 } = require("../../../../lib/models");
 var slug = require("slug");
 const multer = require("multer");
@@ -12,14 +12,14 @@ class UserController {
   async create(req, res, next) {
     let { image } = req.body;
     try {
-      var newRecord = new FavouriteDish(req.body);
+      var newRecord = new Followersfollowing(req.body);
 
       return newRecord
         .save()
         .then((results) => {
           return res.success(
             results,
-            req.__("FavouriteDish_CREATE_SUCCESSFULLY")
+            req.__("Followers & following_CREATE_SUCCESSFULLY")
           );
         })
         .catch((err) => {
@@ -46,14 +46,17 @@ class UserController {
     if (filterObj) {
       //apply filter
 
-      if (filterObj?.user_id) {
-        conditions["user_id"] = filterObj?.user_id;
+      if (filterObj?.from_id) {
+        conditions["from_id"] = filterObj?.from_id;
+      }
+      if (filterObj?.to_id) {
+        conditions["to_id"] = filterObj?.to_id;
       }
     }
     asyncParallel(
       {
         data: function(callback) {
-          FavouriteDish.find(
+          Followersfollowing.find(
             conditions,
 
             {},
@@ -62,21 +65,24 @@ class UserController {
               callback(err, result);
             }
           )
-            .populate("user_id")
-            .populate("dish_id", "dish_photo dish_title like view star")
+            .populate("to_id", "upload_profile full_name bio")
+            .populate("from_id", "upload_profile full_name bio")
             .exec();
         },
         records_filtered: function(callback) {
-          FavouriteDish.countDocuments(conditions, (err, result) => {
+          Followersfollowing.countDocuments(conditions, (err, result) => {
             /* send success response */
             callback(err, result);
           });
         },
         records_total: function(callback) {
-          FavouriteDish.countDocuments({ is_deleted: 0 }, (err, result) => {
-            /* send success response */
-            callback(err, result);
-          });
+          Followersfollowing.countDocuments(
+            { is_deleted: 0 },
+            (err, result) => {
+              /* send success response */
+              callback(err, result);
+            }
+          );
         },
       },
       function(err, results) {
@@ -89,7 +95,10 @@ class UserController {
           recordsTotal:
             results && results.records_total ? results.records_total : 0,
         };
-        return res.success(data, req.__("FavouriteDish_LIST_GENREATED"));
+        return res.success(
+          data,
+          req.__("Followers & following_LIST_GENREATED")
+        );
       }
     );
   }
@@ -99,13 +108,13 @@ class UserController {
       return res.notFound(
         {},
         req.__("INVALID_REQUEST"),
-        req.__("FavouriteDish_NOT_EXIST")
+        req.__("Followersfollowing_NOT_EXIST")
       );
     }
     let data = req.body;
     let { user } = req;
     try {
-      user = await FavouriteDish.findOne({
+      user = await Followersfollowing.findOne({
         _id: req.params._id,
         is_deleted: 0,
       });
@@ -127,14 +136,17 @@ class UserController {
       }
 
       if (data == null)
-        return res.notFound({}, req.__("FavouriteDish_NOT_EXIST"));
+        return res.notFound({}, req.__("Followers & following_NOT_EXIST"));
 
-      await FavouriteDish.findOneAndUpdate(
+      await Followersfollowing.findOneAndUpdate(
         { _id: req.params._id },
         { ...data }
       );
 
-      return res.success(data, req.__("FavouriteDish_UPDATE_SUCCESSFULLY"));
+      return res.success(
+        data,
+        req.__("Followersfollowing_UPDATE_SUCCESSFULLY")
+      );
     } catch (err) {
       return res.json({ data: err });
     }
@@ -150,7 +162,7 @@ class UserController {
     }
 
     try {
-      let data = await FavouriteDish.updateOne(
+      let data = await Followersfollowing.updateOne(
         {
           _id: req.params._id,
         },
@@ -159,7 +171,10 @@ class UserController {
 
       if (data == null) return res.notFound({}, req.__("FAQ_NOT_EXIST"));
 
-      return res.success(data, req.__("FavouriteDish_DELETE_SUCCESSFULLY"));
+      return res.success(
+        data,
+        req.__("Followers & following_DELETE_SUCCESSFULLY")
+      );
     } catch (err) {
       return res.json({ data: err });
     }

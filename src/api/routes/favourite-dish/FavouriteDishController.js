@@ -63,7 +63,7 @@ class UserController {
             }
           )
             .populate("user_id")
-            .populate("dish_id", "dish_photo dish_title like view star")
+            .populate("dish_id", " _id dish_photo dish_title like view star")
             .exec();
         },
         records_filtered: function(callback) {

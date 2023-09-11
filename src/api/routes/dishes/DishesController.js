@@ -40,7 +40,10 @@ const {
         ? parseInt(req.body.start)
         : DATATABLE_DEFAULT_SKIP;
       skip = skip === 0 ? 0 : (skip - 1) * limit;
-      var conditions = { isDeleted: false };
+      var conditions = {
+         isDeleted: false 
+
+      };
       let filterObj = req.body.filter ? req.body.filter : null;
       if (filterObj) {
         //apply filter 
@@ -65,16 +68,24 @@ const {
         if (filterObj?.today_speciality) {
           conditions["today_speciality"] = filterObj?.today_speciality;
         }
-        if (filterObj?.weekly_speciality) {
-          conditions["weekly_speciality"] = filterObj?.weekly_speciality;
-        }
+
+       if (filterObj?.weekly_speciality) {
+         conditions["weekly_speciality"] = { "$in": filterObj?.weekly_speciality } ;
+       }
+ 
+
+     //   if (filterObj?.weekly_speciality) {
+     //     conditions["weekly_speciality"] = filterObj?.weekly_speciality;
+       // }
       }
+      console.log("conditions",conditions);
+
 
       asyncParallel(
         {
           data: function(callback) {
             Dishes.find(
-              conditions,
+             conditions,
               {
                
               },
@@ -99,7 +110,7 @@ const {
             });
           },
           records_total: function(callback) {
-            Dishes.countDocuments({ is_deleted: 0 }, (err, result) => {
+            Dishes.countDocuments({ isDeleted: false }, (err, result) => {
               /* send success response */
               callback(err, result);
             });
@@ -222,7 +233,6 @@ const {
   
         return res.success(data, req.__("Dishes_STATUS_UPDATE_SUCCESSFULLY"));
       } catch (err) {
-        console.log("asdas", err);
         return res.json({ data: err });
       }
     }
@@ -240,7 +250,7 @@ const {
       try {
         user = await Dishes.findOne({
           _id: req.params._id,
-          // is_deleted: 0,
+          // isDeleted: false,
         });
   
         if (!user) {
@@ -272,7 +282,7 @@ const {
     async dropdown(req, res, next) {
       /** Filteration value */
   
-      var conditions = { isDeleted: 0, status: 1 };
+      var conditions = { isDeleted: false, status: 1 };
       asyncParallel(
         {
           data: function(callback) {

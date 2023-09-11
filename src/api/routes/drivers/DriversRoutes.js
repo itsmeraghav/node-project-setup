@@ -49,4 +49,10 @@ router.put(
   DriversController.update
 );
 
+router.get(
+  "/search_driver",
+  // verifyToken,
+  DriversController.search_driver
+);
+
 module.exports = router;

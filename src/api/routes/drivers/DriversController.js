@@ -8,6 +8,8 @@ const {
   const DATATABLE_DEFAULT_SKIP = 0;
   
   class UserController {
+
+// create driver
     async create(req, res, next) {
       let { enter_zipcode } = req.body;
       try {
@@ -30,6 +32,7 @@ const {
       }
     }
   
+  //listing of drivers
     async list(req, res, next) {
       /** Filteration value */
       let limit = req.body.length
@@ -74,8 +77,9 @@ const {
             });
           },
           records_total: function(callback) {
-            Drivers.countDocuments({ is_deleted: 0 }, (err, result) => {
+            Drivers.countDocuments({ is_deleted: false }, (err, result) => {
               /* send success response */
+              console.log("fsdfdsf",result);
               callback(err, result);
             });
           },
@@ -96,7 +100,7 @@ const {
     }
   
 
-
+  //Details of driver
     async detail(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
@@ -134,7 +138,7 @@ const {
         return res.json({ data: err });
       }
     }
-  
+  // delete a driver
     async delete(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
@@ -160,6 +164,7 @@ const {
       }
     }
   
+  //update driver status
     async UpdateStatus(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
@@ -193,6 +198,7 @@ const {
       }
     }
   
+  //update driver
     async update(req, res, next) {
       if (!req.params._id) {
         return res.notFound(
@@ -235,6 +241,7 @@ const {
       }
     }
   
+  //Driver dropdown
     async dropdown(req, res, next) {
       /** Filteration value */
   
@@ -275,7 +282,56 @@ const {
         }
       );
     }
+
+  //Search driver
+  async search_driver(req, res, next) {
+    /** Filteration value */
+    let query = req.query;
+    var conditions = { is_deleted: 0, status: 1 };
+    if (query) {
+     // apply filter
+      if (query?.enter_zipcode) {
+        conditions["enter_zipcode"] =  new RegExp(query?.enter_zipcode, "i");
+      }
+    }   
+     asyncParallel(
+      {
+        data: function(callback) {
+          Drivers.find(
+            conditions,
+             {
+              _id: 1,
+              enter_zipcode:1,
+          dish_title:1,
+          description: 1,
+          ingredients:1,
+          tags:1,
+          preparation_time:1,
+          dish_photo:1,
+          cost:1,
+          status: 1,
+          is_edit: 1,
+          slug: 1,
+          createdAt: 1,
+            },
+            { sort: { created_at: "desc" } },
+            (err, result) => {
+              callback(err, result);
+            }
+          );
+        },
+      },
+      function(err, results) {
+        if (err) return res.json({ data: err });
   
+        let data = {
+          records: results && results.data ? results.data : [],
+        };
+        return res.success(data, req.__("Drivers_in_this_area."));
+      }
+    );
+  }
+
     // async getAdminSetting(req, res) {
     //   let adminSetting = await Drivers.findOne();
     //   const userJson = {};

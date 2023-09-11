@@ -77,8 +77,9 @@ const {
             });
           },
           records_total: function(callback) {
-            Drivers.countDocuments({ is_deleted: 0 }, (err, result) => {
+            Drivers.countDocuments({ is_deleted: false }, (err, result) => {
               /* send success response */
+              console.log("fsdfdsf",result);
               callback(err, result);
             });
           },
@@ -288,7 +289,7 @@ const {
     let query = req.query;
     var conditions = { is_deleted: 0, status: 1 };
     if (query) {
-      //apply filter
+     // apply filter
       if (query?.enter_zipcode) {
         conditions["enter_zipcode"] =  new RegExp(query?.enter_zipcode, "i");
       }
@@ -301,17 +302,17 @@ const {
              {
               _id: 1,
               enter_zipcode:1,
-          // dish_title:1,
-          // description: 1,
-          // ingredients:1,
-          // tags:1,
-          // preparation_time:1,
-          // dish_photo:1,
-          // cost:1,
-          // status: 1,
-          // is_edit: 1,
-          // slug: 1,
-          // createdAt: 1,
+          dish_title:1,
+          description: 1,
+          ingredients:1,
+          tags:1,
+          preparation_time:1,
+          dish_photo:1,
+          cost:1,
+          status: 1,
+          is_edit: 1,
+          slug: 1,
+          createdAt: 1,
             },
             { sort: { created_at: "desc" } },
             (err, result) => {
